@@ -165,6 +165,9 @@
   <data name="enableCtrlNumberHotKey" xml:space="preserve">
     <value>Enable Ctrl+1, ...Ctrl+9 to active tab</value>
   </data>
+  <data name="enableHoverActivate" xml:space="preserve">
+    <value>Enable mouse hover to activate tab</value>
+  </data>
   <data name="Height" xml:space="preserve">
     <value>Height</value>
   </data>

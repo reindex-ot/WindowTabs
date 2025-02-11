@@ -60,6 +60,7 @@ type HotKeyView() =
             ("replaceAltTab", settingsCheckbox "replaceAltTab")
             ("groupWindowsInSwitcher", settingsCheckbox "groupWindowsInSwitcher")
             ("enableCtrlNumberHotKey", settingsCheckbox "enableCtrlNumberHotKey")
+            ("enableHoverActivate", settingsCheckbox "enableHoverActivate")
         ]))
 
         "Switch Tabs", UIHelper.form fields

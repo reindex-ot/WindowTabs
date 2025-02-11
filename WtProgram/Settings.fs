@@ -117,6 +117,7 @@ type Settings(isStandAlone) as this =
                     replaceAltTab = settingsJson.getBool("replaceAltTab").def(false)
                     groupWindowsInSwitcher = settingsJson.getBool("groupWindowsInSwitcher").def(false)
                     enableCtrlNumberHotKey = settingsJson.getBool("enableCtrlNumberHotKey").def(false)
+                    enableHoverActivate = settingsJson.getBool("enableHoverActivate").def(false)
                     version = settingsJson.getString("version").def(String.Empty)
                     tabAppearance =
                         let appearanceObject = settingsJson.getObject("tabAppearance").def(JObject())
@@ -144,6 +145,7 @@ type Settings(isStandAlone) as this =
             settingsJson.setBool("replaceAltTab", settings.replaceAltTab)
             settingsJson.setBool("groupWindowsInSwitcher", settings.groupWindowsInSwitcher)
             settingsJson.setBool("enableCtrlNumberHotKey", settings.enableCtrlNumberHotKey)
+            settingsJson.setBool("enableHoverActivate", settings.enableHoverActivate)
             settingsJson.setStringArray("includedPaths", settings.includedPaths.items)
             settingsJson.setStringArray("excludedPaths", settings.excludedPaths.items)
             settingsJson.setStringArray("autoGroupingPaths", settings.autoGroupingPaths.items)

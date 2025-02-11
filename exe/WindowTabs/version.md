@@ -56,6 +56,9 @@
 - Adjust dark mode blue colors
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/e3f1df0
   - Adjusted Dark Mode (Blue) color scheme for better visibility
+- Support mouse hover to active tab
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/34d8dd1
+  - Added option to activate tabs on mouse hover
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
