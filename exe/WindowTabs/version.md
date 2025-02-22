@@ -46,6 +46,9 @@
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/d89acfc
 - Fix WindowTabs own alt+tab collapse when there is no window
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/5cb3cf5
+- Add a text color option to the setting appearance panel
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/fce3a8d
+  - Added tabTextColor property to TabAppearanceInfo
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
