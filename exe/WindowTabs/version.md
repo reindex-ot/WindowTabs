@@ -1,6 +1,7 @@
 # Standard-Software Version
 
 ## next version
+<<<<<<< HEAD
 - Fix null exception when toggling Fade out option
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/dce4f67
 - update Resources.ja-JP.resx hideInactiveTabs 
@@ -41,6 +42,8 @@
   - Add toolbar separator for better UI organization
   - Enhance support capabilities
   - leafOfTree commits: https://github.com/leafOfTree/WindowTabs/commit/faf7623, https://github.com/leafOfTree/WindowTabs/commit/cf3089f
+- Fix tabs overlap the minimize button when align right
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/d89acfc
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
