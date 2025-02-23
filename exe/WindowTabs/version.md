@@ -53,6 +53,9 @@
 - Add color theme dark mode and dark mode blue variant
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/d582a4f
   - Added Dark Mode and Dark Mode (Blue) appearance options
+- Adjust dark mode blue colors
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/e3f1df0
+  - Adjusted Dark Mode (Blue) color scheme for better visibility
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
