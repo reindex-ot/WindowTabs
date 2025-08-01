@@ -45,6 +45,12 @@ type TabStrip(monitor:ITabStripMonitor) as this =
     let tabBgColor = Cell.create(Map2())
     let hwndRef = ref IntPtr.Zero
     let isShrunkCell = Cell.create(false)
+    // Tooltip implementation
+    let tooltipForm = new Form()
+    let tooltipLabel = new Label()
+    let tooltipTimer = new Timer(Interval = 500)
+    let lastToolTipTab = ref None
+    let pendingTooltipTab = ref None
 
     let isMouseOverExport = Cell.export <| fun() ->
         hoverCell.value.IsSome
@@ -54,6 +60,71 @@ type TabStrip(monitor:ITabStripMonitor) as this =
     do  
         addEvent(WinEvent.EVENT_SYSTEM_SWITCHSTART, fun(hwnd) -> isInAltTabCell.set(true))
         addEvent(WinEvent.EVENT_SYSTEM_SWITCHEND, fun(hwnd) -> isInAltTabCell.set(false))
+        
+        // Initialize tooltip with Windows 10/11 dark theme style
+        tooltipForm.FormBorderStyle <- FormBorderStyle.None
+        tooltipForm.ShowInTaskbar <- false
+        tooltipForm.StartPosition <- FormStartPosition.Manual
+        tooltipForm.BackColor <- Color.FromArgb(40, 40, 40) // Dark gray background
+        tooltipForm.AutoSize <- true
+        tooltipForm.AutoSizeMode <- AutoSizeMode.GrowAndShrink
+        tooltipForm.Padding <- new Padding(8, 8, 8, 8) // Equal padding on all sides
+        tooltipForm.TopMost <- true
+        // Set form opacity for modern look
+        tooltipForm.Opacity <- 0.95
+        
+        // Get DPI scale factor
+        use g = Graphics.FromHwnd(IntPtr.Zero)
+        let dpiScale = g.DpiX / 96.0f
+        let maxWidth = int(500.0f * dpiScale)
+        
+        tooltipLabel.AutoSize <- false
+        tooltipLabel.ForeColor <- Color.White
+        tooltipLabel.BackColor <- Color.FromArgb(40, 40, 40)
+        tooltipLabel.Font <- new Font("Segoe UI", 9.0f, FontStyle.Regular)
+        tooltipLabel.MaximumSize <- new Size(maxWidth, 0)
+        tooltipLabel.AutoSize <- true
+        tooltipLabel.TextAlign <- ContentAlignment.MiddleLeft  // Left-aligned text
+        tooltipLabel.Padding <- new Padding(4, 4, 4, 4) // Equal padding on all sides
+        tooltipLabel.Parent <- tooltipForm
+        
+        // Custom paint for rounded corners
+        tooltipForm.Paint.Add(fun e ->
+            let g = e.Graphics
+            g.SmoothingMode <- SmoothingMode.AntiAlias
+            let rect = new Rectangle(0, 0, tooltipForm.Width - 1, tooltipForm.Height - 1)
+            use path = new GraphicsPath()
+            let radius = 4
+            path.AddArc(rect.X, rect.Y, radius * 2, radius * 2, 180.0f, 90.0f)
+            path.AddArc(rect.Right - radius * 2, rect.Y, radius * 2, radius * 2, 270.0f, 90.0f)
+            path.AddArc(rect.Right - radius * 2, rect.Bottom - radius * 2, radius * 2, radius * 2, 0.0f, 90.0f)
+            path.AddArc(rect.X, rect.Bottom - radius * 2, radius * 2, radius * 2, 90.0f, 90.0f)
+            path.CloseFigure()
+            tooltipForm.Region <- new Region(path)
+        )
+        
+        tooltipTimer.Tick.Add(fun _ -> 
+            match !pendingTooltipTab with
+            | Some(tab) ->
+                let tabInfo = this.tabInfo(tab)
+                if tabInfo.text <> "" then
+                    tooltipLabel.Text <- tabInfo.text
+                    let mousePt = Control.MousePosition
+                    tooltipForm.Location <- new Point(mousePt.X + 10, mousePt.Y + 20)
+                    // Ensure tooltip is within screen bounds
+                    let screen = Screen.FromPoint(mousePt)
+                    let formRight = tooltipForm.Location.X + tooltipForm.Width
+                    let formBottom = tooltipForm.Location.Y + tooltipForm.Height
+                    if formRight > screen.WorkingArea.Right then
+                        tooltipForm.Location <- new Point(screen.WorkingArea.Right - tooltipForm.Width, tooltipForm.Location.Y)
+                    if formBottom > screen.WorkingArea.Bottom then
+                        tooltipForm.Location <- new Point(tooltipForm.Location.X, mousePt.Y - tooltipForm.Height - 5)
+                    tooltipForm.Visible <- true
+                    tooltipForm.BringToFront()
+                pendingTooltipTab := None
+            | None -> ()
+            tooltipTimer.Stop()
+        )
         
         layeredWindowCell.value <-
             let style = WindowsStyles.WS_POPUP
@@ -129,7 +200,22 @@ type TabStrip(monitor:ITabStripMonitor) as this =
             this.setPt(Some(pt))
             if this.window.hasCapture.not then 
                 this.window.trackMouseLeave()
-            hoverCell.set(this.hit)
+            let currentHit = this.hit
+            hoverCell.set(currentHit)
+            // Update tooltip when hovering over a tab
+            match currentHit with
+            | Some(tab, TabBackground) | Some(tab, TabIcon) ->
+                if !lastToolTipTab <> Some(tab) then
+                    lastToolTipTab := Some(tab)
+                    pendingTooltipTab := Some(tab)
+                    tooltipTimer.Stop()
+                    tooltipTimer.Start()
+            | _ ->
+                if !lastToolTipTab <> None then
+                    lastToolTipTab := None
+                    pendingTooltipTab := None
+                    tooltipTimer.Stop()
+                    tooltipForm.Visible <- false
         | MouseClick(pt, btn, action) ->
             this.setPt(Some(pt))
             this.hit.iter <| fun(hitTab, hitPart) ->
@@ -152,6 +238,11 @@ type TabStrip(monitor:ITabStripMonitor) as this =
             this.setPt(None)
             capturedCell.set(None)
             hoverCell.set(None)
+            // Hide tooltip when mouse leaves
+            lastToolTipTab := None
+            pendingTooltipTab := None
+            tooltipTimer.Stop()
+            tooltipForm.Visible <- false
         this.update()
 
     member private this.wndProc(msg:Win32Message) =
@@ -357,6 +448,8 @@ type TabStrip(monitor:ITabStripMonitor) as this =
     member this.destroy() = 
         eventHandlersCell.value.items.iter(fun d -> d.Dispose())
         layeredWindowCell.value.iter <| fun w -> (w :?> IDisposable).Dispose()
+        tooltipTimer.Dispose()
+        tooltipForm.Dispose()
         this.window.destroy()
             
     member this.tryHit(pt) : Option<_> = this.ts.tryHit(pt)

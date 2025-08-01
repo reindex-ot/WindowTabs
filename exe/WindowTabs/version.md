@@ -2,6 +2,7 @@
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
+- Tooltip
 
 ## version ss_jp_2025.07.19
 - support compiles with VS2022 Community Edition.
