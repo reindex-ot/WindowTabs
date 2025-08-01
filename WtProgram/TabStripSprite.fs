@@ -14,7 +14,9 @@ type IconSprite = {
             let bitmap = Img(this.size)
             let g = bitmap.graphics
             try
-                do  g.DrawIcon(this.icon, 0, 0)
+                // Draw icon with proper scaling to fit the target size
+                let rect = new Rectangle(0, 0, this.size.width, this.size.height)
+                do g.DrawIcon(this.icon, rect)
             with | e -> ()
             bitmap
         member this.children = List2()
@@ -130,10 +132,14 @@ type TabSprite<'id> = {
         do this.renderTabEdge(path, PointF(float32(this.size.width) - float32(this.edgeWidth), top), PointF(float32(this.size.width), bottom))
         path
 
-    member private this.iconSize = Sz(16, 16)
+    member private this.iconSize = 
+        // Calculate icon size based on tab height, leaving some padding
+        let iconHeight = max 16 (this.size.height - 8)
+        let iconHeight = min iconHeight 24  // Cap at 24 pixels
+        Sz(iconHeight, iconHeight)
 
     member private this.iconLocation =
-        let y = (this.size.height - 16) / 2
+        let y = (this.size.height - this.iconSize.height) / 2
         Pt(this.edgeWidth, y)
 
     member private this.closeButtonSize = Sz(13, 13)
