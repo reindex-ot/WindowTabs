@@ -13,6 +13,10 @@ And I (Satoshi Yamamoto@standard-software) also forked the source code and compi
 
 # Standard-Software Version
 
+## version ss_jp_2025.08.02
+- Fix Window Title Icon Size
+- Tooltip
+
 ## version ss_jp_2025.07.19
  - support compiles with VS2022 Community Edition.
  - Place WindowTabs.exe and required DLLs in the exe folder.
