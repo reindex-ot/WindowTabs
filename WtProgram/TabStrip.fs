@@ -66,8 +66,7 @@ type TabStrip(monitor:ITabStripMonitor) as this =
         tooltipForm.ShowInTaskbar <- false
         tooltipForm.StartPosition <- FormStartPosition.Manual
         tooltipForm.BackColor <- Color.FromArgb(40, 40, 40) // Dark gray background
-        tooltipForm.AutoSize <- true
-        tooltipForm.AutoSizeMode <- AutoSizeMode.GrowAndShrink
+        tooltipForm.AutoSize <- false  // Manual size control
         tooltipForm.Padding <- new Padding(8, 8, 8, 8) // Equal padding on all sides
         tooltipForm.TopMost <- true
         // Set form opacity for modern look
@@ -78,14 +77,13 @@ type TabStrip(monitor:ITabStripMonitor) as this =
         let dpiScale = g.DpiX / 96.0f
         let maxWidth = int(500.0f * dpiScale)
         
-        tooltipLabel.AutoSize <- false
         tooltipLabel.ForeColor <- Color.White
         tooltipLabel.BackColor <- Color.FromArgb(40, 40, 40)
         tooltipLabel.Font <- new Font("Segoe UI", 9.0f, FontStyle.Regular)
+        tooltipLabel.TextAlign <- ContentAlignment.TopLeft  // Top-left aligned for proper wrapping
+        tooltipLabel.AutoSize <- false  // Keep false for proper width control
         tooltipLabel.MaximumSize <- new Size(maxWidth, 0)
-        tooltipLabel.AutoSize <- true
-        tooltipLabel.TextAlign <- ContentAlignment.MiddleLeft  // Left-aligned text
-        tooltipLabel.Padding <- new Padding(4, 4, 4, 4) // Equal padding on all sides
+        tooltipLabel.Dock <- DockStyle.Fill  // Fill the parent container
         tooltipLabel.Parent <- tooltipForm
         
         // Custom paint for rounded corners
@@ -108,9 +106,27 @@ type TabStrip(monitor:ITabStripMonitor) as this =
             | Some(tab) ->
                 let tabInfo = this.tabInfo(tab)
                 if tabInfo.text <> "" then
+                    // Hide tooltip first to avoid visual glitches
+                    tooltipForm.Visible <- false
+                    
+                    // Set new text
                     tooltipLabel.Text <- tabInfo.text
+                    
+                    // Calculate proper size based on text
+                    use g = tooltipLabel.CreateGraphics()
+                    let textSize = g.MeasureString(tabInfo.text, tooltipLabel.Font, maxWidth)
+                    // Add extra width for one character to prevent text cutoff
+                    let charWidth = g.MeasureString("W", tooltipLabel.Font).Width  // Use 'W' as a wide character
+                    let labelWidth = min maxWidth (int(textSize.Width + charWidth) + 16)  // Add padding + extra char width
+                    let labelHeight = int(textSize.Height) + 16  // Add padding
+                    
+                    // Set form size explicitly
+                    tooltipForm.Size <- new Size(labelWidth, labelHeight)
+                    
+                    // Position tooltip
                     let mousePt = Control.MousePosition
                     tooltipForm.Location <- new Point(mousePt.X + 10, mousePt.Y + 20)
+                    
                     // Ensure tooltip is within screen bounds
                     let screen = Screen.FromPoint(mousePt)
                     let formRight = tooltipForm.Location.X + tooltipForm.Width
@@ -119,6 +135,8 @@ type TabStrip(monitor:ITabStripMonitor) as this =
                         tooltipForm.Location <- new Point(screen.WorkingArea.Right - tooltipForm.Width, tooltipForm.Location.Y)
                     if formBottom > screen.WorkingArea.Bottom then
                         tooltipForm.Location <- new Point(tooltipForm.Location.X, mousePt.Y - tooltipForm.Height - 5)
+                    
+                    // Show tooltip after everything is set
                     tooltipForm.Visible <- true
                     tooltipForm.BringToFront()
                 pendingTooltipTab := None
