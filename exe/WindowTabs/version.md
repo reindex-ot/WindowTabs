@@ -14,6 +14,9 @@
   - Added SmoothNodeTextBox for better text rendering with ClearTypeGridFit
   - Increased RowHeight in TaskSwitch (36→48) and ProgramView (18→24)
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/a62c0d6
+- Support close all tabs from taskbar button rightclick menu
+  - Added close functionality to SuperBarPlugin
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/2d96d04
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
