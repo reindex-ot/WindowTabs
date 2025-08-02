@@ -7,6 +7,13 @@
 - Fix desktop Programs title missing issue (from leafOfTree)
   - Added missing "Programs" value in Resources.resx
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/4314877
+- Add Font resource for UI consistency
+  - Added "Font" resource with value "Segoe UI" in Resources.resx
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/ac0df82
+- Improve UI with SmoothNodeTextBox and layout adjustments
+  - Added SmoothNodeTextBox for better text rendering with ClearTypeGridFit
+  - Increased RowHeight in TaskSwitch (36→48) and ProgramView (18→24)
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/a62c0d6
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
