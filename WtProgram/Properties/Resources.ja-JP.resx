@@ -166,7 +166,7 @@
     <value>高さ</value>
   </data>
   <data name="hideInactiveTabs" xml:space="preserve">
-    <value>非アクティブウィンドウのタブを隠す</value>
+    <value>非アクティブウィンドウのタブを半透明にする</value>
   </data>
   <data name="Indent Flipped" xml:space="preserve">
     <value>インデント(Flipped)</value>
