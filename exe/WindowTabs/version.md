@@ -49,6 +49,7 @@
 - Add a text color option to the setting appearance panel
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/fce3a8d
   - Added tabTextColor property to TabAppearanceInfo
+- text color Resources.ja-JP.resx
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
