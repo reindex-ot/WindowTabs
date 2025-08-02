@@ -4,6 +4,9 @@
 - Fix null exception when toggling Fade out option
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/dce4f67
 - update Resources.ja-JP.resx hideInactiveTabs 
+- Fix desktop Programs title missing issue (from leafOfTree)
+  - Added missing "Programs" value in Resources.resx
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/4314877
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
