@@ -50,7 +50,7 @@ type TaskSwitchTreeViewControl(windows:List2<TaskWindowItem>) =
         tree.ShowLines <- false
         tree.ShowPlusMinus <- false
         tree.Columns.Add(nameColumn)
-        tree.RowHeight <- 36
+        tree.RowHeight <- 48
         tree.NodeControls.Add(
             let control = NodeControls.NodeIcon()
             control.ParentColumn <- nameColumn
@@ -58,7 +58,7 @@ type TaskSwitchTreeViewControl(windows:List2<TaskWindowItem>) =
             control.DataPropertyName <- "IconImage"
             control)
         tree.NodeControls.Add(
-            let control = NodeControls.NodeTextBox()
+            let control = SmoothNodeTextBox()
             control.Trimming <- StringTrimming.EllipsisCharacter
             control.DisplayHiddenContentInToolTip <- true
             control.ParentColumn <- nameColumn
@@ -98,8 +98,8 @@ type TaskSwitchForm(control:ITaskSwitchListControl) as this =
         f.Size <- formSize
         f.ControlBox <- false
         f.Controls.Add(control.control)
+        f.FormBorderStyle <- FormBorderStyle.None
         let window = os.windowFromHwnd(f.Handle)
-        window.dwmSetAttribute DWMWINDOWATTRIBUTE.DWMWA_EXCLUDED_FROM_PEEK 1
         f    
 
     member this.hwnd = form.Handle
@@ -123,25 +123,13 @@ type TaskSwitchAction(windows:List2<TaskWindowItem>) as this =
     let Cell = CellScope()        
     let switchIndex = Cell.create(0)
     let form = TaskSwitchForm(TaskSwitchTreeViewControl(windows))
-    let doShowPeek = Cell.create(false)
     let endedEvent = Event<_>()
-    let peekTimer = 
-        let t= Timer()
-        t.Interval <- 500
-        t.Tick.Add <| fun _ -> 
-            doShowPeek.set(true)
-            this.peekSelected(true)
-            t.Stop()
-        t
 
     let setIndex index =
         switchIndex.set(index)
         form.select(index)
-        this.peekSelected(true)
 
     let doSwitch next =
-        peekTimer.Stop()
-        peekTimer.Start()
         let len = windows.length
         if len > 0 then
             let index = 
@@ -153,8 +141,8 @@ type TaskSwitchAction(windows:List2<TaskWindowItem>) as this =
 
     do
         form.show()
-        setIndex 0
-        peekTimer.Start()
+        if windows.length > 0 then
+            setIndex 0
         
         form.inputControl.LostFocus.Add <| fun e ->
             this.switchEnd(true)
@@ -172,10 +160,7 @@ type TaskSwitchAction(windows:List2<TaskWindowItem>) as this =
     member this.switchNext() = doSwitch true
     member this.switchPrev() = doSwitch false
     member this.switchEnd(cancel:bool) =
-        this.peekSelected false
-        peekTimer.Stop()
-        doShowPeek.set(false)
-        if cancel.not then
+        if cancel.not && windows.length > 0 then
             let (TaskWindowItem(hwnd,_)) = windows.at(switchIndex.value)
             os.windowFromHwnd(hwnd).setForegroundOrRestore(false)
         form.hide()
@@ -184,11 +169,6 @@ type TaskSwitchAction(windows:List2<TaskWindowItem>) as this =
     member this.selectedHwnd =
         let (TaskWindowItem(hwnd,_)) = windows.at(switchIndex.value)
         hwnd
-
-    member this.peekSelected (peek:bool) =
-        if peek.not || doShowPeek.value then
-            if os.isWin7OrHigher then
-                DwmApi.DwmpActivateLivePreview(peek, this.selectedHwnd, form.hwnd, true).ignore
 
     member this.ended = endedEvent.Publish
 
@@ -237,7 +217,13 @@ type TaskSwitcher(settings:Settings, desktop:ITaskSwitchDesktop) as this=
             None
 
     member this.windows =
-        let windowsInZorder = os.windowsInZorder.where(fun w -> w.isAltTabWindow && w.pid.isCurrentProcess.not)
+        let windowsInZorder = os.windowsInZorder.where(fun w -> 
+            w.isAltTabWindow 
+            && w.pid.isCurrentProcess.not 
+            && not(String.IsNullOrEmpty w.text) 
+            && w.text <> "Microsoft Text Input Application"
+            && w.className <> "Windows.UI.Core.CoreWindow"
+        )
         let groupWindowsInSwitcher = settings.settings.groupWindowsInSwitcher
         if groupWindowsInSwitcher then
             let hwndToGroup =

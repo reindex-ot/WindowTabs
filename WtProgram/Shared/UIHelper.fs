@@ -3,6 +3,13 @@ open System
 open System.Drawing
 open System.Windows.Forms
 open Bemo.Win32
+open Aga.Controls.Tree
+
+type SmoothNodeTextBox() = 
+    inherit NodeControls.NodeTextBox()
+    override this.Draw(node, context) =
+        context.Graphics.TextRenderingHint <- System.Drawing.Text.TextRenderingHint.ClearTypeGridFit
+        base.Draw(node, context)
 
 [<AllowNullLiteral>]
 type INode =

@@ -162,6 +162,12 @@
   <data name="groupWindowsInSwitcher" xml:space="preserve">
     <value>Group windows in task switcher.</value>
   </data>
+  <data name="enableCtrlNumberHotKey" xml:space="preserve">
+    <value>Enable Ctrl+1, ...Ctrl+9 to active tab</value>
+  </data>
+  <data name="enableHoverActivate" xml:space="preserve">
+    <value>Enable mouse hover to activate tab</value>
+  </data>
   <data name="Height" xml:space="preserve">
     <value>Height</value>
   </data>
@@ -182,6 +188,9 @@
   </data>
   <data name="Max Width" xml:space="preserve">
     <value>Max Width</value>
+  </data>
+  <data name="Text Color" xml:space="preserve">
+    <value>Color</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
@@ -212,6 +221,12 @@
   </data>
   <data name="Reset" xml:space="preserve">
     <value>Reset</value>
+  </data>
+  <data name="DarkMode" xml:space="preserve">
+    <value>Dark Mode</value>
+  </data>
+  <data name="DarkModeBlue" xml:space="preserve">
+    <value>Dark Mode (Blue)</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Restore</value>

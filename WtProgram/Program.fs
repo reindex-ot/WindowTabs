@@ -44,7 +44,7 @@ type ProgramVersion(parts:List2<int>)=
         this.compare(v2) > 0
 
 type Program() as this =
-    let version = "ss_jp_2025.08.02"
+    let version = "ss_jp_2025.08.03"
     let isStandAlone = System.Diagnostics.Debugger.IsAttached 
 
     let mutex = new Mutex(false, "BemoSoftware.WindowTabs")
@@ -316,6 +316,12 @@ type Program() as this =
             settingsManager.settings.tabAppearance
 
         member x.defaultTabAppearanceInfo = settingsManager.defaultTabAppearance
+
+        member x.darkModeTabAppearanceInfo = 
+            settingsManager.darkModeTabAppearance
+
+        member x.darkModeBlueTabAppearanceInfo = 
+            settingsManager.darkModeBlueTabAppearance
             
         member x.getHotKey key = 
             let hotKeys = settingsManager.settingsJson.getObject("hotKeys").def(JObject())

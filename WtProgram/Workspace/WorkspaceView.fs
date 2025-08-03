@@ -73,7 +73,7 @@ type WorkspaceView() as this =
         control
 
     member this.textNodeControl = Cell.cacheProp this <| fun() ->
-        let control = NodeControls.NodeTextBox()
+        let control = SmoothNodeTextBox()
         control.Trimming <- StringTrimming.EllipsisCharacter
         control.DisplayHiddenContentInToolTip <- true
         control.ParentColumn <- this.nameColumn
@@ -82,7 +82,7 @@ type WorkspaceView() as this =
         control
 
     member this.titleNodeControl = Cell.cacheProp this <| fun() ->
-        let control = NodeControls.NodeTextBox()
+        let control = SmoothNodeTextBox()
         control.Trimming <- StringTrimming.EllipsisCharacter
         control.DisplayHiddenContentInToolTip <- true
         control.ParentColumn <- this.titleColumn
@@ -91,7 +91,7 @@ type WorkspaceView() as this =
         control
 
     member this.matchTypeNodeControl = Cell.cacheProp this <| fun() ->
-        let control = NodeControls.NodeTextBox()
+        let control = SmoothNodeTextBox()
         control.Trimming <- StringTrimming.EllipsisCharacter
         control.DisplayHiddenContentInToolTip <- true
         control.ParentColumn <- this.matchTypeColumn
@@ -103,7 +103,7 @@ type WorkspaceView() as this =
         let tree = TreeViewAdv()
         tree.FullRowSelect <- true
         tree.UseColumns <- true
-        tree.RowHeight <- 18
+        tree.RowHeight <- 24
         tree.Columns.Add(this.nameColumn)
         tree.Columns.Add(this.matchTypeColumn)
         tree.Columns.Add(this.titleColumn)

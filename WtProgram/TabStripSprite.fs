@@ -158,6 +158,9 @@ type TabSprite<'id> = {
         let width = max 1 width
         Sz(width, this.size.height)
 
+    member this.tabTextBrush = 
+        new SolidBrush(this.appearance.tabTextColor)
+
     interface ISprite with
         member this.image =
             let img = Img(this.size)
@@ -169,7 +172,7 @@ type TabSprite<'id> = {
                 //can't be drawn by gdi+ to a transparent background, need to draw directly on the tab background
                 let text = this.displayInfo.text
                 let font = this.displayInfo.textFont
-                let brush = this.displayInfo.textBrush
+                let brush = this.tabTextBrush
                 let format = new StringFormat()
                 do format.LineAlignment <- StringAlignment.Center
                 do format.Alignment <- StringAlignment.Near
@@ -268,7 +271,7 @@ type TabStripSprite<'id> when 'id : equality = {
         match this.alignment with
         | TabLeft -> 0.0
         | TabCenter -> widthOfEmptySpace / 2.0
-        | TabRight -> widthOfEmptySpace
+        | TabRight -> widthOfEmptySpace - 60.0
             
     member this.tabLocation tab =
         match this.slide with

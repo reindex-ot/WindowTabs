@@ -53,6 +53,7 @@ type Settings(isStandAlone) as this =
             tabHeight = 25
             tabMaxWidth = 200
             tabOverlap = 20
+            tabTextColor = Color.FromRGB(0x000000)
             tabNormalBgColor = Color.FromRGB(0x9FC4F0)
             tabHighlightBgColor = Color.FromRGB(0xBDD5F4)
             tabActiveBgColor = Color.FromRGB(0xFAFCFE)
@@ -63,6 +64,40 @@ type Settings(isStandAlone) as this =
             tabIndentNormal = 3 
         }
  
+    member this.darkModeTabAppearance =
+        {
+            tabTextColor = Color.FromRGB(0xFFFFFF)         
+            tabNormalBgColor = Color.FromRGB(0x0D0D0D)     
+            tabHighlightBgColor = Color.FromRGB(0x1E1E1E)  
+            tabActiveBgColor = Color.FromRGB(0x2D2D2D)     
+            tabBorderColor = Color.FromRGB(0x333333)       
+            tabFlashBgColor = Color.FromRGB(0x772222)      
+
+            tabHeight = -1
+            tabMaxWidth = -1
+            tabOverlap = -1
+            tabHeightOffset = -1
+            tabIndentFlipped = -1
+            tabIndentNormal = -1
+        }
+
+    member this.darkModeBlueTabAppearance =
+        {
+            tabTextColor = Color.FromRGB(0xE0E0E0)         
+            tabNormalBgColor = Color.FromRGB(0x111827)    
+            tabHighlightBgColor = Color.FromRGB(0x4B5970)  
+            tabActiveBgColor = Color.FromRGB(0x273548)     
+            tabBorderColor = Color.FromRGB(0x374151)       
+            tabFlashBgColor = Color.FromRGB(0x991B1B)      
+
+            tabHeight = -1
+            tabMaxWidth = -1
+            tabOverlap = -1
+            tabHeightOffset = -1
+            tabIndentFlipped = -1
+            tabIndentNormal = -1
+        }
+
     member this.update f = this.settings <- f(this.settings)
 
     member x.settings
@@ -76,11 +111,13 @@ type Settings(isStandAlone) as this =
                     licenseKey = settingsJson.getString("licenseKey").def("")
                     ticket = settingsJson.getString("ticket")
                     runAtStartup = settingsJson.getBool("runAtStartup").def(hasExistingSettings.not)
-                    hideInactiveTabs = settingsJson.getBool("hideInactiveTabs").def(hasExistingSettings.not)
+                    hideInactiveTabs = settingsJson.getBool("hideInactiveTabs").def(false)
                     enableTabbingByDefault = settingsJson.getBool("enableTabbingByDefault").def(hasExistingSettings.not)
                     combineIconsInTaskbar = settingsJson.getBool("combineIconsInTaskbar").def(hasExistingSettings)
                     replaceAltTab = settingsJson.getBool("replaceAltTab").def(false)
                     groupWindowsInSwitcher = settingsJson.getBool("groupWindowsInSwitcher").def(false)
+                    enableCtrlNumberHotKey = settingsJson.getBool("enableCtrlNumberHotKey").def(false)
+                    enableHoverActivate = settingsJson.getBool("enableHoverActivate").def(false)
                     version = settingsJson.getString("version").def(String.Empty)
                     tabAppearance =
                         let appearanceObject = settingsJson.getObject("tabAppearance").def(JObject())
@@ -107,6 +144,8 @@ type Settings(isStandAlone) as this =
             settingsJson.setBool("combineIconsInTaskbar", settings.combineIconsInTaskbar)
             settingsJson.setBool("replaceAltTab", settings.replaceAltTab)
             settingsJson.setBool("groupWindowsInSwitcher", settings.groupWindowsInSwitcher)
+            settingsJson.setBool("enableCtrlNumberHotKey", settings.enableCtrlNumberHotKey)
+            settingsJson.setBool("enableHoverActivate", settings.enableHoverActivate)
             settingsJson.setStringArray("includedPaths", settings.includedPaths.items)
             settingsJson.setStringArray("excludedPaths", settings.excludedPaths.items)
             settingsJson.setStringArray("autoGroupingPaths", settings.autoGroupingPaths.items)
