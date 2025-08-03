@@ -27,6 +27,10 @@
   - Removed DWM preview functionality from TaskSwitch.fs
   - Removed peekTimer, doShowPeek, and peekSelected method
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/4fed82a
+- Add New window item to tab context menu
+  - Added "新規ウィンドウ" option to tab right-click menu
+  - Launches a new instance of the same application
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/96c6387
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
