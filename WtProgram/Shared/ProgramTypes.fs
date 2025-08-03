@@ -30,7 +30,6 @@ type SettingsRec = {
     replaceAltTab: bool
     groupWindowsInSwitcher: bool
     enableCtrlNumberHotKey: bool
-    combineIconsInTaskbar: bool
     enableHoverActivate: bool
     }
 

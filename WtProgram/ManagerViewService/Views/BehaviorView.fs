@@ -56,7 +56,6 @@ type HotKeyView() =
             ("runAtStartup", settingsCheckbox "runAtStartup")
             ("hideInactiveTabs", settingsCheckbox "hideInactiveTabs")
             ("isTabbingEnabledForAllProcessesByDefault", checkBox(prop<IFilterService, bool>(Services.filter, "isTabbingEnabledForAllProcessesByDefault")))
-            ("combineIconsInTaskbar", settingsCheckbox "combineIconsInTaskbar")
             ("replaceAltTab", settingsCheckbox "replaceAltTab")
             ("groupWindowsInSwitcher", settingsCheckbox "groupWindowsInSwitcher")
             ("enableCtrlNumberHotKey", settingsCheckbox "enableCtrlNumberHotKey")

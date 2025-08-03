@@ -199,7 +199,7 @@ type Program() as this =
         let group,isNewGroup = 
             match this.findGroupForWindow(window) with
             | Some(group) -> (group, false)
-            | None -> (Services.desktop.createGroup(Services.settings.getValue("combineIconsInTaskbar").cast<bool>()), true)
+            | None -> (Services.desktop.createGroup(false), true)
         let isDropped = isDroppedAndAwaitingGrouping.value.contains(hwnd)
         //need to add this now so we don't end up creating another group for it while waiting for the WgnWindowAdded notification
         isDroppedAndAwaitingGrouping.map(fun s -> s.remove hwnd)

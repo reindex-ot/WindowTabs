@@ -184,13 +184,6 @@ type TabStripDecorator(group:WindowGroup) as this =
                 click = fun() -> Process.Start(processPath) |> ignore
             })
 
-        let combineIconsInTaskbar =
-            CmiRegular({
-                text = "タスクバーアイコンを結合する"
-                image = None
-                click = fun() -> Services.desktop.restartGroup(group.hwnd, group.isSuperBarEnabled.not)
-                flags = checked(group.isSuperBarEnabled)
-            })
         
         let renameTabItem =
             CmiRegular({
@@ -271,7 +264,6 @@ type TabStripDecorator(group:WindowGroup) as this =
             Some(iconOnlyItem)
             Some(alignmentItem)
             Some(autoHideItem)
-            Some(combineIconsInTaskbar)
             Some(renameTabItem)
             (if group.isRenamed(hwnd) then Some(restoreTabNameItem) else None)
             Some(CmiSeparator)

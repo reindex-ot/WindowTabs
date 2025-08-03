@@ -328,7 +328,7 @@ type WorkspaceModel() as this =
             windows.iter <| fun hwnd -> os.windowFromHwnd(hwnd).setPlacement(groupInfo?placement)
             os.setZorder(windows)
 
-            let group = Services.desktop.createGroup(Services.settings.getValue("combineIconsInTaskbar").cast<bool>())
+            let group = Services.desktop.createGroup(false)
             windows.iter <| fun hwnd -> group.addWindow(hwnd, false)
 
         Services.program.resumeTabMonitoring()

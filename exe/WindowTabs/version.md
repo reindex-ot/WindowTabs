@@ -1,5 +1,11 @@
 # Standard-Software Version
 
+## next version
+- Remove "Combine icons in taskbar" feature
+  - This feature is not supported on Windows 11
+  - Removed combineIconsInTaskbar setting from all related files
+  - Always pass false to createGroup() to disable SuperBarPlugin
+
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/dce4f67

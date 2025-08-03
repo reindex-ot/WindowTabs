@@ -141,9 +141,6 @@
   <data name="CloseWindowTabs" xml:space="preserve">
     <value>Close WindowTabs</value>
   </data>
-  <data name="combineIconsInTaskbar" xml:space="preserve">
-    <value>Combine icons in taskbar by default</value>
-  </data>
   <data name="Diagnostics" xml:space="preserve">
     <value>Diagnostics</value>
   </data>
