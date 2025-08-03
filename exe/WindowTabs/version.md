@@ -12,6 +12,7 @@
   - Removed all related UI controls and settings
 - Delete: Fix tabs overlap the minimize button when align right
   - This item can be configured in the settings, so no source code modifications are necessary.
+- Improve Japanese translations for tab context menu
 
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option
