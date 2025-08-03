@@ -1,7 +1,6 @@
 # Standard-Software Version
 
 ## next version
-<<<<<<< HEAD
 - Fix null exception when toggling Fade out option
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/dce4f67
 - update Resources.ja-JP.resx hideInactiveTabs 
