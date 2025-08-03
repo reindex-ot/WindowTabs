@@ -1,6 +1,6 @@
 # Standard-Software Version
 
-## next version
+## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/dce4f67
 - update Resources.ja-JP.resx hideInactiveTabs 
@@ -20,7 +20,7 @@
   - Added enableCtrlNumberHotKey setting to control numeric tab hotkeys
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/c416a49
 - Update option default values and text
-  - Changed enableCtrlNumberHotKey Japanese text to "Ctrl+1...+9 でタブをアクティブ化する"
+  - Changed enableCtrlNumberHotKey Japanese text to "Activate tabs with Ctrl+1...+9"
   - Changed enableCtrlNumberHotKey default value to false
   - Changed hideInactiveTabs default value to false
 - Remove all peek code to fix alt-tab error
@@ -28,7 +28,7 @@
   - Removed peekTimer, doShowPeek, and peekSelected method
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/4fed82a
 - Add New window item to tab context menu
-  - Added "新規ウィンドウ" option to tab right-click menu
+  - Added "New window" option to tab right-click menu
   - Launches a new instance of the same application
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/96c6387
 - Improve task switch form appearance and window filtering
