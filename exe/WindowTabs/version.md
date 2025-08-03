@@ -13,6 +13,10 @@
 - Delete: Fix tabs overlap the minimize button when align right
   - This item can be configured in the settings, so no source code modifications are necessary.
 - Improve Japanese translations for tab context menu
+- Add "Close tabs to the right" feature
+  - Added new menu item "右側のタブを閉じる" (Close tabs to the right)
+  - Closes all tabs positioned to the right of the current tab
+  - Added onCloseRightTabWindows method in TabStripDecorator.fs
 
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option
