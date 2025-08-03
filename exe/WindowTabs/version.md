@@ -36,6 +36,11 @@
   - Filter out windows with empty text and 'Microsoft Text Input Application'
   - Enhance Alt+Tab experience
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/3b4fd83
+- Add diagnostic view improvements
+  - Add button to copy settings file to exe path for easier troubleshooting
+  - Add toolbar separator for better UI organization
+  - Enhance support capabilities
+  - leafOfTree commits: https://github.com/leafOfTree/WindowTabs/commit/faf7623, https://github.com/leafOfTree/WindowTabs/commit/cf3089f
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
