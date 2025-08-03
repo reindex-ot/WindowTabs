@@ -19,6 +19,10 @@
 - Add option to deactivate hotkeys ctrl+1,ctrl+2
   - Added enableCtrlNumberHotKey setting to control numeric tab hotkeys
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/c416a49
+- Update option default values and text
+  - Changed enableCtrlNumberHotKey Japanese text to "Ctrl+1...+9 でタブをアクティブ化する"
+  - Changed enableCtrlNumberHotKey default value to false
+  - Changed hideInactiveTabs default value to false
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
