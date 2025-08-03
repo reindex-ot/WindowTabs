@@ -10,6 +10,8 @@
   - Removed groupWindowsInSwitcher setting that grouped windows in task switcher
   - Deleted TaskSwitch.fs file and removed from project
   - Removed all related UI controls and settings
+- Delete: Fix tabs overlap the minimize button when align right
+  - This item can be configured in the settings, so no source code modifications are necessary.
 
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option
@@ -52,8 +54,6 @@
   - Add toolbar separator for better UI organization
   - Enhance support capabilities
   - leafOfTree commits: https://github.com/leafOfTree/WindowTabs/commit/faf7623, https://github.com/leafOfTree/WindowTabs/commit/cf3089f
-- Fix tabs overlap the minimize button when align right
-  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/d89acfc
 - Fix WindowTabs own alt+tab collapse when there is no window
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/5cb3cf5
 - Add a text color option to the setting appearance panel
