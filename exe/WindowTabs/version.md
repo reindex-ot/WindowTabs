@@ -16,6 +16,9 @@
   - Updated ProgramView.fs to use SmoothNodeTextBox and increased RowHeight (18→24)
   - Updated WorkspaceView.fs to use SmoothNodeTextBox and increased RowHeight (18→24)
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/a62c0d6
+- Add option to deactivate hotkeys ctrl+1,ctrl+2
+  - Added enableCtrlNumberHotKey setting to control numeric tab hotkeys
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/c416a49
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
