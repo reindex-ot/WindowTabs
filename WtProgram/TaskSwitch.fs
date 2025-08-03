@@ -50,7 +50,7 @@ type TaskSwitchTreeViewControl(windows:List2<TaskWindowItem>) =
         tree.ShowLines <- false
         tree.ShowPlusMinus <- false
         tree.Columns.Add(nameColumn)
-        tree.RowHeight <- 36
+        tree.RowHeight <- 48
         tree.NodeControls.Add(
             let control = NodeControls.NodeIcon()
             control.ParentColumn <- nameColumn
@@ -58,7 +58,7 @@ type TaskSwitchTreeViewControl(windows:List2<TaskWindowItem>) =
             control.DataPropertyName <- "IconImage"
             control)
         tree.NodeControls.Add(
-            let control = NodeControls.NodeTextBox()
+            let control = SmoothNodeTextBox()
             control.Trimming <- StringTrimming.EllipsisCharacter
             control.DisplayHiddenContentInToolTip <- true
             control.ParentColumn <- nameColumn

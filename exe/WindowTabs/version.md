@@ -10,9 +10,11 @@
 - Add Font resource for UI consistency
   - Added "Font" resource with value "Segoe UI" in Resources.resx
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/ac0df82
-- Improve UI with SmoothNodeTextBox and layout adjustments
-  - Added SmoothNodeTextBox for better text rendering with ClearTypeGridFit
-  - Increased RowHeight in TaskSwitch (36→48) and ProgramView (18→24)
+- Re-add SmoothNodeTextBox implementation for better text rendering
+  - Added SmoothNodeTextBox class with ClearTypeGridFit text rendering
+  - Updated TaskSwitch.fs to use SmoothNodeTextBox and increased RowHeight (36→48)
+  - Updated ProgramView.fs to use SmoothNodeTextBox and increased RowHeight (18→24)
+  - Updated WorkspaceView.fs to use SmoothNodeTextBox and increased RowHeight (18→24)
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/a62c0d6
 
 ## version ss_jp_2025.08.02

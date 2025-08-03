@@ -71,7 +71,7 @@ type ProgramView() as this=
         let nameColumn = TreeColumn(resources.GetString("Name"), 200)
         tree.UseColumns <- true
         tree.Columns.Add(nameColumn)
-        tree.RowHeight <- 18
+        tree.RowHeight <- 24
         let addCheckBoxColumn colText propName =
             let content = resources.GetString(propName)
             let parentColumn =
@@ -98,7 +98,7 @@ type ProgramView() as this=
             control.DataPropertyName <- "Icon"
             control)
         tree.NodeControls.Add(
-            let control = NodeControls.NodeTextBox()
+            let control = SmoothNodeTextBox()
             control.Trimming <- StringTrimming.EllipsisCharacter
             control.DisplayHiddenContentInToolTip <- true
             control.ParentColumn <- nameColumn
