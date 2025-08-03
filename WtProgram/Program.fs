@@ -51,7 +51,6 @@ type Program() as this =
     let Cell = CellScope()
     let os = OS()
     let invoker = InvokerService.invoker
-    let taskSwitchCell = Cell.create(None)
     let isTabMonitoringSuspendedCell = Cell.create(false)
     let llMouseEvent = Event<_>()
 
@@ -97,9 +96,7 @@ type Program() as this =
     do
         Desktop(this :> IDesktopNotification).ignore
         this.registerHotKeys()
-        this.updateTaskSwitcher(Services.settings.getValue("replaceAltTab"))
         Services.settings.notifyValue "runAtStartup" this.updateRunAtStartup
-        Services.settings.notifyValue "replaceAltTab" this.updateTaskSwitcher
         Services.desktop.groupExited.Add <| fun _ -> invoker.asyncInvoke(fun() -> this.updateAppWindows())
         Services.desktop.groupRemoved.Add <| fun _ -> invoker.asyncInvoke(fun() -> this.updateAppWindows())
     
@@ -226,23 +223,6 @@ type Program() as this =
         settingsManager.update f
         this.updateAppWindows()
 
-    member this.updateTaskSwitcher(value) =
-        let replaceAltTab = value.cast<bool>()
-        if replaceAltTab then
-            if taskSwitchCell.value.IsNone then
-                let tsDesktop = {
-                    new ITaskSwitchDesktop with
-                        member x.groups = this.desktop.groups.map <| fun(gi) ->
-                            { new ITaskSwitchGroup with
-                                member y.hwnd = gi.hwnd
-                                member y.windows = Set2(gi.windows)
-                            }
-                }
-                taskSwitchCell.set(Some(TaskSwitcher(settingsManager, tsDesktop)))
-        else
-            taskSwitchCell.value.iter <| fun s -> (s :> IDisposable).Dispose()
-            taskSwitchCell.set(None)
-        
 
     //needed to keep hook alive
     member this.keepAliveReference = keepAliveCell.value

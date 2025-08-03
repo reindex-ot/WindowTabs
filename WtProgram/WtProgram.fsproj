@@ -112,7 +112,6 @@
     <Compile Include="TabStripSprite.fs" />
     <Compile Include="TabStrip.fs" />
     <Compile Include="Settings.fs" />
-    <Compile Include="TaskSwitch.fs" />
     <Compile Include="WindowDecorator.fs" />
     <Compile Include="OleDropTarget.fs" />
     <Compile Include="WindowGroup.fs" />

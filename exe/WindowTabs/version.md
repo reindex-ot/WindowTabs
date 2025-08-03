@@ -5,6 +5,11 @@
   - This feature is not supported on Windows 11
   - Removed combineIconsInTaskbar setting from all related files
   - Always pass false to createGroup() to disable SuperBarPlugin
+- Remove ALT+TAB replacement and task switcher features
+  - Removed replaceAltTab setting that replaced ALT+TAB with WindowTabs task switcher
+  - Removed groupWindowsInSwitcher setting that grouped windows in task switcher
+  - Deleted TaskSwitch.fs file and removed from project
+  - Removed all related UI controls and settings
 
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option

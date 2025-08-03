@@ -156,9 +156,6 @@
   <data name="Feedback" xml:space="preserve">
     <value>Feedback...</value>
   </data>
-  <data name="groupWindowsInSwitcher" xml:space="preserve">
-    <value>Group windows in task switcher.</value>
-  </data>
   <data name="enableCtrlNumberHotKey" xml:space="preserve">
     <value>Enable Ctrl+1, ...Ctrl+9 to active tab</value>
   </data>
@@ -212,9 +209,6 @@
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
-  </data>
-  <data name="replaceAltTab" xml:space="preserve">
-    <value>Replace ALT+TAB with WindowTabs task switcher.</value>
   </data>
   <data name="Reset" xml:space="preserve">
     <value>Reset</value>

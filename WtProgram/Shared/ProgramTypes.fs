@@ -27,8 +27,6 @@ type SettingsRec = {
     runAtStartup: bool
     hideInactiveTabs: bool
     enableTabbingByDefault: bool
-    replaceAltTab: bool
-    groupWindowsInSwitcher: bool
     enableCtrlNumberHotKey: bool
     enableHoverActivate: bool
     }
