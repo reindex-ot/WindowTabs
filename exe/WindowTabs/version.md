@@ -31,6 +31,11 @@
   - Added "新規ウィンドウ" option to tab right-click menu
   - Launches a new instance of the same application
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/96c6387
+- Improve task switch form appearance and window filtering
+  - Apply FormBorderStyle.None for modern borderless appearance
+  - Filter out windows with empty text and 'Microsoft Text Input Application'
+  - Enhance Alt+Tab experience
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/3b4fd83
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
