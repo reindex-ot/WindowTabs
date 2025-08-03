@@ -23,6 +23,10 @@
   - Changed enableCtrlNumberHotKey Japanese text to "Ctrl+1...+9 でタブをアクティブ化する"
   - Changed enableCtrlNumberHotKey default value to false
   - Changed hideInactiveTabs default value to false
+- Remove all peek code to fix alt-tab error
+  - Removed DWM preview functionality from TaskSwitch.fs
+  - Removed peekTimer, doShowPeek, and peekSelected method
+  - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/4fed82a
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
