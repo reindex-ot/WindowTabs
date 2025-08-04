@@ -14,9 +14,13 @@
   - This item can be configured in the settings, so no source code modifications are necessary.
 - Improve Japanese translations for tab context menu
 - Add "Close tabs to the right" feature
-  - Added new menu item "右側のタブを閉じる" (Close tabs to the right)
+  - Added new menu item "Close tabs to the right"
   - Closes all tabs positioned to the right of the current tab
   - Added onCloseRightTabWindows method in TabStripDecorator.fs
+- Remove "Close all tabs of specific process" feature
+  - Removed menu item "このウィンドウの全ての %s のタブを閉じる"
+  - Deleted onCloseAllExeWindows method
+  - Simplified tab closing options in context menu
 
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option
