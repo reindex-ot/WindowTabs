@@ -31,6 +31,7 @@
   - Removed menu item "Auto-group %s"
   - These settings can be easily configured in the settings dialog
   - Simplified tab context menu by removing redundant options
+- Reorganize tab context menu order for better user experience
 
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option
