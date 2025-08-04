@@ -139,7 +139,7 @@
     <value>枠線</value>
   </data>
   <data name="CloseWindowTabs" xml:space="preserve">
-    <value>終了</value>
+    <value>WindowTabs 終了</value>
   </data>
   <data name="Diagnostics" xml:space="preserve">
     <value>診断</value>
