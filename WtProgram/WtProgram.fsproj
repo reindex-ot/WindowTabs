@@ -117,7 +117,6 @@
     <Compile Include="WindowGroup.fs" />
     <Compile Include="TabStripDecorator.fs" />
     <Compile Include="GroupPlugins/SuperBarPlugin.fs" />
-    <Compile Include="GroupPlugins/MouseScrollPlugin.fs" />
     <Compile Include="GroupPlugins/NumericTabHotKeyPlugin.fs" />
     <Compile Include="GroupPlugins/HideTabsOnInactiveGroupPlugin.fs" />
     <Compile Include="Desktop.fs" />

@@ -32,6 +32,10 @@
   - These settings can be easily configured in the settings dialog
   - Simplified tab context menu by removing redundant options
 - Reorganize tab context menu order for better user experience
+- Disable mouse wheel tab switching functionality
+  - Removed MouseScrollPlugin from Desktop.fs
+  - Deleted MouseScrollPlugin.fs file and removed from project
+  - Mouse wheel scrolling over tabs no longer switches between tabs
 
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option

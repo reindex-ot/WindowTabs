@@ -13,7 +13,7 @@ type GroupInfo(enableSuperBar) as this =
     let enableCtrlNumberHotKey = Services.settings.getValue("enableCtrlNumberHotKey").cast<bool>()
     let (_group, invoker) = ThreadHelper.startOnThreadAndWait <| fun() ->
         let plugins = List2<_>([
-            Some(MouseScrollPlugin().cast<IPlugin>())
+            None // MouseScrollPlugin disabled - mouse wheel tab switching removed
             (if enableCtrlNumberHotKey then Some(NumericTabHotKeyPlugin().cast<IPlugin>()) else None)
             Some(HideTabsOnInactiveGroupPlugin().cast<IPlugin>())
             (if enableSuperBar then Some(SuperBarPlugin().cast<IPlugin>()) else None)
