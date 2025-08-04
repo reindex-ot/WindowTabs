@@ -26,11 +26,16 @@
   - Closes all tabs positioned to the left of the current tab
   - Added onCloseLeftTabWindows method in TabStripDecorator.fs
   - Menu item positioned right after "Close tabs to the right"
+- Remove "Don't use tabs for %s" and "Auto-group %s" menu items
+  - Removed menu item "Don't use tabs for %s"
+  - Removed menu item "Auto-group %s"
+  - These settings can be easily configured in the settings dialog
+  - Simplified tab context menu by removing redundant options
 
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/dce4f67
-- update Resources.ja-JP.resx hideInactiveTabs 
+- Update Resources.ja-JP.resx hideInactiveTabs 
 - Fix desktop Programs title missing issue (from leafOfTree)
   - Added missing "Programs" value in Resources.resx
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/4314877
@@ -73,7 +78,7 @@
 - Add a text color option to the setting appearance panel
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/fce3a8d
   - Added tabTextColor property to TabAppearanceInfo
-- text color Resources.ja-JP.resx
+- Update text color in Resources.ja-JP.resx
 - Add color theme dark mode and dark mode blue variant
   - leafOfTree commit: https://github.com/leafOfTree/WindowTabs/commit/d582a4f
   - Added Dark Mode and Dark Mode (Blue) appearance options
@@ -86,16 +91,16 @@
 
 ## version ss_jp_2025.08.02
 - Fix Window Title Icon Size
-- Tooltip
+- Add tooltip support
 
 ## version ss_jp_2025.07.19
-- support compiles with VS2022 Community Edition.
+- Support compiles with VS2022 Community Edition.
 - Place WindowTabs.exe and required DLLs in the exe folder.
 - Multi-display support, multi-DPI support.
 
 ## version ss_jp_2020.08.03
-- Japanese Text
-- default Tab Align Right
-- default AutoHide false
+- Japanese text support
+- Default tab alignment set to right
+- Default auto-hide set to false
 - ./exe/WindowTabs/WindowTabs.exe
-- support compiles with VS2017 Community Edition.
+- Support compiles with VS2017 Community Edition.

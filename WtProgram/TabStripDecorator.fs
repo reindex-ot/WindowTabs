@@ -215,22 +215,6 @@ type TabStripDecorator(group:WindowGroup) as this =
                 flags = List2()
             })
 
-        let removeTabsItem =
-            CmiRegular({
-                text = sprintf "%s ではタブを使わない" exeName
-                image = None
-                click = fun() -> Services.filter.setIsTabbingEnabledForProcess processPath false
-                flags = List2()
-            })
-
-        let isGrouped = Services.program.getAutoGroupingEnabled processPath
-        let groupTabsItem =
-            CmiRegular({
-                text = sprintf "%s の自動グループ化" exeName
-                image = None
-                click = fun() -> Services.program.setAutoGroupingEnabled processPath isGrouped.not
-                flags = checked(isGrouped)
-            })
                  
         let closeTabItem = 
             CmiRegular({
@@ -294,9 +278,6 @@ type TabStripDecorator(group:WindowGroup) as this =
             Some(closeLeftTabsItem)
             Some(closeOtherTabsItem)
             Some(closeAllTabsItem)
-            Some(CmiSeparator)
-            Some(removeTabsItem)
-            Some(groupTabsItem)
             Some(CmiSeparator)
             Some(managerItem)
         ]).choose(id)
