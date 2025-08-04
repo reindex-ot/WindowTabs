@@ -1,6 +1,6 @@
 # Standard-Software Version
 
-## next version
+## version ss_jp_2025.08.04
 - Remove "Combine icons in taskbar" feature
   - This feature is not supported on Windows 11
   - Removed combineIconsInTaskbar setting from all related files
