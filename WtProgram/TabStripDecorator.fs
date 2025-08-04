@@ -133,6 +133,15 @@ type TabStripDecorator(group:WindowGroup) as this =
                 let (Tab(tabHwnd)) = tab
                 this.onCloseWindow tabHwnd
 
+    member private this.onCloseLeftTabWindows hwnd =
+        let currentTab = Tab(hwnd)
+        let tabIndex = this.ts.lorder.tryFindIndex((=) currentTab)
+        tabIndex.iter <| fun index ->
+            let leftTabs = this.ts.lorder.take(index)
+            leftTabs.iter <| fun tab ->
+                let (Tab(tabHwnd)) = tab
+                this.onCloseWindow tabHwnd
+
     member private this.onCloseAllWindows() =
         group.windows.items.iter this.onCloseWindow
 
@@ -239,6 +248,14 @@ type TabStripDecorator(group:WindowGroup) as this =
                 flags = List2()
             })
 
+        let closeLeftTabsItem =
+            CmiRegular({
+                text = "左のタブを閉じる"
+                image = None
+                click = fun() -> this.onCloseLeftTabWindows hwnd
+                flags = List2()
+            })
+
         let closeOtherTabsItem =
             CmiRegular({
                 text = "このウィンドウの他のタブを閉じる"
@@ -274,6 +291,7 @@ type TabStripDecorator(group:WindowGroup) as this =
             Some(CmiSeparator)
             Some(closeTabItem)
             Some(closeRightTabsItem)
+            Some(closeLeftTabsItem)
             Some(closeOtherTabsItem)
             Some(closeAllTabsItem)
             Some(CmiSeparator)

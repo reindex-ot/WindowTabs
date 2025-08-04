@@ -18,9 +18,14 @@
   - Closes all tabs positioned to the right of the current tab
   - Added onCloseRightTabWindows method in TabStripDecorator.fs
 - Remove "Close all tabs of specific process" feature
-  - Removed menu item "このウィンドウの全ての %s のタブを閉じる"
+  - Removed menu item "Close all %s tabs in this window"
   - Deleted onCloseAllExeWindows method
   - Simplified tab closing options in context menu
+- Add "Close tabs to the left" feature
+  - Added new menu item "Close tabs to the left"
+  - Closes all tabs positioned to the left of the current tab
+  - Added onCloseLeftTabWindows method in TabStripDecorator.fs
+  - Menu item positioned right after "Close tabs to the right"
 
 ## version ss_jp_2025.08.03
 - Fix null exception when toggling Fade out option
