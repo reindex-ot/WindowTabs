@@ -4,10 +4,13 @@ open System.Drawing
 open System.Windows.Forms
 open System.Diagnostics
 open Bemo.Win32.Forms
+open System.Reflection
+open System.Resources
 
 type TabStripDecorator(group:WindowGroup) as this =
     let os = OS()
     let Cell = CellScope(false, true)
+    let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly())
     let isDraggingCell = Cell.create(false)
     let dragInfoCell = Cell.create(None)
     let dragPtCell = Cell.create(Pt.empty)
@@ -149,7 +152,7 @@ type TabStripDecorator(group:WindowGroup) as this =
         let checked(isChecked) = if isChecked then List2([MenuFlags.MF_CHECKED]) else List2()
         let grayed(isGrayed) = if isGrayed then List2([MenuFlags.MF_GRAYED]) else List2()
         let iconOnlyItem = CmiRegular({
-            text = (if group.isIconOnly then "タブ幅を広げる" else "タブ幅をせばめる")
+            text = (if group.isIconOnly then resources.GetString("MakeTabsWider") else resources.GetString("MakeTabsNarrower"))
             image = None
             click = fun() -> group.isIconOnly <- group.isIconOnly.not
             flags = List2()
@@ -171,19 +174,19 @@ type TabStripDecorator(group:WindowGroup) as this =
                 click = setAlignment alignment
             })
             CmiPopUp({
-                text = "タブ位置"
+                text = resources.GetString("TabPosition")
                 image = None
                 items = List2([
-                    ("左", TabLeft)
-                    ("中央", TabCenter)
-                    ("右",TabRight)
+                    (resources.GetString("AlignLeft"), TabLeft)
+                    (resources.GetString("AlignCenter"), TabCenter)
+                    (resources.GetString("AlignRight"), TabRight)
                 ]).map(alignmentMenuItem)
             })
 
         let autoHideItem =
             let isEnabled = group.bb.read("autoHide", false)
             CmiRegular({
-                text = "最大化時にタブを隠す"
+                text = resources.GetString("HideTabsWhenMaximized")
                 flags = checked(isEnabled)
                 image = None
                 click = fun() ->
@@ -192,7 +195,7 @@ type TabStripDecorator(group:WindowGroup) as this =
 
         let newWindowItem = 
             CmiRegular({
-                text = "新規ウィンドウ"
+                text = resources.GetString("NewWindow")
                 flags = List2()
                 image = None
                 click = fun() -> Process.Start(processPath) |> ignore
@@ -201,7 +204,7 @@ type TabStripDecorator(group:WindowGroup) as this =
         
         let renameTabItem =
             CmiRegular({
-                text = "タブ名の変更"
+                text = resources.GetString("RenameTab")
                 image = None
                 flags = List2()
                 click = fun() ->
@@ -209,7 +212,7 @@ type TabStripDecorator(group:WindowGroup) as this =
             })
         let restoreTabNameItem =
             CmiRegular({
-                text = "タブ名を元に戻す"
+                text = resources.GetString("RestoreTabName")
                 image = None
                 click = fun() -> group.setTabName(hwnd, None)
                 flags = List2()
@@ -218,7 +221,7 @@ type TabStripDecorator(group:WindowGroup) as this =
                  
         let closeTabItem = 
             CmiRegular({
-                text = "このタブを閉じる"
+                text = resources.GetString("CloseTab")
                 image = None
                 click = fun() -> this.onCloseWindow hwnd
                 flags = List2()
@@ -226,7 +229,7 @@ type TabStripDecorator(group:WindowGroup) as this =
 
         let closeRightTabsItem =
             CmiRegular({
-                text = "右のタブを閉じる"
+                text = resources.GetString("CloseTabsToTheRight")
                 image = None
                 click = fun() -> this.onCloseRightTabWindows hwnd
                 flags = List2()
@@ -234,7 +237,7 @@ type TabStripDecorator(group:WindowGroup) as this =
 
         let closeLeftTabsItem =
             CmiRegular({
-                text = "左のタブを閉じる"
+                text = resources.GetString("CloseTabsToTheLeft")
                 image = None
                 click = fun() -> this.onCloseLeftTabWindows hwnd
                 flags = List2()
@@ -242,7 +245,7 @@ type TabStripDecorator(group:WindowGroup) as this =
 
         let closeOtherTabsItem =
             CmiRegular({
-                text = "このウィンドウの他のタブを閉じる"
+                text = resources.GetString("CloseOtherTabs")
                 image = None
                 click = fun() -> this.onCloseOtherWindows hwnd
                 flags = List2()
@@ -250,7 +253,7 @@ type TabStripDecorator(group:WindowGroup) as this =
 
         let closeAllTabsItem =
             CmiRegular({
-                text = "このウィンドウの全てのタブを閉じる"
+                text = resources.GetString("CloseAllTabs")
                 image = None
                 click = fun() -> this.onCloseAllWindows()
                 flags = List2()
@@ -258,7 +261,7 @@ type TabStripDecorator(group:WindowGroup) as this =
 
         let managerItem =
             CmiRegular({
-                text = "設定..."
+                text = resources.GetString("SettingsMenu")
                 image = None
                 click = fun() -> Services.managerView.show()
                 flags = List2()

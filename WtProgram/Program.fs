@@ -16,6 +16,7 @@ open Bemo.Win32
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open Microsoft.Win32
+open System.Globalization
 
 type ProgramInput =
     | WinEvent of (IntPtr * WinEvent)
@@ -335,6 +336,20 @@ type Program() as this =
             
 
     member this.run(plugins:List2<IPlugin>) =  
+        
+        // Set culture based on language setting
+        let language = 
+            try
+                let value = settingsManager.settingsJson.["language"]
+                if value = null then "en" else value.ToString()
+            with
+            | _ -> "en"
+        let culture = 
+            match language with
+            | "ja" -> new CultureInfo("ja-JP")
+            | _ -> new CultureInfo("en-US")
+        Thread.CurrentThread.CurrentCulture <- culture
+        Thread.CurrentThread.CurrentUICulture <- culture
         
         if System.Diagnostics.Debugger.IsAttached.not then
             if mutex.WaitOne(TimeSpan.FromSeconds(0.5), false).not then
