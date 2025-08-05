@@ -356,6 +356,16 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
                 this.foreground <- this.os.foreground.hwnd
         | WinEvent.EVENT_OBJECT_REORDER ->
             this.saveZorder()
+            // Update TOPMOST status for UWP apps when Z-order changes
+            if (!_ts).IsSome then
+                let ts = (!_ts).Value
+                let tsWindow = this.os.windowFromHwnd(ts.hwnd)
+                let hasActiveUWP = this.windows.items.any(fun hwnd ->
+                    let window = this.os.windowFromHwnd(hwnd)
+                    window.className = "ApplicationFrameWindow" && hwnd = this.os.foreground.hwnd
+                )
+                if hasActiveUWP then
+                    tsWindow.makeTopMost()
         | WinEvent.EVENT_OBJECT_NAMECHANGE ->
             if  this.windows.contains(hwnd) &&
                 //some windows (e.g. chrome on GoogleAnalitics page) fire namechange constantly as they are resized
@@ -396,6 +406,31 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
         | WinEvent.EVENT_SYSTEM_FOREGROUND ->
             this.foreground <- hwnd
             this.saveZorder()
+            // Handle UWP application tab visibility
+            if (!_ts).IsSome then
+                let ts = (!_ts).Value
+                let tsWindow = this.os.windowFromHwnd(ts.hwnd)
+                
+                // Check if the foreground window belongs to this group
+                if this.windows.contains(hwnd) then
+                    let window = this.os.windowFromHwnd(hwnd)
+                    // Make topmost for UWP apps
+                    if window.className = "ApplicationFrameWindow" then
+                        tsWindow.makeTopMost()
+                    else
+                        tsWindow.makeNotTopMost()
+                else
+                    // Window outside the group is now foreground
+                    // Check if group has UWP windows that need TOPMOST removal
+                    let hasUWPWindow = this.windows.items.any(fun hwnd ->
+                        let window = this.os.windowFromHwnd(hwnd)
+                        window.className = "ApplicationFrameWindow"
+                    )
+                    if hasUWPWindow && tsWindow.isTopMost then
+                        tsWindow.makeNotTopMost()
+                        // Insert after the new foreground window to go behind it
+                        let foregroundWindow = this.os.windowFromHwnd(hwnd)
+                        tsWindow.insertAfter(foregroundWindow)
         | _ -> ()
       
     member this.addWindow(hwnd, withDelay) = this.withUpdate <| fun() ->

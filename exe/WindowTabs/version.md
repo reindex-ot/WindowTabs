@@ -6,6 +6,11 @@
   - Auto-restart application with confirmation dialog when language is changed
   - Language setting saved to configuration file
 - Complete localization of tab context menu
+- Fix issue where WindowTabs tabs go behind UWP applications
+  - Added TOPMOST flag for all UWP app windows regardless of tab position
+  - Handle UWP app Z-order changes to maintain tab visibility
+  - Automatically remove TOPMOST flag when non-UWP window or window outside group gets focus
+  - Insert tabs after the new foreground window when removing TOPMOST
 
 ## version ss_jp_2025.08.04
 - Remove "Combine icons in taskbar" feature

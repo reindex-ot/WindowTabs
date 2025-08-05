@@ -72,6 +72,27 @@ type TabStripDecorator(group:WindowGroup) as this =
         else
             this.ts.setPlacement(this.placement)
             this.ts.visible <- true
+            
+            // Handle UWP application tab visibility
+            let hasUWPWindow = group.windows.items.any(fun hwnd ->
+                let window = os.windowFromHwnd(hwnd)
+                window.className = "ApplicationFrameWindow"
+            )
+            
+            let tsWindow = os.windowFromHwnd(this.ts.hwnd)
+            // Make topmost for UWP apps when a UWP app is active
+            if hasUWPWindow then
+                // Check if any UWP window in the group is foreground
+                let isUWPForeground = group.windows.items.any(fun hwnd ->
+                    let window = os.windowFromHwnd(hwnd)
+                    window.className = "ApplicationFrameWindow" && hwnd = os.foreground.hwnd
+                )
+                if isUWPForeground then
+                    tsWindow.makeTopMost()
+                else
+                    tsWindow.makeNotTopMost()
+            else
+                tsWindow.makeNotTopMost()
 
     member private this.invokeAsync f = group.invokeAsync f
     member private this.invokeSync f = group.invokeSync f

@@ -169,7 +169,7 @@ type TabStrip(monitor:ITabStripMonitor) as this =
 
     member private this.size = sizeCell.value
 
-    member private this.showInside = showInsideCell.value
+    member this.showInside = showInsideCell.value
 
     member private this.tsBase direction =
         {
