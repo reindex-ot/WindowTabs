@@ -93,7 +93,7 @@ type HotKeyView() =
 
     let table = 
         // Remove GroupBox border for Switch Tabs section
-        let (_,control) = sections.first()
+        let (_,control) = sections.head
         control.Dock <- DockStyle.Fill
         control
 
