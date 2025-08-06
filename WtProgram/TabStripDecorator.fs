@@ -332,9 +332,10 @@ type TabStripDecorator(group:WindowGroup) as this =
             cell
         Cell.listen <| fun() ->
             // Update isWindowInside based on current tab position
-            isWindowInside.value <- this.ts.showInside
+            let currentShowInside = this.ts.showInside
+            isWindowInside.value <- currentShowInside
             let shrink = 
-                isWindowInside.value && 
+                currentShowInside && 
                 isMouseOver.value.not && 
                 isDraggingCell.value.not &&
                 autoHideCell.value &&
