@@ -309,9 +309,8 @@ type TabStripDecorator(group:WindowGroup) as this =
 
     member private this.initAutoHide() =
         let callbackRef = ref None
-        let isWindowInside = Cell.create(this.ts.showInside)
-        // Update isWindowInside when showInside changes
-        this.ts.showInsideChanged.Add(fun () -> isWindowInside.value <- this.ts.showInside)
+        // Create a cell that tracks whether tabs are shown inside
+        let isWindowInside = Cell.create(false)
         let isMouseOver = Cell.import(group.isMouseOver)
         let propCell(key,def) =
             let cell = Cell.create(group.bb.read(key, def))
@@ -332,6 +331,8 @@ type TabStripDecorator(group:WindowGroup) as this =
                 )
             cell
         Cell.listen <| fun() ->
+            // Update isWindowInside based on current tab position
+            isWindowInside.value <- this.ts.showInside
             let shrink = 
                 isWindowInside.value && 
                 isMouseOver.value.not && 
