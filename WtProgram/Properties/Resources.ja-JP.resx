@@ -223,7 +223,7 @@
     <value>設定</value>
   </data>
   <data name="Language" xml:space="preserve">
-    <value>言語</value>
+    <value>Language</value>
   </data>
   <data name="CloseTab" xml:space="preserve">
     <value>このタブを閉じる</value>

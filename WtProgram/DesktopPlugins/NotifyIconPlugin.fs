@@ -69,14 +69,14 @@ type NotifyIconPlugin() as this =
             with
             | ex -> MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
             
-        let japaneseItem = new MenuItem("日本語")
+        let japaneseItem = new MenuItem("Japanese")
         japaneseItem.Checked <- (currentLanguage = "ja")
         japaneseItem.Click.Add <| fun _ ->
             try
                 let json = Services.settings.root
                 json.["language"] <- JToken.FromObject("ja")
                 Services.settings.root <- json
-                let result = MessageBox.Show("言語が日本語に変更されます。\nアプリケーションを再起動します。", "言語変更", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
+                let result = MessageBox.Show("Language will be changed to English.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
                     let timer = new Timer()
                     timer.Interval <- 100
