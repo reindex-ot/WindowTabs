@@ -56,6 +56,8 @@ type AppearanceView() as this =
         List2([0..properties.length]).iter <| fun row ->
             panel.RowStyles.Add(RowStyle(SizeType.Absolute, 35.0f)).ignore
         panel.ColumnCount <- 2
+        panel.ColumnStyles.Add(ColumnStyle(SizeType.Absolute, 150.0f)).ignore
+        panel.ColumnStyles.Add(ColumnStyle(SizeType.Percent, 100.0f)).ignore
         panel
 
    

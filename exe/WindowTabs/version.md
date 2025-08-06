@@ -5,7 +5,7 @@
   - Added Language submenu in tray icon context menu (English/Japanese)
   - Auto-restart application with confirmation dialog when language is changed
   - Language setting saved to configuration file
-- Complete localization of tab context menu
+- Rename "Indent Flipped" to "Indent (Window Inside)" and "Indent Normal" to "Indent (Window Outside)"
 - Fix issue where WindowTabs tabs go behind UWP applications
   - Added TOPMOST flag for all UWP app windows regardless of tab position
   - Handle UWP app Z-order changes to maintain tab visibility
