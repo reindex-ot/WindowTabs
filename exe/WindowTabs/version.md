@@ -1,5 +1,11 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.08.07
+- Disable tab rename on double-click
+  - Removed double-click rename functionality from tabs
+  - Tab rename can still be accessed via right-click context menu
+  - Reduces accidental tab renaming
+
 ## version ss_jp_2025.08.06
 - Add language switching functionality
   - Added Language submenu in tray icon context menu (English/Japanese)

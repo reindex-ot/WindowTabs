@@ -38,7 +38,8 @@ type TabStripDecorator(group:WindowGroup) as this =
             match action, btn with
             | MouseDblClick, MouseLeft ->
                 group.isIconOnly <- false
-                this.beginRename(hwnd)
+                // Disable tab rename on double-click
+                // this.beginRename(hwnd)
             | MouseUp, MouseRight ->
                 let ptScreen = os.windowFromHwnd(group.hwnd).ptToScreen(pt)
                 group.bb.write("contextMenuVisible", true)
