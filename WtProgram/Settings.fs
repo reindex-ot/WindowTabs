@@ -117,6 +117,7 @@ type Settings(isStandAlone) as this =
                     enableHoverActivate = settingsJson.getBool("enableHoverActivate").def(false)
                     makeTabsNarrowerByDefault = settingsJson.getBool("makeTabsNarrowerByDefault").def(false)
                     defaultTabPosition = settingsJson.getString("defaultTabPosition").def("right")
+                    hideTabsWhenInsideByDefault = settingsJson.getBool("hideTabsWhenInsideByDefault").def(false)
                     version = settingsJson.getString("version").def(String.Empty)
                     tabAppearance =
                         let appearanceObject = settingsJson.getObject("tabAppearance").def(JObject())
@@ -144,6 +145,7 @@ type Settings(isStandAlone) as this =
             settingsJson.setBool("enableHoverActivate", settings.enableHoverActivate)
             settingsJson.setBool("makeTabsNarrowerByDefault", settings.makeTabsNarrowerByDefault)
             settingsJson.setString("defaultTabPosition", settings.defaultTabPosition)
+            settingsJson.setBool("hideTabsWhenInsideByDefault", settings.hideTabsWhenInsideByDefault)
             settingsJson.setStringArray("includedPaths", settings.includedPaths.items)
             settingsJson.setStringArray("excludedPaths", settings.excludedPaths.items)
             settingsJson.setStringArray("autoGroupingPaths", settings.autoGroupingPaths.items)

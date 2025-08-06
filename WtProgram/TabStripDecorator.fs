@@ -309,7 +309,9 @@ type TabStripDecorator(group:WindowGroup) as this =
 
     member private this.initAutoHide() =
         let callbackRef = ref None
-        let isMaximized = Cell.import(group.isMaximized)
+        let isWindowInside = Cell.create(this.ts.showInside)
+        // Update isWindowInside when showInside changes
+        this.ts.showInsideChanged.Add(fun () -> isWindowInside.value <- this.ts.showInside)
         let isMouseOver = Cell.import(group.isMouseOver)
         let propCell(key,def) =
             let cell = Cell.create(group.bb.read(key, def))
@@ -331,7 +333,7 @@ type TabStripDecorator(group:WindowGroup) as this =
             cell
         Cell.listen <| fun() ->
             let shrink = 
-                isMaximized.value && 
+                isWindowInside.value && 
                 isMouseOver.value.not && 
                 isDraggingCell.value.not &&
                 autoHideCell.value &&

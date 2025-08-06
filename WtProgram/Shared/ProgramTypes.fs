@@ -31,6 +31,7 @@ type SettingsRec = {
     enableHoverActivate: bool
     makeTabsNarrowerByDefault: bool
     defaultTabPosition: string
+    hideTabsWhenInsideByDefault: bool
     }
 
 type ILicenseManager =

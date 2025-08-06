@@ -169,10 +169,10 @@
     <value>Fade out tabs on inactive windows</value>
   </data>
   <data name="Indent Flipped" xml:space="preserve">
-    <value>Indent (Window Inside)</value>
+    <value>Indent (Window Inside Tab)</value>
   </data>
   <data name="Indent Normal" xml:space="preserve">
-    <value>Indent (Window Outside)</value>
+    <value>Indent (Window Outside Tab)</value>
   </data>
   <data name="isTabbingEnabledForAllProcessesByDefault" xml:space="preserve">
     <value>Enable tabs for all programs by default</value>
@@ -283,7 +283,10 @@
     <value>Right</value>
   </data>
   <data name="HideTabsWhenMaximized" xml:space="preserve">
-    <value>Hide tabs when maximized</value>
+    <value>Hide tabs when window inside</value>
+  </data>
+  <data name="hideTabsWhenInsideByDefault" xml:space="preserve">
+    <value>Default: Hide tabs when window inside</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Title</value>

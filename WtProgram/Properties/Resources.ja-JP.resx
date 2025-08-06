@@ -169,10 +169,10 @@
     <value>非アクティブウィンドウのタブを半透明にする</value>
   </data>
   <data name="Indent Flipped" xml:space="preserve">
-    <value>インデント(ウィンドウの内側)</value>
+    <value>インデント(ウィンドウ内部)</value>
   </data>
   <data name="Indent Normal" xml:space="preserve">
-    <value>インデント(ウィンドウの外側)</value>
+    <value>インデント(ウィンドウ外部)</value>
   </data>
   <data name="isTabbingEnabledForAllProcessesByDefault" xml:space="preserve">
     <value>全てのプログラムでタブを使う</value>
@@ -277,7 +277,10 @@
     <value>右</value>
   </data>
   <data name="HideTabsWhenMaximized" xml:space="preserve">
-    <value>最大化時にタブを隠す</value>
+    <value>ウィンドウ内部の時にタブを隠す</value>
+  </data>
+  <data name="hideTabsWhenInsideByDefault" xml:space="preserve">
+    <value>デフォルト値：ウィンドウ内部の時にタブを隠す</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>タイトル</value>

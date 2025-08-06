@@ -82,6 +82,7 @@ type HotKeyView() =
             ("enableHoverActivate", settingsCheckbox "enableHoverActivate")
             ("makeTabsNarrowerByDefault", settingsCheckbox "makeTabsNarrowerByDefault")
             ("defaultTabPosition", defaultTabPositionCombo :> Control)
+            ("hideTabsWhenInsideByDefault", settingsCheckbox "hideTabsWhenInsideByDefault")
         ]))
 
         "Switch Tabs", UIHelper.form fields

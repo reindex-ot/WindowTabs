@@ -12,6 +12,19 @@
   - Added defaultTabPosition option with dropdown for Left/Center/Right
   - New tab groups use the selected default position
   - Individual tab groups can still change position via context menu
+- Rename Appearance tab indent options
+  - "Indent (Window Inside)" → "Indent (Window Inside Tab)"
+  - "Indent (Window Outside)" → "Indent (Window Outside Tab)"
+  - Japanese: "インデント(ウィンドウの内側)" → "インデント(ウィンドウ内部)"
+  - Japanese: "インデント(ウィンドウの外側)" → "インデント(ウィンドウ外部)"
+- Change "Hide tabs when maximized" to "Hide tabs when window inside"
+  - Tabs now hide when window is inside (not just when maximized)
+  - Detects when tabs are positioned inside the window (TabDown)
+  - Context menu text updated accordingly
+- Add "Default: Hide tabs when window inside" setting in Behavior tab
+  - New hideTabsWhenInsideByDefault option
+  - When enabled, new tab groups start with auto-hide enabled for inside tabs
+  - Individual tab groups can still toggle via context menu
 
 ## version ss_jp_2025.08.07
 - Disable tab rename on double-click

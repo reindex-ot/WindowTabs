@@ -66,6 +66,10 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
             | "center" -> TabCenter
             | _ -> TabRight
         ts.setAlignment(ts.direction, defaultPosition)
+        
+        // Apply default setting for hiding tabs when inside
+        if Services.settings.settings.hideTabsWhenInsideByDefault then
+            this.bb.write("autoHide", true)
 
         winEventHandler.set(Some(
             _os.setSingleWinEvent WinEvent.EVENT_SYSTEM_FOREGROUND <| fun(hwnd) -> 
