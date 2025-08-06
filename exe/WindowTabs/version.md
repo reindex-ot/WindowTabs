@@ -1,6 +1,6 @@
-# Standard-Software Version
+# WindowTabs Standard-Software Version
 
-## next version
+## version ss_jp_2025.08.06
 - Add language switching functionality
   - Added Language submenu in tray icon context menu (English/Japanese)
   - Auto-restart application with confirmation dialog when language is changed
