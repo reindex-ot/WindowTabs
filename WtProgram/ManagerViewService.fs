@@ -5,10 +5,14 @@ type ManagerViewService() =
     
     interface IManagerView with
         member x.show() =
+            // Close existing form if it exists
+            x.closeCurrentForm()
             currentForm <- Some(new DesktopManagerForm())
             currentForm.Value.show()
 
         member x.show(view) =
+            // Close existing form if it exists
+            x.closeCurrentForm()
             currentForm <- Some(new DesktopManagerForm())
             currentForm.Value.showView(view)
             

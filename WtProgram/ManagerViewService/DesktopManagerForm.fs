@@ -3,10 +3,12 @@ open System
 open System.Drawing
 open System.IO
 open System.Windows.Forms
+open System.Threading
 open Bemo.Win32.Forms
 
 module DesktopManagerFormState =
     let mutable currentForm : Form option = None
+    let mutable mutex : Mutex option = None
 
 type DesktopManagerForm() =
     let title = sprintf "WindowTabs Settings (version %s)"  (Services.program.version)
@@ -44,22 +46,72 @@ type DesktopManagerForm() =
         form.Text <- title
         form.Icon <- Services.openIcon("Bemo.ico")
         form.TopMost <- true
-        form.FormClosed.Add(fun _ -> DesktopManagerFormState.currentForm <- None)
+        form.FormClosed.Add(fun _ -> 
+            DesktopManagerFormState.currentForm <- None
+            // Release mutex when form is closed
+            match DesktopManagerFormState.mutex with
+            | Some m -> 
+                try
+                    m.ReleaseMutex()
+                    m.Dispose()
+                with _ -> ()
+                DesktopManagerFormState.mutex <- None
+            | None -> ()
+        )
         form
 
     member this.show() =
-        DesktopManagerFormState.currentForm <- Some(form)
-        form.Show()
-        form.Activate()
+        // Try to create mutex for single instance
+        let mutexCreated = ref false
+        try
+            DesktopManagerFormState.mutex <- Some(new Mutex(true, "WindowTabsSettingsDialog", mutexCreated))
+            if not !mutexCreated then
+                // Another instance exists, don't show
+                ()
+            else
+                DesktopManagerFormState.currentForm <- Some(form)
+                form.Show()
+                form.Activate()
+        with
+        | _ -> 
+            // If mutex creation fails, just show the form
+            DesktopManagerFormState.currentForm <- Some(form)
+            form.Show()
+            form.Activate()
 
     member this.showView(view) =
-        let tabIndex = tabs.findIndex(fun tab -> tab.key = view)
-        tabControl.SelectedIndex <- tabIndex
-        DesktopManagerFormState.currentForm <- Some(form)
-        form.Show()
-        form.Activate()
+        // Try to create mutex for single instance
+        let mutexCreated = ref false
+        try
+            DesktopManagerFormState.mutex <- Some(new Mutex(true, "WindowTabsSettingsDialog", mutexCreated))
+            if not !mutexCreated then
+                // Another instance exists, don't show
+                ()
+            else
+                let tabIndex = tabs.findIndex(fun tab -> tab.key = view)
+                tabControl.SelectedIndex <- tabIndex
+                DesktopManagerFormState.currentForm <- Some(form)
+                form.Show()
+                form.Activate()
+        with
+        | _ -> 
+            // If mutex creation fails, just show the form
+            let tabIndex = tabs.findIndex(fun tab -> tab.key = view)
+            tabControl.SelectedIndex <- tabIndex
+            DesktopManagerFormState.currentForm <- Some(form)
+            form.Show()
+            form.Activate()
         
     member this.close() =
         form.Close()
         DesktopManagerFormState.currentForm <- None
+        // Release mutex
+        match DesktopManagerFormState.mutex with
+        | Some m -> 
+            try
+                m.ReleaseMutex()
+                m.Dispose()
+            with _ -> ()
+            DesktopManagerFormState.mutex <- None
+        | None -> ()
         

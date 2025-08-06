@@ -6,9 +6,32 @@ open System.Resources
 open Newtonsoft.Json.Linq
 open System.Diagnostics
 open System.IO
+open System.Threading
 
 type NotifyIconPlugin() as this =
     let Cell = CellScope()
+    
+    let closeSettingsDialog() =
+        // Try to close any existing settings dialog using mutex check
+        let mutable tempMutex : Mutex option = None
+        let mutexCreated = ref false
+        try
+            tempMutex <- Some(new Mutex(true, "WindowTabsSettingsDialog", mutexCreated))
+            if not !mutexCreated then
+                // Dialog exists in another process, we can't close it directly
+                // but we'll clear our local reference
+                ()
+            // Always release the mutex immediately
+            match tempMutex with
+            | Some m -> 
+                try m.ReleaseMutex(); m.Dispose() with _ -> ()
+            | None -> ()
+        with _ -> ()
+        // Close local form reference if exists
+        match DesktopManagerFormState.currentForm with
+        | Some form -> 
+            try form.Close() with _ -> ()
+        | None -> ()
     
     let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly());
 
@@ -52,13 +75,7 @@ type NotifyIconPlugin() as this =
                 let json = Services.settings.root
                 json.["language"] <- JToken.FromObject("en")
                 Services.settings.root <- json
-                match DesktopManagerFormState.currentForm with
-                | Some form -> 
-                    try
-                        form.Close()
-                    with
-                    | _ -> ()
-                | None -> ()
+                closeSettingsDialog()
                 let result = MessageBox.Show("Language will be changed to English.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
                     let exePath = Assembly.GetExecutingAssembly().Location
@@ -84,13 +101,7 @@ type NotifyIconPlugin() as this =
                 let json = Services.settings.root
                 json.["language"] <- JToken.FromObject("ja")
                 Services.settings.root <- json
-                match DesktopManagerFormState.currentForm with
-                | Some form -> 
-                    try
-                        form.Close()
-                    with
-                    | _ -> ()
-                | None -> ()
+                closeSettingsDialog()
                 let result = MessageBox.Show("Language will be changed to Japanese.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
                     let exePath = Assembly.GetExecutingAssembly().Location

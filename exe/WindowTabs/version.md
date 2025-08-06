@@ -11,6 +11,9 @@
   - Handle UWP app Z-order changes to maintain tab visibility
   - Automatically remove TOPMOST flag when non-UWP window or window outside group gets focus
   - Insert tabs after the new foreground window when removing TOPMOST
+- Prevent multiple settings dialogs from opening simultaneously
+  - Settings dialog closes existing instance before opening new one
+  - Only one settings dialog can be open at a time
 
 ## version ss_jp_2025.08.04
 - Remove "Combine icons in taskbar" feature
