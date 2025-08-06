@@ -249,6 +249,12 @@
   <data name="MakeTabsNarrower" xml:space="preserve">
     <value>タブ幅をせばめる</value>
   </data>
+  <data name="makeTabsNarrowerByDefault" xml:space="preserve">
+    <value>デフォルト値：タブ幅をせばめる</value>
+  </data>
+  <data name="defaultTabPosition" xml:space="preserve">
+    <value>デフォルト値：タブ位置</value>
+  </data>
   <data name="TabPosition" xml:space="preserve">
     <value>タブ位置</value>
   </data>

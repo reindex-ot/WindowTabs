@@ -255,6 +255,12 @@
   <data name="MakeTabsNarrower" xml:space="preserve">
     <value>Make tabs narrower</value>
   </data>
+  <data name="makeTabsNarrowerByDefault" xml:space="preserve">
+    <value>Default: Make tabs narrower</value>
+  </data>
+  <data name="defaultTabPosition" xml:space="preserve">
+    <value>Default: Tab position</value>
+  </data>
   <data name="TabPosition" xml:space="preserve">
     <value>Tab position</value>
   </data>

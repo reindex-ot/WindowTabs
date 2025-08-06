@@ -1,5 +1,18 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.08.07_next
+- Remove "Switch Tabs" group box in Behavior settings tab
+  - Removed unnecessary group box border from Switch Tabs section
+  - Cleaner UI presentation in settings dialog
+- Add "Default: Make tabs narrower" setting in Behavior tab
+  - Added makeTabsNarrowerByDefault option in settings
+  - When enabled, new tab groups start with narrower tabs by default
+  - Individual tab groups can still toggle width via context menu
+- Add "Default: Tab position" setting in Behavior tab
+  - Added defaultTabPosition option with dropdown for Left/Center/Right
+  - New tab groups use the selected default position
+  - Individual tab groups can still change position via context menu
+
 ## version ss_jp_2025.08.07
 - Disable tab rename on double-click
   - Removed double-click rename functionality from tabs

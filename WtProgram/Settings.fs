@@ -115,6 +115,8 @@ type Settings(isStandAlone) as this =
                     enableTabbingByDefault = settingsJson.getBool("enableTabbingByDefault").def(hasExistingSettings.not)
                     enableCtrlNumberHotKey = settingsJson.getBool("enableCtrlNumberHotKey").def(false)
                     enableHoverActivate = settingsJson.getBool("enableHoverActivate").def(false)
+                    makeTabsNarrowerByDefault = settingsJson.getBool("makeTabsNarrowerByDefault").def(false)
+                    defaultTabPosition = settingsJson.getString("defaultTabPosition").def("right")
                     version = settingsJson.getString("version").def(String.Empty)
                     tabAppearance =
                         let appearanceObject = settingsJson.getObject("tabAppearance").def(JObject())
@@ -140,6 +142,8 @@ type Settings(isStandAlone) as this =
             settingsJson.setBool("enableTabbingByDefault", settings.enableTabbingByDefault)
             settingsJson.setBool("enableCtrlNumberHotKey", settings.enableCtrlNumberHotKey)
             settingsJson.setBool("enableHoverActivate", settings.enableHoverActivate)
+            settingsJson.setBool("makeTabsNarrowerByDefault", settings.makeTabsNarrowerByDefault)
+            settingsJson.setString("defaultTabPosition", settings.defaultTabPosition)
             settingsJson.setStringArray("includedPaths", settings.includedPaths.items)
             settingsJson.setStringArray("excludedPaths", settings.excludedPaths.items)
             settingsJson.setStringArray("autoGroupingPaths", settings.autoGroupingPaths.items)

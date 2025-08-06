@@ -29,6 +29,8 @@ type SettingsRec = {
     enableTabbingByDefault: bool
     enableCtrlNumberHotKey: bool
     enableHoverActivate: bool
+    makeTabsNarrowerByDefault: bool
+    defaultTabPosition: string
     }
 
 type ILicenseManager =

@@ -55,6 +55,17 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
 
     member this.init(ts:TabStrip) =
         _ts := Some(ts)
+        
+        // Apply default setting for tab width
+        this.isIconOnly <- Services.settings.settings.makeTabsNarrowerByDefault
+        
+        // Apply default setting for tab position
+        let defaultPosition = 
+            match Services.settings.settings.defaultTabPosition with
+            | "left" -> TabLeft
+            | "center" -> TabCenter
+            | _ -> TabRight
+        ts.setAlignment(ts.direction, defaultPosition)
 
         winEventHandler.set(Some(
             _os.setSingleWinEvent WinEvent.EVENT_SYSTEM_FOREGROUND <| fun(hwnd) -> 
