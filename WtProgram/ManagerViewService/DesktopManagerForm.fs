@@ -5,6 +5,9 @@ open System.IO
 open System.Windows.Forms
 open Bemo.Win32.Forms
 
+module DesktopManagerFormState =
+    let mutable currentForm : Form option = None
+
 type DesktopManagerForm() =
     let title = sprintf "WindowTabs Settings (version %s)"  (Services.program.version)
     let tabs = List2([
@@ -41,15 +44,22 @@ type DesktopManagerForm() =
         form.Text <- title
         form.Icon <- Services.openIcon("Bemo.ico")
         form.TopMost <- true
+        form.FormClosed.Add(fun _ -> DesktopManagerFormState.currentForm <- None)
         form
 
     member this.show() =
+        DesktopManagerFormState.currentForm <- Some(form)
         form.Show()
         form.Activate()
 
     member this.showView(view) =
         let tabIndex = tabs.findIndex(fun tab -> tab.key = view)
         tabControl.SelectedIndex <- tabIndex
+        DesktopManagerFormState.currentForm <- Some(form)
         form.Show()
         form.Activate()
+        
+    member this.close() =
+        form.Close()
+        DesktopManagerFormState.currentForm <- None
         

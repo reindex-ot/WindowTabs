@@ -52,6 +52,13 @@ type NotifyIconPlugin() as this =
                 let json = Services.settings.root
                 json.["language"] <- JToken.FromObject("en")
                 Services.settings.root <- json
+                match DesktopManagerFormState.currentForm with
+                | Some form -> 
+                    try
+                        form.Close()
+                    with
+                    | _ -> ()
+                | None -> ()
                 let result = MessageBox.Show("Language will be changed to English.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
                     let timer = new Timer()
@@ -76,6 +83,13 @@ type NotifyIconPlugin() as this =
                 let json = Services.settings.root
                 json.["language"] <- JToken.FromObject("ja")
                 Services.settings.root <- json
+                match DesktopManagerFormState.currentForm with
+                | Some form -> 
+                    try
+                        form.Close()
+                    with
+                    | _ -> ()
+                | None -> ()
                 let result = MessageBox.Show("Language will be changed to English.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
                     let timer = new Timer()
