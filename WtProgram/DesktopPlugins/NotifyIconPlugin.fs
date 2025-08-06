@@ -61,18 +61,19 @@ type NotifyIconPlugin() as this =
                 | None -> ()
                 let result = MessageBox.Show("Language will be changed to English.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
-                    let timer = new Timer()
-                    timer.Interval <- 100
-                    timer.Tick.Add(fun _ ->
-                        timer.Stop()
-                        let exePath = Assembly.GetExecutingAssembly().Location
-                        try
-                            Process.Start(exePath) |> ignore
-                        with
-                        | _ -> ()
-                        Environment.Exit(0)
-                    )
-                    timer.Start()
+                    let exePath = Assembly.GetExecutingAssembly().Location
+                    // Start new process with a delay using cmd
+                    let startInfo = ProcessStartInfo()
+                    startInfo.FileName <- "cmd.exe"
+                    startInfo.Arguments <- sprintf "/c timeout /t 1 /nobreak >nul && start \"\" \"%s\"" exePath
+                    startInfo.WindowStyle <- ProcessWindowStyle.Hidden
+                    startInfo.CreateNoWindow <- true
+                    try
+                        Process.Start(startInfo) |> ignore
+                    with
+                    | _ -> ()
+                    // Shutdown current process
+                    Services.program.shutdown()
             with
             | ex -> MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
             
@@ -92,18 +93,19 @@ type NotifyIconPlugin() as this =
                 | None -> ()
                 let result = MessageBox.Show("Language will be changed to English.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
-                    let timer = new Timer()
-                    timer.Interval <- 100
-                    timer.Tick.Add(fun _ ->
-                        timer.Stop()
-                        let exePath = Assembly.GetExecutingAssembly().Location
-                        try
-                            Process.Start(exePath) |> ignore
-                        with
-                        | _ -> ()
-                        Environment.Exit(0)
-                    )
-                    timer.Start()
+                    let exePath = Assembly.GetExecutingAssembly().Location
+                    // Start new process with a delay using cmd
+                    let startInfo = ProcessStartInfo()
+                    startInfo.FileName <- "cmd.exe"
+                    startInfo.Arguments <- sprintf "/c timeout /t 1 /nobreak >nul && start \"\" \"%s\"" exePath
+                    startInfo.WindowStyle <- ProcessWindowStyle.Hidden
+                    startInfo.CreateNoWindow <- true
+                    try
+                        Process.Start(startInfo) |> ignore
+                    with
+                    | _ -> ()
+                    // Shutdown current process
+                    Services.program.shutdown()
             with
             | ex -> MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
             
