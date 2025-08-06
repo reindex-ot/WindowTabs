@@ -65,7 +65,7 @@ type NotifyIconPlugin() as this =
                     // Start new process with a delay using cmd
                     let startInfo = ProcessStartInfo()
                     startInfo.FileName <- "cmd.exe"
-                    startInfo.Arguments <- sprintf "/c timeout /t 1 /nobreak >nul && start \"\" \"%s\"" exePath
+                    startInfo.Arguments <- sprintf "/c timeout /t 3 /nobreak >nul && start \"\" \"%s\"" exePath
                     startInfo.WindowStyle <- ProcessWindowStyle.Hidden
                     startInfo.CreateNoWindow <- true
                     try
@@ -91,13 +91,13 @@ type NotifyIconPlugin() as this =
                     with
                     | _ -> ()
                 | None -> ()
-                let result = MessageBox.Show("Language will be changed to English.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
+                let result = MessageBox.Show("Language will be changed to Japanese.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
                     let exePath = Assembly.GetExecutingAssembly().Location
                     // Start new process with a delay using cmd
                     let startInfo = ProcessStartInfo()
                     startInfo.FileName <- "cmd.exe"
-                    startInfo.Arguments <- sprintf "/c timeout /t 1 /nobreak >nul && start \"\" \"%s\"" exePath
+                    startInfo.Arguments <- sprintf "/c timeout /t 3 /nobreak >nul && start \"\" \"%s\"" exePath
                     startInfo.WindowStyle <- ProcessWindowStyle.Hidden
                     startInfo.CreateNoWindow <- true
                     try
