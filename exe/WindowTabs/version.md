@@ -15,8 +15,6 @@
 - Rename Appearance tab indent options
   - "Indent (Window Inside)" → "Indent (Window Inside Tab)"
   - "Indent (Window Outside)" → "Indent (Window Outside Tab)"
-  - Japanese: "インデント(ウィンドウの内側)" → "インデント(ウィンドウ内部)"
-  - Japanese: "インデント(ウィンドウの外側)" → "インデント(ウィンドウ外部)"
 - Change "Hide tabs when maximized" to "Hide tabs when window inside"
   - Tabs now hide when window is inside (not just when maximized)
   - Detects when tabs are positioned inside the window (TabDown)

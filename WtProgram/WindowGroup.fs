@@ -57,20 +57,21 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
         _ts := Some(ts)
         
         // Apply default setting for tab width
-        let settings = (Services.settings :?> Settings)
-        this.isIconOnly <- settings.settings.makeTabsNarrowerByDefault
+        let makeTabsNarrower = Services.settings.getValue("makeTabsNarrowerByDefault") :?> bool
+        this.isIconOnly <- makeTabsNarrower
         
         // Apply default setting for tab position
         let defaultPosition = 
-            match settings.settings.defaultTabPosition with
+            match Services.settings.getValue("defaultTabPosition") :?> string with
             | "left" -> TabLeft
             | "center" -> TabCenter
             | _ -> TabRight
         ts.setAlignment(ts.direction, defaultPosition)
         
         // Apply default setting for hiding tabs when inside
-        if settings.settings.hideTabsWhenInsideByDefault then
-            this.bb.write("autoHide", true)
+        let hideTabsWhenInside = Services.settings.getValue("hideTabsWhenInsideByDefault") :?> bool
+        if hideTabsWhenInside then
+            _bb.write("autoHide", true)
 
         winEventHandler.set(Some(
             _os.setSingleWinEvent WinEvent.EVENT_SYSTEM_FOREGROUND <| fun(hwnd) -> 

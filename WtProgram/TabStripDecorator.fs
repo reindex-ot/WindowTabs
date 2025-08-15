@@ -208,7 +208,7 @@ type TabStripDecorator(group:WindowGroup) as this =
         let autoHideItem =
             let isEnabled = group.bb.read("autoHide", false)
             CmiRegular({
-                text = resources.GetString("HideTabsWhenMaximized")
+                text = resources.GetString("HideTabsWhenInsideWindow")
                 flags = checked(isEnabled)
                 image = None
                 click = fun() ->
@@ -332,10 +332,9 @@ type TabStripDecorator(group:WindowGroup) as this =
             cell
         Cell.listen <| fun() ->
             // Update isWindowInside based on current tab position
-            let currentShowInside = this.ts.showInside
-            isWindowInside.value <- currentShowInside
+            isWindowInside.value <- this.ts.showInside
             let shrink = 
-                currentShowInside && 
+                isWindowInside.value && 
                 isMouseOver.value.not && 
                 isDraggingCell.value.not &&
                 autoHideCell.value &&
