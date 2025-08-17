@@ -555,8 +555,30 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
         
     member this.tabActivate(Tab(hwnd), force) = 
         let window = this.os.windowFromHwnd(hwnd)
+        let tsWindow = this.os.windowFromHwnd(this.ts.hwnd)
+        
+        // Check if we need to prevent flashing when tabs are inside
+        let isTabInside = this.ts.showInside
+        let isUWP = window.className = "ApplicationFrameWindow"
+        
+        // Temporarily set TOPMOST for non-UWP windows when tabs are inside to prevent flashing
+        if isTabInside && not isUWP then
+            tsWindow.makeTopMost()
+        
         window.setForegroundOrRestore(force)
         window.bringToTop()
+        
+        // Remove TOPMOST after the window switch for non-UWP windows
+        if isTabInside && not isUWP then
+            // Use a small delay to ensure the window switch is complete
+            (ThreadHelper.cancelablePostBack 50 <| fun() ->
+                this.invokeAsync <| fun() ->
+                    if not (this.windows.items.any(fun hwnd ->
+                        let w = this.os.windowFromHwnd(hwnd)
+                        w.className = "ApplicationFrameWindow"
+                    )) then
+                        tsWindow.makeNotTopMost()
+            ).Dispose()
 
     member this.onTabMoved(hwnd, index) = movedEvent.Trigger(hwnd, index)
 

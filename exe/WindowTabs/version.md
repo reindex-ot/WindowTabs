@@ -31,6 +31,11 @@
   - New hideTabsWhenInsideByDefault option
   - When enabled, new tab groups start with auto-hide enabled for inside tabs
   - Individual tab groups can still toggle via context menu
+- Prevent tab switching flash when tabs are inside window
+  - Temporarily set TOPMOST flag during tab switch for non-UWP windows
+  - Removes TOPMOST flag after 50ms delay to ensure smooth transition
+  - UWP windows are excluded as they already have TOPMOST handling
+  - Eliminates visual flashing when switching between tabs positioned inside window
 
 ## version ss_jp_2025.08.07
 - Disable tab rename on double-click
