@@ -160,7 +160,7 @@
     <value>Ctrl+1...+9 でタブをアクティブ化する</value>
   </data>
   <data name="enableHoverActivate" xml:space="preserve">
-    <value>マウスホバーでタブを有効にする</value>
+    <value>マウスホバーでタブ切替を有効にする</value>
   </data>
   <data name="Height" xml:space="preserve">
     <value>高さ</value>
