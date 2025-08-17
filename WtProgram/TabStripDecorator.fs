@@ -205,14 +205,39 @@ type TabStripDecorator(group:WindowGroup) as this =
                 ]).map(alignmentMenuItem)
             })
 
-        let autoHideItem =
-            let isEnabled = group.bb.read("autoHide", false)
-            CmiRegular({
-                text = resources.GetString("HideTabsWhenInsideWindow")
-                flags = checked(isEnabled)
+        let hideTabsItem =
+            // Get current hide mode from group blackboard or from default settings
+            let currentMode = 
+                let autoHide = group.bb.read("autoHide", false)
+                let autoHideMaximized = group.bb.read("autoHideMaximized", false)
+                if autoHide then "down"
+                elif autoHideMaximized then "maximized"
+                else "never"
+            
+            let hideModeMenuItem(text, mode) = 
+                CmiRegular({
+                    text = text
+                    image = None
+                    flags = checked(currentMode = mode)
+                    click = fun() ->
+                        // Clear all hide settings first
+                        group.bb.write("autoHide", false)
+                        group.bb.write("autoHideMaximized", false)
+                        // Set new mode
+                        match mode with
+                        | "down" -> group.bb.write("autoHide", true)
+                        | "maximized" -> group.bb.write("autoHideMaximized", true)
+                        | _ -> () // "never" - leave both false
+                })
+            
+            CmiPopUp({
+                text = resources.GetString("HideTabsWhenDown")
                 image = None
-                click = fun() ->
-                    group.bb.write("autoHide", isEnabled.not)
+                items = List2([
+                    (resources.GetString("HideNever"), "never")
+                    (resources.GetString("HideWhenMaximized"), "maximized")
+                    (resources.GetString("HideWhenDownMenu"), "down")
+                ]).map(hideModeMenuItem)
             })
 
         let newWindowItem = 
@@ -300,7 +325,7 @@ type TabStripDecorator(group:WindowGroup) as this =
             Some(CmiSeparator)
             Some(iconOnlyItem)
             Some(alignmentItem)
-            Some(autoHideItem)
+            Some(hideTabsItem)
             Some(CmiSeparator)
             Some(renameTabItem)
             (if group.isRenamed(hwnd) then Some(restoreTabNameItem) else None)
@@ -319,6 +344,7 @@ type TabStripDecorator(group:WindowGroup) as this =
             group.bb.subscribe key update
             cell
         let autoHideCell = propCell("autoHide", false)
+        let autoHideMaximizedCell = propCell("autoHideMaximized", false)
         let contextMenuVisibleCell = propCell("contextMenuVisible", false)
         let renamingTabCell = propCell("renamingTab", false)
         let isRecentlyChangedZorderCell =
@@ -335,10 +361,10 @@ type TabStripDecorator(group:WindowGroup) as this =
             // Update isWindowInside based on current tab position
             isWindowInside.value <- this.ts.showInside
             let shrink = 
-                isWindowInside.value && 
+                ((isWindowInside.value && autoHideCell.value) ||
+                 (group.isMaximized.value && autoHideMaximizedCell.value)) && 
                 isMouseOver.value.not && 
                 isDraggingCell.value.not &&
-                autoHideCell.value &&
                 contextMenuVisibleCell.value.not &&
                 renamingTabCell.value.not &&
                 isRecentlyChangedZorderCell.value.not

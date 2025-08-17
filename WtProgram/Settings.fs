@@ -34,18 +34,36 @@ type Settings(isStandAlone) as this =
     member this.settingsString
         with get() = 
             if cachedSettingsString.IsNone then 
-                cachedSettingsString <- (if this.fileExists then Some(File.ReadAllText(this.path)) else None)
+                cachedSettingsString <- 
+                    try
+                        if this.fileExists then Some(File.ReadAllText(this.path)) else None
+                    with
+                    | _ -> None  // Return None if file reading fails
             cachedSettingsString
 
         and set(newSettings : string option) =
-            let settingsDir = Path.GetDirectoryName(this.path)
-            if Directory.Exists(settingsDir).not then
-                Directory.CreateDirectory(settingsDir).ignore
-            File.WriteAllText(this.path, newSettings.Value)
-            this.clearCaches()
+            try
+                let settingsDir = Path.GetDirectoryName(this.path)
+                if Directory.Exists(settingsDir).not then
+                    Directory.CreateDirectory(settingsDir).ignore
+                File.WriteAllText(this.path, newSettings.Value)
+                this.clearCaches()
+            with
+            | ex ->
+                // Log error but don't crash
+                System.Diagnostics.Debug.WriteLine(sprintf "Failed to save settings: %s" ex.Message)
             
     member this.settingsJson
-        with get() = this.settingsString.map(JObject.Parse).def(JObject())
+        with get() = 
+            try
+                this.settingsString.map(fun s -> 
+                    try
+                        JObject.Parse(s)
+                    with
+                    | _ -> JObject()  // Return empty JObject if parsing fails
+                ).def(JObject())
+            with
+            | _ -> JObject()  // Return empty JObject if any error occurs
         and set(settingsJson:JObject) = this.settingsString <- Some(settingsJson.ToString())
 
     member this.defaultTabAppearance =
@@ -103,34 +121,71 @@ type Settings(isStandAlone) as this =
     member x.settings
         with get() =
             if cachedSettingsRec.IsNone then 
-                let settingsJson = this.settingsJson
-                let settings = {
-                    includedPaths = Set2(settingsJson.getStringArray("includedPaths").def(List2()))
-                    excludedPaths = Set2(settingsJson.getStringArray("excludedPaths").def(List2()))
-                    autoGroupingPaths = Set2(settingsJson.getStringArray("autoGroupingPaths").def(List2()))
-                    licenseKey = settingsJson.getString("licenseKey").def("")
-                    ticket = settingsJson.getString("ticket")
-                    runAtStartup = settingsJson.getBool("runAtStartup").def(hasExistingSettings.not)
-                    hideInactiveTabs = settingsJson.getBool("hideInactiveTabs").def(false)
-                    enableTabbingByDefault = settingsJson.getBool("enableTabbingByDefault").def(hasExistingSettings.not)
-                    enableCtrlNumberHotKey = settingsJson.getBool("enableCtrlNumberHotKey").def(false)
-                    enableHoverActivate = settingsJson.getBool("enableHoverActivate").def(false)
-                    makeTabsNarrowerByDefault = settingsJson.getBool("makeTabsNarrowerByDefault").def(false)
-                    defaultTabPosition = settingsJson.getString("defaultTabPosition").def("right")
-                    hideTabsWhenInsideByDefault = settingsJson.getBool("hideTabsWhenInsideByDefault").def(false)
-                    version = settingsJson.getString("version").def(String.Empty)
-                    tabAppearance =
-                        let appearanceObject = settingsJson.getObject("tabAppearance").def(JObject())
-                        appearanceObject.items.fold this.defaultTabAppearance <| fun appearance (key,value) ->
-                            let value = 
-                                let value = (value :?> JValue).Value
-                                let fieldType = Serialize.getFieldType (appearance.GetType()) key
-                                if fieldType = typeof<Int32> then box(unbox<Int64>(value).Int32)
-                                elif fieldType = typeof<Color> then box(Color.FromRGB(Int32.Parse(unbox<string>(value), Globalization.NumberStyles.HexNumber)))
-                                else failwith "UNKNOWN TYPE"
-                            Serialize.writeField appearance key value :?> TabAppearanceInfo
-                }
-                cachedSettingsRec <- Some(settings)
+                try
+                    let settingsJson = this.settingsJson
+                    let settings = {
+                        includedPaths = Set2(settingsJson.getStringArray("includedPaths").def(List2()))
+                        excludedPaths = Set2(settingsJson.getStringArray("excludedPaths").def(List2()))
+                        autoGroupingPaths = Set2(settingsJson.getStringArray("autoGroupingPaths").def(List2()))
+                        licenseKey = settingsJson.getString("licenseKey").def("")
+                        ticket = settingsJson.getString("ticket")
+                        runAtStartup = settingsJson.getBool("runAtStartup").def(hasExistingSettings.not)
+                        hideInactiveTabs = settingsJson.getBool("hideInactiveTabs").def(false)
+                        enableTabbingByDefault = settingsJson.getBool("enableTabbingByDefault").def(hasExistingSettings.not)
+                        enableCtrlNumberHotKey = settingsJson.getBool("enableCtrlNumberHotKey").def(false)
+                        enableHoverActivate = settingsJson.getBool("enableHoverActivate").def(false)
+                        makeTabsNarrowerByDefault = settingsJson.getBool("makeTabsNarrowerByDefault").def(false)
+                        defaultTabPosition = settingsJson.getString("defaultTabPosition").def("right")
+                        hideTabsWhenInsideByDefault = 
+                            // Handle backward compatibility: convert old bool values to new string format
+                            try
+                                match settingsJson.getBool("hideTabsWhenInsideByDefault") with
+                                | Some(boolValue) -> if boolValue then "down" else "never"
+                                | None -> settingsJson.getString("hideTabsWhenInsideByDefault").def("never")
+                            with
+                            | _ -> settingsJson.getString("hideTabsWhenInsideByDefault").def("never")
+                        version = settingsJson.getString("version").def(String.Empty)
+                        tabAppearance =
+                            try
+                                let appearanceObject = settingsJson.getObject("tabAppearance").def(JObject())
+                                appearanceObject.items.fold this.defaultTabAppearance <| fun appearance (key,value) ->
+                                    try
+                                        let value = 
+                                            let value = (value :?> JValue).Value
+                                            let fieldType = Serialize.getFieldType (appearance.GetType()) key
+                                            if fieldType = typeof<Int32> then box(unbox<Int64>(value).Int32)
+                                            elif fieldType = typeof<Color> then box(Color.FromRGB(Int32.Parse(unbox<string>(value), Globalization.NumberStyles.HexNumber)))
+                                            else failwith "UNKNOWN TYPE"
+                                        Serialize.writeField appearance key value :?> TabAppearanceInfo
+                                    with
+                                    | _ -> appearance  // Skip invalid field and keep current value
+                            with
+                            | _ -> this.defaultTabAppearance  // Use default appearance if parsing fails
+                    }
+                    cachedSettingsRec <- Some(settings)
+                with
+                | ex ->
+                    // If settings loading completely fails, use all defaults
+                    let defaultSettings = {
+                        includedPaths = Set2(List2())
+                        excludedPaths = Set2(List2())
+                        autoGroupingPaths = Set2(List2())
+                        licenseKey = ""
+                        ticket = None
+                        runAtStartup = false
+                        hideInactiveTabs = false
+                        enableTabbingByDefault = true
+                        enableCtrlNumberHotKey = false
+                        enableHoverActivate = false
+                        makeTabsNarrowerByDefault = false
+                        defaultTabPosition = "right"
+                        hideTabsWhenInsideByDefault = "never"
+                        version = String.Empty
+                        tabAppearance = this.defaultTabAppearance
+                    }
+                    cachedSettingsRec <- Some(defaultSettings)
+                    // Optionally log the error for debugging
+                    System.Diagnostics.Debug.WriteLine(sprintf "Settings loading failed: %s" ex.Message)
             cachedSettingsRec.Value
 
         and set(settings) =
@@ -145,7 +200,7 @@ type Settings(isStandAlone) as this =
             settingsJson.setBool("enableHoverActivate", settings.enableHoverActivate)
             settingsJson.setBool("makeTabsNarrowerByDefault", settings.makeTabsNarrowerByDefault)
             settingsJson.setString("defaultTabPosition", settings.defaultTabPosition)
-            settingsJson.setBool("hideTabsWhenInsideByDefault", settings.hideTabsWhenInsideByDefault)
+            settingsJson.setString("hideTabsWhenInsideByDefault", settings.hideTabsWhenInsideByDefault)
             settingsJson.setStringArray("includedPaths", settings.includedPaths.items)
             settingsJson.setStringArray("excludedPaths", settings.excludedPaths.items)
             settingsJson.setStringArray("autoGroupingPaths", settings.autoGroupingPaths.items)

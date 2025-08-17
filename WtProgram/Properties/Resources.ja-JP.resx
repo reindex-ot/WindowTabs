@@ -276,11 +276,24 @@
   <data name="AlignRight" xml:space="preserve">
     <value>右</value>
   </data>
-  <data name="HideTabsWhenMaximized" xml:space="preserve">
-    <value>ウィンドウ内部の時にタブを隠す</value>
+ 
+  <data name="HideTabsWhenDown" xml:space="preserve">
+    <value>下方向タブの時にタブを隠す</value>
   </data>
   <data name="hideTabsWhenInsideByDefault" xml:space="preserve">
-    <value>デフォルト値：ウィンドウ内部の時にタブを隠す</value>
+    <value>デフォルト値：下方向タブの時にタブを隠す</value>
+  </data>
+  <data name="HideNever" xml:space="preserve">
+    <value>隠さない</value>
+  </data>
+  <data name="HideWhenMaximized" xml:space="preserve">
+    <value>最大化の時のみ隠す</value>
+  </data>
+  <data name="HideWhenDown" xml:space="preserve">
+    <value>下方向タブの場合は常に隠す(最大化の時を含む)</value>
+  </data>
+  <data name="HideWhenDownMenu" xml:space="preserve">
+    <value>下方向タブの場合は常に隠す</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>タイトル</value>

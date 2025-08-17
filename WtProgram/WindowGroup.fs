@@ -69,9 +69,11 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
         ts.setAlignment(ts.direction, defaultPosition)
         
         // Apply default setting for hiding tabs when inside
-        let hideTabsWhenInside = Services.settings.getValue("hideTabsWhenInsideByDefault") :?> bool
-        if hideTabsWhenInside then
-            _bb.write("autoHide", true)
+        let hideTabsMode = Services.settings.getValue("hideTabsWhenInsideByDefault") :?> string
+        match hideTabsMode with
+        | "down" -> _bb.write("autoHide", true)
+        | "maximized" -> _bb.write("autoHideMaximized", true)
+        | _ -> () // "never" - do nothing
 
         winEventHandler.set(Some(
             _os.setSingleWinEvent WinEvent.EVENT_SYSTEM_FOREGROUND <| fun(hwnd) -> 

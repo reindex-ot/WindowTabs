@@ -5,13 +5,14 @@
   - Tab alignment (left/center/right) now uses single setting regardless of tab position
   - Removed separate settings for TabUp (outside) and TabDown (inside) states
   - Simplified tab position management for consistent user experience
-- Increase auto-hide delay for tabs when window inside
-  - Changed delay from 100ms to 1000ms (1 second) when mouse leaves tabs
-  - Provides more time before tabs automatically hide
-  - Improves usability when tabs are positioned inside window
-- Remove "Switch Tabs" group box in Behavior settings tab
-  - Removed unnecessary group box border from Switch Tabs section
-  - Cleaner UI presentation in settings dialog
+- Improve tab auto-hide functionality and settings
+  - Increased auto-hide delay from 100ms to 1000ms (1 second) when mouse leaves tabs
+  - Changed "Hide tabs when maximized" to comprehensive "Hide tabs when down" feature
+  - Added ComboBox setting with three options: "Never hide", "Hide when maximized only", "Always hide when tabs down"
+  - Added context menu submenu for hide options with same three choices
+  - New default setting "Default: Hide tabs when down" applies to new tab groups
+  - Backward compatibility maintained for old boolean settings
+  - Setting now stored as string: "never", "maximized", or "down"
 - Add "Default: Make tabs narrower" setting in Behavior tab
   - Added makeTabsNarrowerByDefault option in settings
   - When enabled, new tab groups start with narrower tabs by default
@@ -23,14 +24,6 @@
 - Rename Appearance tab indent options
   - "Indent (Window Inside Tab)" → "Indent for Tabs Down"
   - "Indent (Window Outside Tab)" → "Indent for Tabs Up"
-- Change "Hide tabs when maximized" to "Hide tabs when window inside"
-  - Tabs now hide when window is inside (not just when maximized)
-  - Detects when tabs are positioned inside the window (TabDown)
-  - Context menu text updated accordingly
-- Add "Default: Hide tabs when window inside" setting in Behavior tab
-  - New hideTabsWhenInsideByDefault option
-  - When enabled, new tab groups start with auto-hide enabled for inside tabs
-  - Individual tab groups can still toggle via context menu
 - Prevent tab switching flash when tabs are inside window
   - Temporarily set TOPMOST flag during tab switch for non-UWP windows
   - Removes TOPMOST flag after 50ms delay to ensure smooth transition

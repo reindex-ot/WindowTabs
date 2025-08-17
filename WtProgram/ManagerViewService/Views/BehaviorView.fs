@@ -69,6 +69,28 @@ type HotKeyView() =
                 Services.settings.setValue("defaultTabPosition", indexToPosition(combo.SelectedIndex))
             )
             combo
+            
+        let hideTabsCombo = 
+            let combo = new ComboBox()
+            combo.DropDownStyle <- ComboBoxStyle.DropDownList
+            combo.Items.AddRange([|
+                resources.GetString("HideNever")
+                resources.GetString("HideWhenMaximized") 
+                resources.GetString("HideWhenDown")
+            |])
+            let modeToIndex = function
+                | "never" -> 0
+                | "maximized" -> 1
+                | _ -> 2  // default to "down"
+            let indexToMode = function
+                | 0 -> "never"
+                | 1 -> "maximized"
+                | _ -> "down"
+            combo.SelectedIndex <- modeToIndex(Services.settings.getValue("hideTabsWhenInsideByDefault") :?> string)
+            combo.SelectedIndexChanged.Add(fun _ -> 
+                Services.settings.setValue("hideTabsWhenInsideByDefault", indexToMode(combo.SelectedIndex))
+            )
+            combo
 
         let fields = hotKeys.map <| fun(key,text) ->
             let editor = editors.find key
@@ -82,7 +104,7 @@ type HotKeyView() =
             ("enableHoverActivate", settingsCheckbox "enableHoverActivate")
             ("makeTabsNarrowerByDefault", settingsCheckbox "makeTabsNarrowerByDefault")
             ("defaultTabPosition", defaultTabPositionCombo :> Control)
-            ("hideTabsWhenInsideByDefault", settingsCheckbox "hideTabsWhenInsideByDefault")
+            ("hideTabsWhenInsideByDefault", hideTabsCombo :> Control)
         ]))
 
         "Switch Tabs", UIHelper.form fields
