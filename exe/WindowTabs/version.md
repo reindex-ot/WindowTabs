@@ -1,6 +1,10 @@
 # WindowTabs Standard-Software Version
 
 ## version ss_jp_2025.08.07_next
+- Unify tab alignment setting across window inside/outside positions
+  - Tab alignment (left/center/right) now uses single setting regardless of tab position
+  - Removed separate settings for TabUp (outside) and TabDown (inside) states
+  - Simplified tab position management for consistent user experience
 - Remove "Switch Tabs" group box in Behavior settings tab
   - Removed unnecessary group box border from Switch Tabs section
   - Cleaner UI presentation in settings dialog

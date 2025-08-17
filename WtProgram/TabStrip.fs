@@ -35,7 +35,7 @@ type TabStrip(monitor:ITabStripMonitor) as this =
     let showInsideCell = Cell.create(false)
     let isInAltTabCell = Cell.create(false)
     let iconOnlyCell = Cell.create(false)
-    let alignment = Cell.create(Map2(List2([(TabUp,TabRight);(TabDown,TabRight)])))
+    let alignment = Cell.create(TabRight)
     let capturedCell = Cell.create(None : Option<Tab*TabPart>)
     let hoverCell = Cell.create(None : Option<Tab*TabPart>)
     let slideCell = Cell.create(None)
@@ -193,7 +193,7 @@ type TabStrip(monitor:ITabStripMonitor) as this =
             size = this.size
             slide = this.slide
             direction = direction
-            alignment = alignment.value.find direction
+            alignment = alignment.value
             onlyIcons = this.isIconOnly
             transparent = this.transparent
             appearance = 
@@ -387,9 +387,9 @@ type TabStrip(monitor:ITabStripMonitor) as this =
 
     member this.isMouseOver = isMouseOverExport :> ICellOutput<_>
 
-    member this.getAlignment direction = alignment.value.find(direction)
+    member this.getAlignment direction = alignment.value
 
-    member this.setAlignment((direction, newAlignment)) = alignment.map(fun m -> m.add direction newAlignment)
+    member this.setAlignment((direction, newAlignment)) = alignment.set(newAlignment)
             
     member this.direction = if showInsideCell.value then TabDown else TabUp
     
