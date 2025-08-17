@@ -223,7 +223,9 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
     member private this.hwndText hwnd = 
         let window = this.os.windowFromHwnd(hwnd)
         let text = Services.program.getWindowNameOverride(hwnd).def(window.text)
-        if System.Diagnostics.Debugger.IsAttached then sprintf "%X - %s" hwnd text else text
+        // DebugMode
+        // if System.Diagnostics.Debugger.IsAttached then sprintf "%X - %s" hwnd text else text
+        text
 
     member private this.getTabInfo(hwnd) =
         let window = this.os.windowFromHwnd(hwnd)
