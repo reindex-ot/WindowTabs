@@ -344,7 +344,7 @@ type TabStripDecorator(group:WindowGroup) as this =
             callbackRef.Value.iter <| fun(d:IDisposable) -> d.Dispose()
             callbackRef := None
             if shrink then
-                callbackRef := Some(ThreadHelper.cancelablePostBack 100 <| fun() ->
+                callbackRef := Some(ThreadHelper.cancelablePostBack 1000 <| fun() ->
                     this.ts.isShrunk <- true
                 )
             else

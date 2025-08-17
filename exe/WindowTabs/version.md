@@ -5,6 +5,10 @@
   - Tab alignment (left/center/right) now uses single setting regardless of tab position
   - Removed separate settings for TabUp (outside) and TabDown (inside) states
   - Simplified tab position management for consistent user experience
+- Increase auto-hide delay for tabs when window inside
+  - Changed delay from 100ms to 1000ms (1 second) when mouse leaves tabs
+  - Provides more time before tabs automatically hide
+  - Improves usability when tabs are positioned inside window
 - Remove "Switch Tabs" group box in Behavior settings tab
   - Removed unnecessary group box border from Switch Tabs section
   - Cleaner UI presentation in settings dialog
