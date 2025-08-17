@@ -95,6 +95,8 @@ type HotKeyView() =
         // Remove GroupBox border for Switch Tabs section
         let (_,control) = sections.head
         control.Dock <- DockStyle.Fill
+        // Add padding to match Appearance tab
+        control.Padding <- Padding(10)
         control
 
     interface ISettingsView with

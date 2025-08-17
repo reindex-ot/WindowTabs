@@ -21,8 +21,8 @@
   - New tab groups use the selected default position
   - Individual tab groups can still change position via context menu
 - Rename Appearance tab indent options
-  - "Indent (Window Inside)" → "Indent (Window Inside Tab)"
-  - "Indent (Window Outside)" → "Indent (Window Outside Tab)"
+  - "Indent (Window Inside Tab)" → "Indent for Tabs Down"
+  - "Indent (Window Outside Tab)" → "Indent for Tabs Up"
 - Change "Hide tabs when maximized" to "Hide tabs when window inside"
   - Tabs now hide when window is inside (not just when maximized)
   - Detects when tabs are positioned inside the window (TabDown)
