@@ -301,6 +301,7 @@ type TabStripDecorator(group:WindowGroup) as this =
             Some(iconOnlyItem)
             Some(alignmentItem)
             Some(autoHideItem)
+            Some(CmiSeparator)
             Some(renameTabItem)
             (if group.isRenamed(hwnd) then Some(restoreTabNameItem) else None)
             Some(CmiSeparator)
