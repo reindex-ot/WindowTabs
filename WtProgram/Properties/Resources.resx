@@ -169,10 +169,10 @@
     <value>Fade out tabs on inactive windows</value>
   </data>
   <data name="Indent Flipped" xml:space="preserve">
-    <value>Indent (Tabs Down)</value>
+    <value>Distance from edge when tabs down (pixels)</value>
   </data>
   <data name="Indent Normal" xml:space="preserve">
-    <value>Indent (Tabs Up)</value>
+    <value>Distance from edge when tabs up (pixels)</value>
   </data>
   <data name="isTabbingEnabledForAllProcessesByDefault" xml:space="preserve">
     <value>Enable tabs for all programs by default</value>

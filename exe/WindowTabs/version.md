@@ -15,9 +15,13 @@
   - "Indent for Tabs Down" and "Indent for Tabs Up"
 - Prevent tab switching flash when tabs are inside window
   - Temporarily set TOPMOST flag during tab switch for smooth transition
-- Update tab hide function labels for clarity
-  - Changed "Default: Hide tabs when down" to "Default: Hide tabs when positioned at bottom"
-  - Simplified option label from "Always hide when tabs down (including maximized)" to "Always hide (including maximized)"
+- Improve clarity of settings labels
+  - Made tab hide function labels clearer and simpler
+  - Added pixel unit labels to appearance settings
+  - Renamed and repositioned indent settings for better understanding
+- Improve settings dialog layout consistency
+  - Unified row height and column width across all settings tabs
+  - Increased label column width to prevent text wrapping
 
 ## version ss_jp_2025.08.07
 - Disable tab rename on double-click

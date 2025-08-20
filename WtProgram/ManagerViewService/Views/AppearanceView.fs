@@ -36,14 +36,14 @@ type AppearanceView() as this =
         intConfig "tabHeight" "Height"
         intConfig "tabMaxWidth" "Max Width"
         intConfig "tabOverlap" "Overlap"
+        intConfig "tabIndentNormal" "Indent Normal"
+        intConfig "tabIndentFlipped" "Indent Flipped"
         colorConfig "tabTextColor" "Text Color"
         colorConfig "tabNormalBgColor" "Background Normal"
         colorConfig "tabHighlightBgColor" "Background Highlight"
         colorConfig "tabActiveBgColor" "Background Active"
         colorConfig "tabFlashBgColor" "Background Flash"
         colorConfig "tabBorderColor" "Border"
-        intConfig "tabIndentNormal" "Indent Normal"
-        intConfig "tabIndentFlipped" "Indent Flipped"
         ])
 
     let panel = 
@@ -56,7 +56,7 @@ type AppearanceView() as this =
         List2([0..properties.length]).iter <| fun row ->
             panel.RowStyles.Add(RowStyle(SizeType.Absolute, 35.0f)).ignore
         panel.ColumnCount <- 2
-        panel.ColumnStyles.Add(ColumnStyle(SizeType.Absolute, 150.0f)).ignore
+        panel.ColumnStyles.Add(ColumnStyle(SizeType.Absolute, 250.0f)).ignore
         panel.ColumnStyles.Add(ColumnStyle(SizeType.Percent, 100.0f)).ignore
         panel
 

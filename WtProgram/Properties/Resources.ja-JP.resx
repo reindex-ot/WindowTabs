@@ -169,10 +169,10 @@
     <value>非アクティブウィンドウのタブを半透明にする</value>
   </data>
   <data name="Indent Flipped" xml:space="preserve">
-    <value>インデント(下方向タブ)</value>
+    <value>タブが下方向の時の端からの距離(ピクセル)</value>
   </data>
   <data name="Indent Normal" xml:space="preserve">
-    <value>インデント(上方向タブ)</value>
+    <value>タブが上方向の時の端からの距離(ピクセル)</value>
   </data>
   <data name="isTabbingEnabledForAllProcessesByDefault" xml:space="preserve">
     <value>全てのプログラムでタブを使う</value>

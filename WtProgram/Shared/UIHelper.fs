@@ -246,6 +246,12 @@ module UIHelper =
             //t.Padding <- Padding(10)
             t.RowCount <- fields.length
             t.ColumnCount <- 2
+            // Add column width settings to match AppearanceView
+            t.ColumnStyles.Add(ColumnStyle(SizeType.Absolute, 250.0f)).ignore
+            t.ColumnStyles.Add(ColumnStyle(SizeType.Percent, 100.0f)).ignore
+            // Add row height settings to match AppearanceView
+            List2([0..fields.length-1]).iter <| fun row ->
+                t.RowStyles.Add(RowStyle(SizeType.Absolute, 35.0f)).ignore
             t
 
         fields.enumerate.iter <| fun (i,(text, control:Control)) ->
