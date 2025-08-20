@@ -2,33 +2,19 @@
 
 ## version ss_jp_2025.08.07_next
 - Unify tab alignment setting across window inside/outside positions
-  - Tab alignment (left/center/right) now uses single setting regardless of tab position
-  - Removed separate settings for TabUp (outside) and TabDown (inside) states
-  - Simplified tab position management for consistent user experience
-- Improve tab auto-hide functionality and settings
-  - Increased auto-hide delay from 100ms to 1000ms (1 second) when mouse leaves tabs
-  - Changed "Hide tabs when maximized" to comprehensive "Hide tabs when down" feature
-  - Added ComboBox setting with three options: "Never hide", "Hide when maximized only", "Always hide when tabs down"
-  - Added context menu submenu for hide options with same three choices
-  - New default setting "Default: Hide tabs when down" applies to new tab groups
-  - Backward compatibility maintained for old boolean settings
-  - Setting now stored as string: "never", "maximized", or "down"
-- Add "Default: Make tabs narrower" setting in Behavior tab
-  - Added makeTabsNarrowerByDefault option in settings
-  - When enabled, new tab groups start with narrower tabs by default
-  - Individual tab groups can still toggle width via context menu
-- Add "Default: Tab position" setting in Behavior tab
-  - Added defaultTabPosition option with dropdown for Left/Center/Right
-  - New tab groups use the selected default position
-  - Individual tab groups can still change position via context menu
+  - Single setting for tab alignment (left/center/right) regardless of tab position
+- Improve tab auto-hide functionality  
+  - Increased delay from 100ms to 1000ms when mouse leaves tabs
+  - Changed to "Hide tabs when down" with three modes: Never/Maximized only/Always
+  - Added context menu submenu and default setting in Behavior tab
+  - Backward compatibility with old boolean settings
+- Add default settings in Behavior tab
+  - "Default: Make tabs narrower" - new tab groups start with narrower tabs
+  - "Default: Tab position" - dropdown for Left/Center/Right default position
 - Rename Appearance tab indent options
-  - "Indent (Window Inside Tab)" → "Indent for Tabs Down"
-  - "Indent (Window Outside Tab)" → "Indent for Tabs Up"
+  - "Indent for Tabs Down" and "Indent for Tabs Up"
 - Prevent tab switching flash when tabs are inside window
-  - Temporarily set TOPMOST flag during tab switch for non-UWP windows
-  - Removes TOPMOST flag after 50ms delay to ensure smooth transition
-  - UWP windows are excluded as they already have TOPMOST handling
-  - Eliminates visual flashing when switching between tabs positioned inside window
+  - Temporarily set TOPMOST flag during tab switch for smooth transition
 
 ## version ss_jp_2025.08.07
 - Disable tab rename on double-click
