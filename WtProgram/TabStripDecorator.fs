@@ -353,7 +353,12 @@ type TabStripDecorator(group:WindowGroup) as this =
             group.zorder.changed.Add <| fun() ->
                 cell.value <- true
                 cbRef.Value.iter <| fun(d:IDisposable) -> d.Dispose()
-                cbRef := Some(ThreadHelper.cancelablePostBack 1000 <| fun() ->
+                let delay = 
+                    try
+                        Services.settings.getValue("hideTabsDelayMilliseconds") :?> int
+                    with
+                    | _ -> 3000
+                cbRef := Some(ThreadHelper.cancelablePostBack delay <| fun() ->
                     cell.value <- false
                 )
             cell
@@ -371,7 +376,12 @@ type TabStripDecorator(group:WindowGroup) as this =
             callbackRef.Value.iter <| fun(d:IDisposable) -> d.Dispose()
             callbackRef := None
             if shrink then
-                callbackRef := Some(ThreadHelper.cancelablePostBack 1000 <| fun() ->
+                let delay = 
+                    try
+                        Services.settings.getValue("hideTabsDelayMilliseconds") :?> int
+                    with
+                    | _ -> 3000
+                callbackRef := Some(ThreadHelper.cancelablePostBack delay <| fun() ->
                     this.ts.isShrunk <- true
                 )
             else

@@ -91,6 +91,22 @@ type HotKeyView() =
                 Services.settings.setValue("hideTabsWhenInsideByDefault", indexToMode(combo.SelectedIndex))
             )
             combo
+            
+        let hideTabsDelay = 
+            let textBox = new TextBox()
+            let defaultValue = 
+                try
+                    Services.settings.getValue("hideTabsDelayMilliseconds") :?> int
+                with
+                | _ -> 3000
+            textBox.Text <- defaultValue.ToString()
+            textBox.TextChanged.Add(fun _ ->
+                match System.Int32.TryParse(textBox.Text) with
+                | true, value when value >= 0 && value <= 10000 ->
+                    Services.settings.setValue("hideTabsDelayMilliseconds", value)
+                | _ -> ()
+            )
+            textBox
 
         let fields = hotKeys.map <| fun(key,text) ->
             let editor = editors.find key
@@ -105,6 +121,7 @@ type HotKeyView() =
             ("makeTabsNarrowerByDefault", settingsCheckbox "makeTabsNarrowerByDefault")
             ("defaultTabPosition", defaultTabPositionCombo :> Control)
             ("hideTabsWhenInsideByDefault", hideTabsCombo :> Control)
+            ("hideTabsDelayMilliseconds", hideTabsDelay :> Control)
         ]))
 
         "Switch Tabs", UIHelper.form fields

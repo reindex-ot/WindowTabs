@@ -291,6 +291,9 @@
   <data name="hideTabsWhenInsideByDefault" xml:space="preserve">
     <value>Default: Hide tabs when positioned at bottom</value>
   </data>
+  <data name="hideTabsDelayMilliseconds" xml:space="preserve">
+    <value>Delay before hiding tabs when positioned at bottom (milliseconds)</value>
+  </data>
   <data name="HideNever" xml:space="preserve">
     <value>Never hide</value>
   </data>

@@ -27,6 +27,9 @@
 - Add "Restart WindowTabs" menu item
   - Added restart option in tray menu above "Close WindowTabs"
   - Shared restart logic with language change functionality
+- Add configurable delay for auto-hide tabs feature
+  - Added "Delay before hiding tabs" setting in Behavior tab (default 3000ms)
+  - Replaced hardcoded 1000ms delays with configurable value
 
 ## version ss_jp_2025.08.07
 - Disable tab rename on double-click
