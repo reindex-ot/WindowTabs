@@ -163,7 +163,7 @@
     <value>Enable mouse hover to activate tab</value>
   </data>
   <data name="Height" xml:space="preserve">
-    <value>Height</value>
+    <value>Height (pixels)</value>
   </data>
   <data name="hideInactiveTabs" xml:space="preserve">
     <value>Fade out tabs on inactive windows</value>
@@ -181,7 +181,7 @@
     <value>Match Type</value>
   </data>
   <data name="Max Width" xml:space="preserve">
-    <value>Max Width</value>
+    <value>Max Width (pixels)</value>
   </data>
   <data name="Text Color" xml:space="preserve">
     <value>Color</value>
@@ -196,7 +196,7 @@
     <value>Next Tab</value>
   </data>
   <data name="Overlap" xml:space="preserve">
-    <value>Overlap</value>
+    <value>Overlap (pixels)</value>
   </data>
   <data name="prevTab" xml:space="preserve">
     <value>Previous Tab</value>

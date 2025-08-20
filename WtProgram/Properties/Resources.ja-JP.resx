@@ -163,7 +163,7 @@
     <value>マウスホバーでタブ切替を有効にする</value>
   </data>
   <data name="Height" xml:space="preserve">
-    <value>高さ</value>
+    <value>高さ(ピクセル)</value>
   </data>
   <data name="hideInactiveTabs" xml:space="preserve">
     <value>非アクティブウィンドウのタブを半透明にする</value>
@@ -181,7 +181,7 @@
     <value>一致区分</value>
   </data>
   <data name="Max Width" xml:space="preserve">
-    <value>最長幅</value>
+    <value>最長幅(ピクセル)</value>
   </data>
   <data name="Text Color" xml:space="preserve">
     <value>文字色</value>
@@ -196,7 +196,7 @@
     <value>次のタブ</value>
   </data>
   <data name="Overlap" xml:space="preserve">
-    <value>重なり</value>
+    <value>重なり(ピクセル)</value>
   </data>
   <data name="prevTab" xml:space="preserve">
     <value>前のタブ</value>
