@@ -1,6 +1,6 @@
 # WindowTabs Standard-Software Version
 
-## version ss_jp_2025.08.07_next
+## version ss_jp_2025.08.20
 - Unify tab alignment setting across window inside/outside positions
   - Single setting for tab alignment (left/center/right) regardless of tab position
 - Improve tab auto-hide functionality  
