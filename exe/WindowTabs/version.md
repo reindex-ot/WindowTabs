@@ -24,6 +24,9 @@
   - Increased label column width to prevent text wrapping
 - Fix context menu closing immediately due to tooltip conflict
   - Hide tooltip when right-clicking to prevent interference with context menu
+- Add "Restart WindowTabs" menu item
+  - Added restart option in tray menu above "Close WindowTabs"
+  - Shared restart logic with language change functionality
 
 ## version ss_jp_2025.08.07
 - Disable tab rename on double-click

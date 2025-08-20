@@ -138,6 +138,9 @@
   <data name="Border" xml:space="preserve">
     <value>Border</value>
   </data>
+  <data name="RestartWindowTabs" xml:space="preserve">
+    <value>Restart WindowTabs</value>
+  </data>
   <data name="CloseWindowTabs" xml:space="preserve">
     <value>Close WindowTabs</value>
   </data>

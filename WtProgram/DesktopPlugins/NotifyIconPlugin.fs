@@ -57,6 +57,19 @@ type NotifyIconPlugin() as this =
             ToolTipIcon.Info
         )
 
+    member this.restartApplication() =
+        let exePath = Assembly.GetExecutingAssembly().Location
+        // Start new process with a delay using cmd
+        let startInfo = ProcessStartInfo()
+        startInfo.FileName <- "cmd.exe"
+        startInfo.Arguments <- sprintf "/c timeout /t 3 /nobreak >nul && start \"\" \"%s\"" exePath
+        startInfo.WindowStyle <- ProcessWindowStyle.Hidden
+        startInfo.CreateNoWindow <- true
+        try
+            Process.Start(startInfo) |> ignore
+            Services.program.shutdown()
+        with
+        | ex -> MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
 
     member this.createLanguageMenu() =
         let languageMenu = new MenuItem(resources.GetString("Language"))
@@ -78,19 +91,7 @@ type NotifyIconPlugin() as this =
                 closeSettingsDialog()
                 let result = MessageBox.Show("Language will be changed to English.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
-                    let exePath = Assembly.GetExecutingAssembly().Location
-                    // Start new process with a delay using cmd
-                    let startInfo = ProcessStartInfo()
-                    startInfo.FileName <- "cmd.exe"
-                    startInfo.Arguments <- sprintf "/c timeout /t 3 /nobreak >nul && start \"\" \"%s\"" exePath
-                    startInfo.WindowStyle <- ProcessWindowStyle.Hidden
-                    startInfo.CreateNoWindow <- true
-                    try
-                        Process.Start(startInfo) |> ignore
-                    with
-                    | _ -> ()
-                    // Shutdown current process
-                    Services.program.shutdown()
+                    this.restartApplication()
             with
             | ex -> MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
             
@@ -104,19 +105,7 @@ type NotifyIconPlugin() as this =
                 closeSettingsDialog()
                 let result = MessageBox.Show("Language will be changed to Japanese.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
                 if result = DialogResult.OK then
-                    let exePath = Assembly.GetExecutingAssembly().Location
-                    // Start new process with a delay using cmd
-                    let startInfo = ProcessStartInfo()
-                    startInfo.FileName <- "cmd.exe"
-                    startInfo.Arguments <- sprintf "/c timeout /t 3 /nobreak >nul && start \"\" \"%s\"" exePath
-                    startInfo.WindowStyle <- ProcessWindowStyle.Hidden
-                    startInfo.CreateNoWindow <- true
-                    try
-                        Process.Start(startInfo) |> ignore
-                    with
-                    | _ -> ()
-                    // Shutdown current process
-                    Services.program.shutdown()
+                    this.restartApplication()
             with
             | ex -> MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
             
@@ -130,6 +119,7 @@ type NotifyIconPlugin() as this =
             this.contextMenuItems.Add(this.createLanguageMenu()) |> ignore
             //this.addItem(resources.GetString("Feedback"), Forms.openFeedback) // 404 Not Found.
             this.contextMenuItems.Add("-").ignore
+            this.addItem(resources.GetString("RestartWindowTabs"), fun() -> this.restartApplication())
             this.addItem(resources.GetString("CloseWindowTabs"), fun() -> Services.program.shutdown())
             Services.program.newVersion.Add this.onNewVersion
 

@@ -138,6 +138,9 @@
   <data name="Border" xml:space="preserve">
     <value>枠線</value>
   </data>
+  <data name="RestartWindowTabs" xml:space="preserve">
+    <value>WindowTabs 再起動</value>
+  </data>
   <data name="CloseWindowTabs" xml:space="preserve">
     <value>WindowTabs 終了</value>
   </data>
