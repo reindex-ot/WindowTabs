@@ -22,6 +22,8 @@
 - Improve settings dialog layout consistency
   - Unified row height and column width across all settings tabs
   - Increased label column width to prevent text wrapping
+- Fix context menu closing immediately due to tooltip conflict
+  - Hide tooltip when right-clicking to prevent interference with context menu
 
 ## version ss_jp_2025.08.07
 - Disable tab rename on double-click

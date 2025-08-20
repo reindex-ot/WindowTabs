@@ -242,6 +242,12 @@ type TabStrip(monitor:ITabStripMonitor) as this =
                     monitor.tabActivate(hitTab)
         | MouseClick(pt, btn, action) ->
             this.setPt(Some(pt))
+            // Hide tooltip when right-click to prevent conflict with context menu
+            if btn = MouseRight then
+                lastToolTipTab := None
+                pendingTooltipTab := None
+                tooltipTimer.Stop()
+                tooltipForm.Visible <- false
             this.hit.iter <| fun(hitTab, hitPart) ->
                 match action with
                 | MouseDown ->
