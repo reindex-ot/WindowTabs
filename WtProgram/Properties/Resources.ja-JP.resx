@@ -281,7 +281,7 @@
     <value>下方向タブの時にタブを隠す</value>
   </data>
   <data name="hideTabsWhenInsideByDefault" xml:space="preserve">
-    <value>デフォルト値：下方向タブの時にタブを隠す</value>
+    <value>デフォルト値：タブが下方向の時に隠す機能</value>
   </data>
   <data name="HideNever" xml:space="preserve">
     <value>隠さない</value>
@@ -290,7 +290,7 @@
     <value>最大化の時のみ隠す</value>
   </data>
   <data name="HideWhenDown" xml:space="preserve">
-    <value>下方向タブの場合は常に隠す(最大化の時を含む)</value>
+    <value>常に隠す(最大化の時を含む)</value>
   </data>
   <data name="HideWhenDownMenu" xml:space="preserve">
     <value>下方向タブの場合は常に隠す</value>

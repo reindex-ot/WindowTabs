@@ -286,7 +286,7 @@
     <value>Hide tabs when down</value>
   </data>
   <data name="hideTabsWhenInsideByDefault" xml:space="preserve">
-    <value>Default: Hide tabs when down</value>
+    <value>Default: Hide tabs when positioned at bottom</value>
   </data>
   <data name="HideNever" xml:space="preserve">
     <value>Never hide</value>
@@ -295,7 +295,7 @@
     <value>Hide when maximized only</value>
   </data>
   <data name="HideWhenDown" xml:space="preserve">
-    <value>Always hide when tabs down (including maximized)</value>
+    <value>Always hide (including maximized)</value>
   </data>
   <data name="HideWhenDownMenu" xml:space="preserve">
     <value>Always hide when tabs down</value>
