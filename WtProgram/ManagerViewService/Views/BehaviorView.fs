@@ -100,11 +100,17 @@ type HotKeyView() =
                 with
                 | _ -> 3000
             textBox.Text <- defaultValue.ToString()
-            textBox.TextChanged.Add(fun _ ->
+            textBox.LostFocus.Add(fun _ ->
                 match System.Int32.TryParse(textBox.Text) with
                 | true, value when value >= 0 && value <= 10000 ->
                     Services.settings.setValue("hideTabsDelayMilliseconds", value)
-                | _ -> ()
+                | false, _ | _, _ ->
+                    // Reset to previous value if invalid
+                    textBox.Text <- 
+                        try
+                            (Services.settings.getValue("hideTabsDelayMilliseconds") :?> int).ToString()
+                        with
+                        | _ -> "3000"
             )
             textBox
 

@@ -347,22 +347,25 @@ type TabStripDecorator(group:WindowGroup) as this =
         let autoHideMaximizedCell = propCell("autoHideMaximized", false)
         let contextMenuVisibleCell = propCell("contextMenuVisible", false)
         let renamingTabCell = propCell("renamingTab", false)
+        // Create a cell that tracks the hide delay setting
+        let hideDelayCell = Cell.create(
+            try
+                Services.settings.getValue("hideTabsDelayMilliseconds") :?> int
+            with
+            | _ -> 3000
+        )
         let isRecentlyChangedZorderCell =
             let cell = Cell.create(false)
             let cbRef = ref None
             group.zorder.changed.Add <| fun() ->
                 cell.value <- true
                 cbRef.Value.iter <| fun(d:IDisposable) -> d.Dispose()
-                let delay = 
-                    try
-                        Services.settings.getValue("hideTabsDelayMilliseconds") :?> int
-                    with
-                    | _ -> 3000
-                cbRef := Some(ThreadHelper.cancelablePostBack delay <| fun() ->
+                cbRef := Some(ThreadHelper.cancelablePostBack hideDelayCell.value <| fun() ->
                     cell.value <- false
                 )
             cell
-        Cell.listen <| fun() ->
+        // Create a function to handle the auto-hide logic
+        let updateAutoHide() =
             // Update isWindowInside based on current tab position
             isWindowInside.value <- this.ts.showInside
             let shrink = 
@@ -376,16 +379,26 @@ type TabStripDecorator(group:WindowGroup) as this =
             callbackRef.Value.iter <| fun(d:IDisposable) -> d.Dispose()
             callbackRef := None
             if shrink then
-                let delay = 
-                    try
-                        Services.settings.getValue("hideTabsDelayMilliseconds") :?> int
-                    with
-                    | _ -> 3000
-                callbackRef := Some(ThreadHelper.cancelablePostBack delay <| fun() ->
+                callbackRef := Some(ThreadHelper.cancelablePostBack hideDelayCell.value <| fun() ->
                     this.ts.isShrunk <- true
                 )
             else
                 this.ts.isShrunk <- false
+        
+        // Listen for changes to trigger auto-hide update
+        Cell.listen updateAutoHide
+        
+        // When hideDelayCell value changes via notifyValue, restart timer if running
+        Services.settings.notifyValue "hideTabsDelayMilliseconds" <| fun value ->
+            group.invokeAsync <| fun() ->
+                hideDelayCell.value <- 
+                    try
+                        value :?> int
+                    with
+                    | _ -> 3000
+                // If a timer is running, restart it with the new delay
+                if callbackRef.Value.IsSome then
+                    updateAutoHide()
 
     interface ITabStripMonitor with
         member x.tabClick((btn, tab, part, action, pt)) = 

@@ -32,6 +32,7 @@ type SettingsRec = {
     makeTabsNarrowerByDefault: bool
     defaultTabPosition: string
     hideTabsWhenInsideByDefault: string
+    hideTabsDelayMilliseconds: int
     }
 
 type ILicenseManager =
