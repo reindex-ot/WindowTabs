@@ -2,6 +2,7 @@
 
 ## version ss_jp_2025.08.20 next
 - Activate next window when closing active tab
+- Modify tab context menu display to show tab names and counts
 
 ## version ss_jp_2025.08.20
 - Unify tab alignment setting across window inside/outside positions

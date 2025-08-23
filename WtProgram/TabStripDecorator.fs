@@ -267,27 +267,69 @@ type TabStripDecorator(group:WindowGroup) as this =
 
                  
         let closeTabItem = 
+            let tabText = this.ts.tabInfo(Tab(hwnd)).text
+            let displayText = 
+                if tabText.Length <= 9 then
+                    tabText
+                else
+                    tabText.Substring(0, 9) + "..."
             CmiRegular({
-                text = resources.GetString("CloseTab")
+                text = sprintf "%s(%s)" (resources.GetString("CloseTab")) displayText
                 image = None
                 click = fun() -> this.onCloseWindow hwnd
                 flags = List2()
             })
 
         let closeRightTabsItem =
+            let currentTab = Tab(hwnd)
+            let tabIndex = this.ts.lorder.tryFindIndex((=) currentTab)
+            let rightTabCount = 
+                tabIndex |> Option.map(fun index -> this.ts.lorder.count - index - 1) |> Option.defaultValue 0
+            let displayText = 
+                if rightTabCount = 0 then
+                    resources.GetString("CloseTabsToTheRight")
+                else
+                    let formatKey = "CloseTabsToTheRightFormat"
+                    let formatString = resources.GetString(formatKey)
+                    if formatString = null then
+                        failwithf "Resource string '%s' not found" formatKey
+                    let tabWord = 
+                        if rightTabCount = 1 then 
+                            resources.GetString("TabSingular")
+                        else 
+                            resources.GetString("TabPlural")
+                    String.Format(formatString, rightTabCount, tabWord)
             CmiRegular({
-                text = resources.GetString("CloseTabsToTheRight")
+                text = displayText
                 image = None
                 click = fun() -> this.onCloseRightTabWindows hwnd
-                flags = List2()
+                flags = grayed(rightTabCount = 0)
             })
 
         let closeLeftTabsItem =
+            let currentTab = Tab(hwnd)
+            let tabIndex = this.ts.lorder.tryFindIndex((=) currentTab)
+            let leftTabCount = 
+                tabIndex |> Option.defaultValue 0
+            let displayText = 
+                if leftTabCount = 0 then
+                    resources.GetString("CloseTabsToTheLeft")
+                else
+                    let formatKey = "CloseTabsToTheLeftFormat"
+                    let formatString = resources.GetString(formatKey)
+                    if formatString = null then
+                        failwithf "Resource string '%s' not found" formatKey
+                    let tabWord = 
+                        if leftTabCount = 1 then 
+                            resources.GetString("TabSingular")
+                        else 
+                            resources.GetString("TabPlural")
+                    String.Format(formatString, leftTabCount, tabWord)
             CmiRegular({
-                text = resources.GetString("CloseTabsToTheLeft")
+                text = displayText
                 image = None
                 click = fun() -> this.onCloseLeftTabWindows hwnd
-                flags = List2()
+                flags = grayed(leftTabCount = 0)
             })
 
         let closeOtherTabsItem =

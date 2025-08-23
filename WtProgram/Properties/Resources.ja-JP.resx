@@ -234,8 +234,20 @@
   <data name="CloseTabsToTheRight" xml:space="preserve">
     <value>右のタブを閉じる</value>
   </data>
+  <data name="CloseTabsToTheRightFormat" xml:space="preserve">
+    <value>右のタブを閉じる({0}タブ)</value>
+  </data>
+  <data name="TabSingular" xml:space="preserve">
+    <value>タブ</value>
+  </data>
+  <data name="TabPlural" xml:space="preserve">
+    <value>タブ</value>
+  </data>
   <data name="CloseTabsToTheLeft" xml:space="preserve">
     <value>左のタブを閉じる</value>
+  </data>
+  <data name="CloseTabsToTheLeftFormat" xml:space="preserve">
+    <value>左のタブを閉じる({0}タブ)</value>
   </data>
   <data name="CloseOtherTabs" xml:space="preserve">
     <value>このウィンドウの他のタブを閉じる</value>
