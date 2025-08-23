@@ -498,6 +498,31 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
             //into another chrome group, need to exit the move/size and restore windows on screen in this case
             if inMoveSize.value then
                 this.onExitMoveSize()
+            
+            // Check if this is the active window before removing
+            let wasActiveWindow = (this.topWindow = hwnd)
+            let allTabs = this.ts.lorder
+            let closingTab = Tab(hwnd)
+            let closingIndex = allTabs.tryFindIndex((=) closingTab)
+            
+            // Determine which tab to activate if this was the active window
+            let tabToActivate = 
+                if wasActiveWindow && allTabs.count > 1 then
+                    closingIndex.bind <| fun index ->
+                        // Get the next tab (or previous if it's the last tab)
+                        if index < allTabs.count - 1 then
+                            Some(allTabs.at(index + 1))  // Next tab
+                        elif index > 0 then
+                            Some(allTabs.at(index - 1))  // Previous tab
+                        else
+                            None
+                else
+                    None
+            
+            // Activate the next tab before removing the window
+            tabToActivate.iter <| fun tab ->
+                this.tabActivate(tab, true)
+            
             let window = this.os.windowFromHwnd(hwnd)
             this.ts.removeTab(Tab(hwnd))
             this.setWindows(this.windows.remove hwnd)

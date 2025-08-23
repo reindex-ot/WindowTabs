@@ -1,5 +1,8 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.08.20 next
+- Activate next window when closing active tab
+
 ## version ss_jp_2025.08.20
 - Unify tab alignment setting across window inside/outside positions
   - Single setting for tab alignment (left/center/right) regardless of tab position
