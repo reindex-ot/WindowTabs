@@ -1,6 +1,6 @@
 # WindowTabs Standard-Software Version
 
-## version ss_jp_2025.08.20 next
+## version ss_jp_2025.08.24
 - Activate next window when closing active tab
 - Modify tab context menu display to show tab names and counts
 
