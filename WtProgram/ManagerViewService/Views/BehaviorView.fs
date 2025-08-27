@@ -64,9 +64,9 @@ type HotKeyView() =
                 | 0 -> "left"
                 | 1 -> "center"
                 | _ -> "right"
-            combo.SelectedIndex <- positionToIndex(Services.settings.getValue("defaultTabPosition") :?> string)
+            combo.SelectedIndex <- positionToIndex(Services.settings.getValue("tabPositionByDefault") :?> string)
             combo.SelectedIndexChanged.Add(fun _ -> 
-                Services.settings.setValue("defaultTabPosition", indexToPosition(combo.SelectedIndex))
+                Services.settings.setValue("tabPositionByDefault", indexToPosition(combo.SelectedIndex))
             )
             combo
             
@@ -86,9 +86,9 @@ type HotKeyView() =
                 | 0 -> "never"
                 | 1 -> "maximized"
                 | _ -> "down"
-            combo.SelectedIndex <- modeToIndex(Services.settings.getValue("hideTabsWhenInsideByDefault") :?> string)
+            combo.SelectedIndex <- modeToIndex(Services.settings.getValue("hideTabsWhenDownByDefault") :?> string)
             combo.SelectedIndexChanged.Add(fun _ -> 
-                Services.settings.setValue("hideTabsWhenInsideByDefault", indexToMode(combo.SelectedIndex))
+                Services.settings.setValue("hideTabsWhenDownByDefault", indexToMode(combo.SelectedIndex))
             )
             combo
             
@@ -125,8 +125,8 @@ type HotKeyView() =
             ("enableCtrlNumberHotKey", settingsCheckbox "enableCtrlNumberHotKey")
             ("enableHoverActivate", settingsCheckbox "enableHoverActivate")
             ("makeTabsNarrowerByDefault", settingsCheckbox "makeTabsNarrowerByDefault")
-            ("defaultTabPosition", defaultTabPositionCombo :> Control)
-            ("hideTabsWhenInsideByDefault", hideTabsCombo :> Control)
+            ("tabPositionByDefault", defaultTabPositionCombo :> Control)
+            ("hideTabsWhenDownByDefault", hideTabsCombo :> Control)
             ("hideTabsDelayMilliseconds", hideTabsDelay :> Control)
         ]))
 

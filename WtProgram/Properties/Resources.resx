@@ -273,7 +273,7 @@
   <data name="makeTabsNarrowerByDefault" xml:space="preserve">
     <value>Default: Make tabs narrower</value>
   </data>
-  <data name="defaultTabPosition" xml:space="preserve">
+  <data name="tabPositionByDefault" xml:space="preserve">
     <value>Default: Tab position</value>
   </data>
   <data name="TabPosition" xml:space="preserve">
@@ -297,26 +297,23 @@
   <data name="AlignRight" xml:space="preserve">
     <value>Right</value>
   </data>
-  <data name="HideTabsWhenDown" xml:space="preserve">
-    <value>Hide tabs when down</value>
-  </data>
-  <data name="hideTabsWhenInsideByDefault" xml:space="preserve">
+  <data name="hideTabsWhenDownByDefault" xml:space="preserve">
     <value>Default: Hide tabs when positioned at bottom</value>
   </data>
+  <data name="HideTabsWhenDown" xml:space="preserve">
+    <value>Hide tabs when positioned at bottom</value>
+  </data>
   <data name="hideTabsDelayMilliseconds" xml:space="preserve">
-    <value>Delay before hiding tabs when positioned at bottom (milliseconds)</value>
+    <value>Hide tabs when positioned at bottom - wait time (milliseconds)</value>
   </data>
   <data name="HideNever" xml:space="preserve">
     <value>Never hide</value>
   </data>
   <data name="HideWhenMaximized" xml:space="preserve">
-    <value>Hide when maximized only</value>
+    <value>Hide after specified time when maximized only</value>
   </data>
   <data name="HideWhenDown" xml:space="preserve">
-    <value>Always hide (including maximized)</value>
-  </data>
-  <data name="HideWhenDownMenu" xml:space="preserve">
-    <value>Always hide when tabs down</value>
+    <value>Always hide after specified time (including maximized)</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Title</value>

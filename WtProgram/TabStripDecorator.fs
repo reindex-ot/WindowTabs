@@ -236,7 +236,7 @@ type TabStripDecorator(group:WindowGroup) as this =
                 items = List2([
                     (resources.GetString("HideNever"), "never")
                     (resources.GetString("HideWhenMaximized"), "maximized")
-                    (resources.GetString("HideWhenDownMenu"), "down")
+                    (resources.GetString("HideWhenDown"), "down")
                 ]).map(hideModeMenuItem)
             })
 

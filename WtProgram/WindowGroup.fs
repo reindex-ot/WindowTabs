@@ -62,14 +62,14 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
         
         // Apply default setting for tab position
         let defaultPosition = 
-            match Services.settings.getValue("defaultTabPosition") :?> string with
+            match Services.settings.getValue("tabPositionByDefault") :?> string with
             | "left" -> TabLeft
             | "center" -> TabCenter
             | _ -> TabRight
         ts.setAlignment(ts.direction, defaultPosition)
         
         // Apply default setting for hiding tabs when inside
-        let hideTabsMode = Services.settings.getValue("hideTabsWhenInsideByDefault") :?> string
+        let hideTabsMode = Services.settings.getValue("hideTabsWhenDownByDefault") :?> string
         match hideTabsMode with
         | "down" -> _bb.write("autoHide", true)
         | "maximized" -> _bb.write("autoHideMaximized", true)

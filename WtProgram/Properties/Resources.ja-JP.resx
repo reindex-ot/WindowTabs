@@ -267,7 +267,7 @@
   <data name="makeTabsNarrowerByDefault" xml:space="preserve">
     <value>デフォルト値：タブ幅をせばめる</value>
   </data>
-  <data name="defaultTabPosition" xml:space="preserve">
+  <data name="tabPositionByDefault" xml:space="preserve">
     <value>デフォルト値：タブ位置</value>
   </data>
   <data name="TabPosition" xml:space="preserve">
@@ -291,27 +291,23 @@
   <data name="AlignRight" xml:space="preserve">
     <value>右</value>
   </data>
- 
-  <data name="HideTabsWhenDown" xml:space="preserve">
-    <value>下方向タブの時にタブを隠す</value>
-  </data>
-  <data name="hideTabsWhenInsideByDefault" xml:space="preserve">
+  <data name="hideTabsWhenDownByDefault" xml:space="preserve">
     <value>デフォルト値：タブが下方向の時に隠す機能</value>
   </data>
+  <data name="HideTabsWhenDown" xml:space="preserve">
+    <value>タブが下方向の時に隠す機能</value>
+  </data>
   <data name="hideTabsDelayMilliseconds" xml:space="preserve">
-    <value>タブが下方向の時に隠すまでの時間(ミリ秒)</value>
+    <value>タブが下方向の時に隠す機能 待機時間(ミリ秒)</value>
   </data>
   <data name="HideNever" xml:space="preserve">
     <value>隠さない</value>
   </data>
   <data name="HideWhenMaximized" xml:space="preserve">
-    <value>最大化の時のみ隠す</value>
+    <value>最大化の時のみ指定時間後に隠す</value>
   </data>
   <data name="HideWhenDown" xml:space="preserve">
-    <value>常に隠す(最大化の時を含む)</value>
-  </data>
-  <data name="HideWhenDownMenu" xml:space="preserve">
-    <value>下方向タブの場合は常に隠す</value>
+    <value>常に指定時間後に隠す(最大化の時を含む)</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>タイトル</value>
