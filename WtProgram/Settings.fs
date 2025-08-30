@@ -138,12 +138,17 @@ type Settings(isStandAlone) as this =
                         tabPositionByDefault = settingsJson.getString("tabPositionByDefault").def("right")
                         hideTabsWhenDownByDefault = 
                             // Handle backward compatibility: convert old bool values to new string format
-                            try
-                                match settingsJson.getBool("hideTabsWhenDownByDefault") with
-                                | Some(boolValue) -> if boolValue then "down" else "never"
-                                | None -> settingsJson.getString("hideTabsWhenDownByDefault").def("never")
-                            with
-                            | _ -> settingsJson.getString("hideTabsWhenInsideByDefault").def("never")
+                            // First try to get as string (new format)
+                            match settingsJson.getString("hideTabsWhenDownByDefault") with
+                            | Some(stringValue) -> stringValue
+                            | None ->
+                                // If not a string, try as bool (old format)
+                                try
+                                    match settingsJson.getBool("hideTabsWhenDownByDefault") with
+                                    | Some(boolValue) -> if boolValue then "down" else "never"
+                                    | None -> "never"
+                                with
+                                | _ -> "never"
                         hideTabsDelayMilliseconds = settingsJson.getInt32("hideTabsDelayMilliseconds").def(3000)
                         version = settingsJson.getString("version").def(String.Empty)
                         tabAppearance =
