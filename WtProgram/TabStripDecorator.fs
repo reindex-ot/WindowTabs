@@ -42,15 +42,10 @@ type TabStripDecorator(group:WindowGroup) as this =
         let capturedHwnd = ref None
 
         this.mouse.Add <| fun(hwnd, btn, action, pt) ->
-            System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] Mouse event: action=%A, btn=%A, hwnd=%A" action btn hwnd)
             match action, btn with
             | MouseDblClick, MouseLeft ->
                 // Check if double-click hide mode is enabled
                 let autoHideDoubleClick = group.bb.read("autoHideDoubleClick", false)
-                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] MouseDblClick detected on tab hwnd=%A" hwnd)
-                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] autoHideDoubleClick=%A, direction=%A, isTabDown=%A" autoHideDoubleClick this.ts.direction (this.ts.direction = TabDown))
-                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] topWindow=%A, clickedWindow=%A, isActiveTab=%A" group.topWindow hwnd (hwnd = group.topWindow))
-                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] firstClickTab=%A, currentTab=%A, sameTab=%A" !firstClickTab hwnd (!firstClickTab = Some(hwnd)))
                 
                 // Only hide tabs if:
                 // 1. Double-click mode is enabled
@@ -60,17 +55,13 @@ type TabStripDecorator(group:WindowGroup) as this =
                 if autoHideDoubleClick && this.ts.direction = TabDown && 
                    hwnd = group.topWindow && !firstClickTab = Some(hwnd) then
                     // Hide tabs on double-click of active tab
-                    System.Diagnostics.Debug.WriteLine("[WindowTabs] Hiding tabs due to double-click on active tab")
                     // Set flag BEFORE hiding to prevent immediate re-show
                     hiddenByDoubleClick := true
                     doubleClickProtectUntil := System.DateTime.Now.AddMilliseconds(300.0) // 300ms protection
-                    System.Diagnostics.Debug.WriteLine("[WindowTabs] hiddenByDoubleClick set to true, protection for 300ms")
                     // Use invokeAsync to ensure flag is set before Cell update
                     group.invokeAsync <| fun() ->
                         this.ts.isShrunk <- true
-                        System.Diagnostics.Debug.WriteLine("[WindowTabs] isShrunk set to true (async)")
                 else
-                    System.Diagnostics.Debug.WriteLine("[WindowTabs] Not hiding tabs - conditions not met")
                     group.isIconOnly <- false
                 // Disable tab rename on double-click
                 // this.beginRename(hwnd)
@@ -87,10 +78,8 @@ type TabStripDecorator(group:WindowGroup) as this =
                 // Only set if it's the active tab to ensure double-click only works on already active tabs
                 if hwnd = group.topWindow then
                     firstClickTab := Some(hwnd)
-                    System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] MouseDown on active tab, firstClickTab set to %A" hwnd)
                 else
                     firstClickTab := None
-                    System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] MouseDown on inactive tab, clearing firstClickTab")
             | MouseDown, _ ->
                 capturedHwnd := Some(hwnd)
             | MouseUp, MouseMiddle -> 
@@ -465,7 +454,6 @@ type TabStripDecorator(group:WindowGroup) as this =
             
             // Handle double-click mode separately
             if autoHideDoubleClickCell.value && this.ts.direction = TabDown then
-                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] updateAutoHide: isShrunk=%A, isMouseOver=%A, hiddenByDoubleClick=%A" this.ts.isShrunk isMouseOver.value !hiddenByDoubleClick)
                 
                 // Check if protection period has expired
                 let protectionExpired = System.DateTime.Now > !doubleClickProtectUntil
@@ -475,17 +463,12 @@ type TabStripDecorator(group:WindowGroup) as this =
                     // Check if we should show tabs (protection period expired OR mouse left and returned)
                     if not !hiddenByDoubleClick || protectionExpired then
                         if protectionExpired && !hiddenByDoubleClick then
-                            System.Diagnostics.Debug.WriteLine("[WindowTabs] Protection period expired, allowing mouse over")
                             hiddenByDoubleClick := false
                         if not !hiddenByDoubleClick then
-                            System.Diagnostics.Debug.WriteLine("[WindowTabs] Showing tabs on mouse over")
                             this.ts.isShrunk <- false
-                    else
-                        System.Diagnostics.Debug.WriteLine("[WindowTabs] Not showing tabs - still in protection period")
                 // Clear the flag when mouse leaves
                 elif not isMouseOver.value then
                     if !hiddenByDoubleClick && protectionExpired then
-                        System.Diagnostics.Debug.WriteLine("[WindowTabs] Mouse left tab area, clearing hiddenByDoubleClick flag")
                         hiddenByDoubleClick := false
             else
                 // Normal auto-hide logic for other modes
