@@ -1,6 +1,6 @@
 # WindowTabs Standard-Software Version
 
-## version ss_jp_2025.08.24_next
+## version ss_jp_2025.08.30
 - Add "Hide when double-clicking active tab" option
   - Added new option to "Hide tabs when positioned at bottom" in Behavior settings
   - Hides tabs when double-clicking the active tab (tabs must be positioned at bottom)
