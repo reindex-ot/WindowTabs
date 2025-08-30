@@ -73,6 +73,7 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
         match hideTabsMode with
         | "down" -> _bb.write("autoHide", true)
         | "maximized" -> _bb.write("autoHideMaximized", true)
+        | "doubleclick" -> _bb.write("autoHideDoubleClick", true)
         | _ -> () // "never" - do nothing
 
         winEventHandler.set(Some(

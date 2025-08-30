@@ -17,6 +17,13 @@ type TabStripDecorator(group:WindowGroup) as this =
     let dropTarget = Cell.create(None)
     let mouseEvent = Event<_>()
     let _ts = TabStrip(this :> ITabStripMonitor)
+    // Variables for double-click detection  
+    let lastClickTime = ref System.DateTime.MinValue
+    let lastClickTab = ref None
+    let doubleClickTimeoutMs = 500.0  // Windows default double-click time
+    let hiddenByDoubleClick = ref false
+    let doubleClickProtectUntil = ref System.DateTime.MinValue
+    let firstClickTab = ref None  // Track the tab that was clicked first in potential double-click
 
     do this.init()
 
@@ -35,16 +42,55 @@ type TabStripDecorator(group:WindowGroup) as this =
         let capturedHwnd = ref None
 
         this.mouse.Add <| fun(hwnd, btn, action, pt) ->
+            System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] Mouse event: action=%A, btn=%A, hwnd=%A" action btn hwnd)
             match action, btn with
             | MouseDblClick, MouseLeft ->
-                group.isIconOnly <- false
+                // Check if double-click hide mode is enabled
+                let autoHideDoubleClick = group.bb.read("autoHideDoubleClick", false)
+                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] MouseDblClick detected on tab hwnd=%A" hwnd)
+                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] autoHideDoubleClick=%A, direction=%A, isTabDown=%A" autoHideDoubleClick this.ts.direction (this.ts.direction = TabDown))
+                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] topWindow=%A, clickedWindow=%A, isActiveTab=%A" group.topWindow hwnd (hwnd = group.topWindow))
+                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] firstClickTab=%A, currentTab=%A, sameTab=%A" !firstClickTab hwnd (!firstClickTab = Some(hwnd)))
+                
+                // Only hide tabs if:
+                // 1. Double-click mode is enabled
+                // 2. Tabs are positioned at bottom
+                // 3. The clicked tab is the active tab
+                // 4. The first click was also on this same tab (prevents activation+hide)
+                if autoHideDoubleClick && this.ts.direction = TabDown && 
+                   hwnd = group.topWindow && !firstClickTab = Some(hwnd) then
+                    // Hide tabs on double-click of active tab
+                    System.Diagnostics.Debug.WriteLine("[WindowTabs] Hiding tabs due to double-click on active tab")
+                    // Set flag BEFORE hiding to prevent immediate re-show
+                    hiddenByDoubleClick := true
+                    doubleClickProtectUntil := System.DateTime.Now.AddMilliseconds(300.0) // 300ms protection
+                    System.Diagnostics.Debug.WriteLine("[WindowTabs] hiddenByDoubleClick set to true, protection for 300ms")
+                    // Use invokeAsync to ensure flag is set before Cell update
+                    group.invokeAsync <| fun() ->
+                        this.ts.isShrunk <- true
+                        System.Diagnostics.Debug.WriteLine("[WindowTabs] isShrunk set to true (async)")
+                else
+                    System.Diagnostics.Debug.WriteLine("[WindowTabs] Not hiding tabs - conditions not met")
+                    group.isIconOnly <- false
                 // Disable tab rename on double-click
                 // this.beginRename(hwnd)
+                // Clear first click tracking after double-click
+                firstClickTab := None
             | MouseUp, MouseRight ->
                 let ptScreen = os.windowFromHwnd(group.hwnd).ptToScreen(pt)
                 group.bb.write("contextMenuVisible", true)
                 Win32Menu.show group.hwnd ptScreen (this.contextMenu(hwnd))
                 group.bb.write("contextMenuVisible", false)
+            | MouseDown, MouseLeft ->
+                capturedHwnd := Some(hwnd)
+                // Track the first click for double-click detection
+                // Only set if it's the active tab to ensure double-click only works on already active tabs
+                if hwnd = group.topWindow then
+                    firstClickTab := Some(hwnd)
+                    System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] MouseDown on active tab, firstClickTab set to %A" hwnd)
+                else
+                    firstClickTab := None
+                    System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] MouseDown on inactive tab, clearing firstClickTab")
             | MouseDown, _ ->
                 capturedHwnd := Some(hwnd)
             | MouseUp, MouseMiddle -> 
@@ -210,7 +256,9 @@ type TabStripDecorator(group:WindowGroup) as this =
             let currentMode = 
                 let autoHide = group.bb.read("autoHide", false)
                 let autoHideMaximized = group.bb.read("autoHideMaximized", false)
-                if autoHide then "down"
+                let autoHideDoubleClick = group.bb.read("autoHideDoubleClick", false)
+                if autoHideDoubleClick then "doubleclick"
+                elif autoHide then "down"
                 elif autoHideMaximized then "maximized"
                 else "never"
             
@@ -223,11 +271,13 @@ type TabStripDecorator(group:WindowGroup) as this =
                         // Clear all hide settings first
                         group.bb.write("autoHide", false)
                         group.bb.write("autoHideMaximized", false)
+                        group.bb.write("autoHideDoubleClick", false)
                         // Set new mode
                         match mode with
                         | "down" -> group.bb.write("autoHide", true)
                         | "maximized" -> group.bb.write("autoHideMaximized", true)
-                        | _ -> () // "never" - leave both false
+                        | "doubleclick" -> group.bb.write("autoHideDoubleClick", true)
+                        | _ -> () // "never" - leave all false
                 })
             
             CmiPopUp({
@@ -237,6 +287,7 @@ type TabStripDecorator(group:WindowGroup) as this =
                     (resources.GetString("HideNever"), "never")
                     (resources.GetString("HideWhenMaximized"), "maximized")
                     (resources.GetString("HideWhenDown"), "down")
+                    (resources.GetString("HideOnDoubleClick"), "doubleclick")
                 ]).map(hideModeMenuItem)
             })
 
@@ -387,6 +438,7 @@ type TabStripDecorator(group:WindowGroup) as this =
             cell
         let autoHideCell = propCell("autoHide", false)
         let autoHideMaximizedCell = propCell("autoHideMaximized", false)
+        let autoHideDoubleClickCell = propCell("autoHideDoubleClick", false)
         let contextMenuVisibleCell = propCell("contextMenuVisible", false)
         let renamingTabCell = propCell("renamingTab", false)
         // Create a cell that tracks the hide delay setting
@@ -410,22 +462,49 @@ type TabStripDecorator(group:WindowGroup) as this =
         let updateAutoHide() =
             // Update isWindowInside based on current tab position
             isWindowInside.value <- this.ts.showInside
-            let shrink = 
-                ((isWindowInside.value && autoHideCell.value) ||
-                 (group.isMaximized.value && autoHideMaximizedCell.value)) && 
-                isMouseOver.value.not && 
-                isDraggingCell.value.not &&
-                contextMenuVisibleCell.value.not &&
-                renamingTabCell.value.not &&
-                isRecentlyChangedZorderCell.value.not
-            callbackRef.Value.iter <| fun(d:IDisposable) -> d.Dispose()
-            callbackRef := None
-            if shrink then
-                callbackRef := Some(ThreadHelper.cancelablePostBack hideDelayCell.value <| fun() ->
-                    this.ts.isShrunk <- true
-                )
+            
+            // Handle double-click mode separately
+            if autoHideDoubleClickCell.value && this.ts.direction = TabDown then
+                System.Diagnostics.Debug.WriteLine(sprintf "[WindowTabs] updateAutoHide: isShrunk=%A, isMouseOver=%A, hiddenByDoubleClick=%A" this.ts.isShrunk isMouseOver.value !hiddenByDoubleClick)
+                
+                // Check if protection period has expired
+                let protectionExpired = System.DateTime.Now > !doubleClickProtectUntil
+                
+                // In double-click mode, only show tabs when mouse is over and hidden
+                if this.ts.isShrunk && isMouseOver.value && not isDraggingCell.value then
+                    // Check if we should show tabs (protection period expired OR mouse left and returned)
+                    if not !hiddenByDoubleClick || protectionExpired then
+                        if protectionExpired && !hiddenByDoubleClick then
+                            System.Diagnostics.Debug.WriteLine("[WindowTabs] Protection period expired, allowing mouse over")
+                            hiddenByDoubleClick := false
+                        if not !hiddenByDoubleClick then
+                            System.Diagnostics.Debug.WriteLine("[WindowTabs] Showing tabs on mouse over")
+                            this.ts.isShrunk <- false
+                    else
+                        System.Diagnostics.Debug.WriteLine("[WindowTabs] Not showing tabs - still in protection period")
+                // Clear the flag when mouse leaves
+                elif not isMouseOver.value then
+                    if !hiddenByDoubleClick && protectionExpired then
+                        System.Diagnostics.Debug.WriteLine("[WindowTabs] Mouse left tab area, clearing hiddenByDoubleClick flag")
+                        hiddenByDoubleClick := false
             else
-                this.ts.isShrunk <- false
+                // Normal auto-hide logic for other modes
+                let shrink = 
+                    ((isWindowInside.value && autoHideCell.value) ||
+                     (group.isMaximized.value && autoHideMaximizedCell.value)) && 
+                    isMouseOver.value.not && 
+                    isDraggingCell.value.not &&
+                    contextMenuVisibleCell.value.not &&
+                    renamingTabCell.value.not &&
+                    isRecentlyChangedZorderCell.value.not
+                callbackRef.Value.iter <| fun(d:IDisposable) -> d.Dispose()
+                callbackRef := None
+                if shrink then
+                    callbackRef := Some(ThreadHelper.cancelablePostBack hideDelayCell.value <| fun() ->
+                        this.ts.isShrunk <- true
+                    )
+                else
+                    this.ts.isShrunk <- false
         
         // Listen for changes to trigger auto-hide update
         Cell.listen updateAutoHide

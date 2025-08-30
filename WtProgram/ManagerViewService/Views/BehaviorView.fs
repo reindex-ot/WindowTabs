@@ -77,15 +77,19 @@ type HotKeyView() =
                 resources.GetString("HideNever")
                 resources.GetString("HideWhenMaximized") 
                 resources.GetString("HideWhenDown")
+                resources.GetString("HideOnDoubleClick")
             |])
             let modeToIndex = function
                 | "never" -> 0
                 | "maximized" -> 1
-                | _ -> 2  // default to "down"
+                | "down" -> 2
+                | "doubleclick" -> 3
+                | _ -> 0  // default to "never"
             let indexToMode = function
                 | 0 -> "never"
                 | 1 -> "maximized"
-                | _ -> "down"
+                | 2 -> "down"
+                | _ -> "doubleclick"
             combo.SelectedIndex <- modeToIndex(Services.settings.getValue("hideTabsWhenDownByDefault") :?> string)
             combo.SelectedIndexChanged.Add(fun _ -> 
                 Services.settings.setValue("hideTabsWhenDownByDefault", indexToMode(combo.SelectedIndex))

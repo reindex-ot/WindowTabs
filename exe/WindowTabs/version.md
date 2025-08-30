@@ -1,5 +1,12 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.08.24_next
+- Add "Hide when double-clicking active tab" option
+  - Added new option to "Hide tabs when positioned at bottom" in Behavior settings
+  - Hides tabs when double-clicking the active tab (tabs must be positioned at bottom)
+  - Shows tabs immediately when mouse hovers over hidden tab area
+  - Prevents hiding when double-clicking inactive tabs (only works on already active tab)
+
 ## version ss_jp_2025.08.24
 - Activate next window when closing active tab
 - Modify tab context menu display to show tab names and counts
