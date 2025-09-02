@@ -1,5 +1,10 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.08.30_next
+- Improve DPI handling for tab drag and drop
+  - Changed drop operation from SetWindowPlacement to SetWindowPos API
+  - Added window state restoration before positioning in both hide and drop operations
+
 ## version ss_jp_2025.08.30
 - Add "Hide when double-clicking active tab" option
   - Added new option to "Hide tabs when positioned at bottom" in Behavior settings

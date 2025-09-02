@@ -143,12 +143,18 @@ type Desktop(notify:IDesktopNotification) as this =
             let monitor = Mon.fromPoint windowPt
             let workspaceOffset = monitor.map(fun mon -> mon.workRect.location.sub(mon.displayRect.location)).def(Pt())
             let windowPt = windowPt.sub(workspaceOffset)
-            window.setPlacement(
-                { window.placement with
-                    showCmd = ShowWindowCommands.SW_SHOWNORMAL
-                    rcNormalPosition = Rect(
-                        windowPt,
-                        window.placement.rcNormalPosition.size) })  
+
+            // First restore the window if it's minimized or maximized
+            if window.isMinimized || window.isMaximized then
+                window.showWindow(ShowWindowCommands.SW_RESTORE)
+            
+            // Move window using SetWindowPos
+            WinUserApi.SetWindowPos(
+                hwnd,
+                WindowHandleTypes.HWND_TOP,
+                windowPt.x, windowPt.y, 0, 0, 
+                SetWindowPosFlags.SWP_NOSIZE ||| SetWindowPosFlags.SWP_NOACTIVATE ||| SetWindowPosFlags.SWP_NOZORDER) |> ignore
+                
             notify.dragDrop(hwnd)
             
         member x.dragEnd() = invoker.asyncInvoke <| fun() ->

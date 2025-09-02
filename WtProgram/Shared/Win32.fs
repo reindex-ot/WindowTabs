@@ -508,6 +508,10 @@ and
             if maxCorner.y < corner.y then corner else maxCorner
         let corner = Pt(rightCorner.x + 100, bottomCorner.y + 100)
 
+        let window = os.windowFromHwnd(hwnd)
+        if window.isMinimized || window.isMaximized then
+            window.showWindow(ShowWindowCommands.SW_RESTORE)
+
         WinUserApi.SetWindowPos(
             hwnd, 
             WindowHandleTypes.HWND_TOP, 
