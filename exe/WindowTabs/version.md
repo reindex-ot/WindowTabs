@@ -4,6 +4,9 @@
 - Improve DPI handling for tab drag and drop
   - Changed drop operation from SetWindowPlacement to SetWindowPos API
   - Added window state restoration before positioning in both hide and drop operations
+- Improve DPI handling for tab docking
+  - Changed docking operation from MoveWindow API to SetWindowPos API
+  - Implemented dynamic DPI change detection using GetDpiForWindow API
 
 ## version ss_jp_2025.08.30
 - Add "Hide when double-clicking active tab" option

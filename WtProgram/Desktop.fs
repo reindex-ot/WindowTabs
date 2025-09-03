@@ -148,12 +148,8 @@ type Desktop(notify:IDesktopNotification) as this =
             if window.isMinimized || window.isMaximized then
                 window.showWindow(ShowWindowCommands.SW_RESTORE)
             
-            // Move window using SetWindowPos
-            WinUserApi.SetWindowPos(
-                hwnd,
-                WindowHandleTypes.HWND_TOP,
-                windowPt.x, windowPt.y, 0, 0, 
-                SetWindowPosFlags.SWP_NOSIZE ||| SetWindowPosFlags.SWP_NOACTIVATE ||| SetWindowPosFlags.SWP_NOZORDER) |> ignore
+            // Move window position only
+            window.setPositionOnly windowPt.x windowPt.y
                 
             notify.dragDrop(hwnd)
             

@@ -461,6 +461,17 @@ and
             bounds.height,
             true) |> ignore
 
+    member this.setPositionOnly (x:int) (y:int) =
+        // Move position only without changing size to avoid DPI scaling
+        WinUserApi.SetWindowPos(
+            hwnd,
+            WindowHandleTypes.HWND_TOP,
+            x,
+            y,
+            0,
+            0,
+            SetWindowPosFlags.SWP_NOSIZE ||| SetWindowPosFlags.SWP_NOACTIVATE ||| SetWindowPosFlags.SWP_NOZORDER) |> ignore
+
     member this.setText text = WinUserApi.SetWindowText(hwnd, text) |> ignore
     
     member this.className = Win32Helper.GetClassName(hwnd)
@@ -508,15 +519,10 @@ and
             if maxCorner.y < corner.y then corner else maxCorner
         let corner = Pt(rightCorner.x + 100, bottomCorner.y + 100)
 
-        let window = os.windowFromHwnd(hwnd)
-        if window.isMinimized || window.isMaximized then
-            window.showWindow(ShowWindowCommands.SW_RESTORE)
+        if this.isMinimized || this.isMaximized then
+            this.showWindow(ShowWindowCommands.SW_RESTORE)
 
-        WinUserApi.SetWindowPos(
-            hwnd, 
-            WindowHandleTypes.HWND_TOP, 
-            corner.x, corner.y, 0, 0, 
-            SetWindowPosFlags.SWP_NOSIZE ||| SetWindowPosFlags.SWP_NOACTIVATE ||| SetWindowPosFlags.SWP_NOZORDER) |> ignore
+        this.setPositionOnly corner.x corner.y
 
     override this.Equals(yobj) =
         match yobj with

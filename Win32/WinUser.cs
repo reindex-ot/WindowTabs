@@ -3074,5 +3074,40 @@ namespace Bemo
         public static extern int MapVirtualKey(int uCode,int uMapType);
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
+        
+        // DPI-related APIs
+        [DllImport("shcore.dll")]
+        public static extern int GetDpiForMonitor(IntPtr hmonitor, int dpiType, out uint dpiX, out uint dpiY);
+        
+        [DllImport("user32.dll")]
+        public static extern uint GetDpiForWindow(IntPtr hwnd);
+        
+        [DllImport("user32.dll")]
+        public static extern int GetDpiForSystem();
+        
+        [DllImport("user32.dll")]
+        public static extern int GetWindowDpiAwarenessContext(IntPtr hwnd);
+        
+        [DllImport("user32.dll")]
+        public static extern int GetAwarenessFromDpiAwarenessContext(int dpiContext);
+        
+        [DllImport("shcore.dll")]
+        public static extern int GetProcessDpiAwareness(IntPtr hprocess, out int awareness);
+    }
+    
+    // DPI type for GetDpiForMonitor
+    public enum DpiType
+    {
+        Effective = 0,
+        Angular = 1,
+        Raw = 2
+    }
+    
+    // DPI Awareness levels
+    public enum DpiAwareness
+    {
+        Unaware = 0,
+        SystemDpiAware = 1,
+        PerMonitorDpiAware = 2
     }
 }

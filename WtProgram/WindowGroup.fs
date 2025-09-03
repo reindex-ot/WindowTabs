@@ -287,6 +287,18 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
                 else window.bounds
             placement.set(Some(bounds, window.placement))
            
+    member private this.waitForDpiChange(hwnd: IntPtr, initialDpi: uint32, maxWaitMs: int) =
+        let mutable currentDpi = initialDpi
+        let mutable elapsed = 0
+        let checkInterval = 10 // Check every 10ms
+        
+        while elapsed < maxWaitMs && currentDpi = initialDpi do
+            System.Threading.Thread.Sleep(checkInterval)
+            elapsed <- elapsed + checkInterval
+            currentDpi <- WinUserApi.GetDpiForWindow(hwnd)
+            
+        currentDpi <> initialDpi // Return true if DPI changed
+
     member private this.adjustWindowPlacement(hwnd) =
         let window = this.os.windowFromHwnd(hwnd)
         if placement.value.IsSome then
@@ -298,6 +310,18 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
             if  wp.showCmd = ShowWindowCommands.SW_SHOWNORMAL &&
                 window.placement.showCmd = ShowWindowCommands.SW_SHOWNORMAL
                 then
+                // Get initial DPI before move
+                let initialDpi = WinUserApi.GetDpiForWindow(hwnd)
+                
+                // Move window position
+                window.setPositionOnly bounds.x bounds.y
+                
+                // Wait for DPI change (max 200ms)
+                if this.waitForDpiChange(hwnd, initialDpi, 200) then
+                    // DPI changed, wait a bit more for stabilization
+                    System.Threading.Thread.Sleep(20)
+                
+                // Apply final position with size
                 window.move(bounds)
             else
                 if window.placement.showCmd = ShowWindowCommands.SW_SHOWMINIMIZED then
@@ -307,8 +331,16 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
                         wp.showCmd = ShowWindowCommands.SW_SHOWMAXIMIZED then
                         //maximized windows won't move from one monitor to another by setting placement alone,
                         //need to first move to the new bounds, then set placement
+                        let initialDpi = WinUserApi.GetDpiForWindow(hwnd)
+                        window.setPositionOnly bounds.x bounds.y
+                        
+                        // Wait for DPI change (max 200ms)
+                        if this.waitForDpiChange(hwnd, initialDpi, 200) then
+                            // DPI changed, wait a bit more for stabilization
+                            System.Threading.Thread.Sleep(20)
+                            
                         window.move(bounds)
-                    window.setPlacement(wp)   
+                    window.setPlacement(wp)
                      
     member this.setTabName(hwnd,name) =
         Services.program.setWindowNameOverride(hwnd, name)
