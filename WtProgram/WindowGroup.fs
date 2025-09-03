@@ -167,12 +167,9 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
             this.isEmpty.not &&
             zorderCell.value.where(isMinimized >> not).tryHead.IsSome &&
             inMoveSize.value.not
-            
-    member private this.updatePlacements() =
-        zorderCell.value.tail.iter(this.adjustWindowPlacement)
 
     member private this.adjustChildWindows = fun() ->
-        this.updatePlacements()
+        zorderCell.value.tail.iter(this.adjustWindowPlacement)
         
         // After initial placement, adjust sizes again to ensure DPI is considered
         match zorderCell.value.tryHead with
@@ -519,7 +516,6 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
                 }
             hookCleanup.map(fun hooks -> hooks.add hwnd dispose)
             this.setTabInfo hwnd
-
 
             this.ts.addTab(Tab(hwnd))
             this.adjustWindowPlacement(hwnd)
