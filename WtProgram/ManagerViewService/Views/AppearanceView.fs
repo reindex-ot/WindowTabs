@@ -31,6 +31,7 @@ type AppearanceView() as this =
         { displayText=displayText; key=key; propertyType=HotKeyProperty }
         
     let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly());
+    let mutable suppressEvents = false
 
     let properties = List2([
         intConfig "tabHeight" "Height"
@@ -107,16 +108,19 @@ type AppearanceView() as this =
         resetBtn.Text <- resources.GetString("Reset")
         resetBtn.Font <- font
         resetBtn.Click.Add <| fun _ ->
+            suppressEvents <- true
             let appearance = Services.program.defaultTabAppearanceInfo
             // Apply all default values first
             Services.settings.setValue("tabAppearance", box(appearance))
-            // Then update UI (this will trigger applyAppearance but with correct values)
+            // Then update UI without triggering events
             setEditorValues appearance
+            suppressEvents <- false
         
         let darkBtn = Button()
         darkBtn.Text <- resources.GetString("DarkMode")
         darkBtn.Font <- font
         darkBtn.Click.Add <| fun _ ->
+            suppressEvents <- true
             let currentAppearance = Services.program.tabAppearanceInfo
             let darkAppearance = Services.program.darkModeTabAppearanceInfo
             // Merge color settings with current size settings
@@ -138,6 +142,7 @@ type AppearanceView() as this =
             Services.settings.setValue("tabAppearance", box(mergedAppearance))
             // Then update UI
             setEditorValues mergedAppearance
+            suppressEvents <- false
 
         let darkBlueBtn = Button()
         darkBlueBtn.AutoSize <- true
@@ -145,6 +150,7 @@ type AppearanceView() as this =
         darkBlueBtn.Text <- resources.GetString("DarkModeBlue")
         darkBlueBtn.Font <- font
         darkBlueBtn.Click.Add <| fun _ ->
+            suppressEvents <- true
             let currentAppearance = Services.program.tabAppearanceInfo
             let blueAppearance = Services.program.darkModeBlueTabAppearanceInfo
             // Merge color settings with current size settings
@@ -166,6 +172,7 @@ type AppearanceView() as this =
             Services.settings.setValue("tabAppearance", box(mergedAppearance))
             // Then update UI
             setEditorValues mergedAppearance
+            suppressEvents <- false
         
         container.Controls.Add(darkBtn)
         container.Controls.Add(darkBlueBtn)
@@ -179,7 +186,9 @@ type AppearanceView() as this =
         panel.SetColumn(buttonPanel, 1)
         setEditorValues appearance
         editors.items.map(snd).iter <| fun editor ->
-            editor.changed.Add <| fun() -> this.applyAppearance()
+            editor.changed.Add <| fun() -> 
+                if not suppressEvents then
+                    this.applyAppearance()
         
     member this.applyAppearance() =
         // Get all current values from UI editors

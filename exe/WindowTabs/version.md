@@ -10,6 +10,9 @@
 - Fix appearance settings not applying correctly
   - Fixed field order mismatch causing color settings to be offset
   - Preserves internal fields like tabHeightOffset when updating appearance
+- Fix reset button not immediately applying color changes
+  - Added event suppression to prevent race conditions during UI updates
+  - Colors now reset correctly on first button click
 
 ## version ss_jp_2025.08.30
 - Add "Hide when double-clicking active tab" option
