@@ -13,6 +13,10 @@
 - Fix reset button not immediately applying color changes
   - Added event suppression to prevent race conditions during UI updates
   - Colors now reset correctly on first button click
+- Update appearance settings UI buttons
+  - Changed "Dark Mode" to "Dark Color" and "Dark Mode (Blue)" to "Dark Blue Color"
+  - Added "Light Color" button for applying light theme colors only
+  - Reset button now only resets size settings, preserving color choices
 
 ## version ss_jp_2025.08.30
 - Add "Hide when double-clicking active tab" option

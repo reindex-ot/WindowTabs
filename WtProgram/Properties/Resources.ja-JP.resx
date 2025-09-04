@@ -216,6 +216,15 @@
   <data name="Reset" xml:space="preserve">
     <value>リセット</value>
   </data>
+  <data name="DarkColor" xml:space="preserve">
+    <value>ダークカラー</value>
+  </data>
+  <data name="DarkBlueColor" xml:space="preserve">
+    <value>ダークブルーカラー</value>
+  </data>
+  <data name="LightColor" xml:space="preserve">
+    <value>ライトカラー</value>
+  </data>
   <data name="Restore" xml:space="preserve">
     <value>元に戻す</value>
   </data>

@@ -216,11 +216,14 @@
   <data name="Reset" xml:space="preserve">
     <value>Reset</value>
   </data>
-  <data name="DarkMode" xml:space="preserve">
-    <value>Dark Mode</value>
+  <data name="DarkColor" xml:space="preserve">
+    <value>Dark Color</value>
   </data>
-  <data name="DarkModeBlue" xml:space="preserve">
-    <value>Dark Mode (Blue)</value>
+  <data name="DarkBlueColor" xml:space="preserve">
+    <value>Dark Blue Color</value>
+  </data>
+  <data name="LightColor" xml:space="preserve">
+    <value>Light Color</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Restore</value>

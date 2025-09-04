@@ -109,15 +109,55 @@ type AppearanceView() as this =
         resetBtn.Font <- font
         resetBtn.Click.Add <| fun _ ->
             suppressEvents <- true
-            let appearance = Services.program.defaultTabAppearanceInfo
-            // Apply all default values first
-            Services.settings.setValue("tabAppearance", box(appearance))
-            // Then update UI without triggering events
-            setEditorValues appearance
+            let defaultAppearance = Services.program.defaultTabAppearanceInfo
+            // Reset only size settings, keep current colors
+            let currentAppearance = Services.program.tabAppearanceInfo
+            let mergedAppearance = {
+                tabHeight = defaultAppearance.tabHeight
+                tabMaxWidth = defaultAppearance.tabMaxWidth
+                tabOverlap = defaultAppearance.tabOverlap
+                tabHeightOffset = defaultAppearance.tabHeightOffset
+                tabIndentFlipped = defaultAppearance.tabIndentFlipped
+                tabIndentNormal = defaultAppearance.tabIndentNormal
+                tabTextColor = currentAppearance.tabTextColor
+                tabNormalBgColor = currentAppearance.tabNormalBgColor
+                tabHighlightBgColor = currentAppearance.tabHighlightBgColor
+                tabActiveBgColor = currentAppearance.tabActiveBgColor
+                tabFlashBgColor = currentAppearance.tabFlashBgColor
+                tabBorderColor = currentAppearance.tabBorderColor
+            }
+            Services.settings.setValue("tabAppearance", box(mergedAppearance))
+            setEditorValues mergedAppearance
+            suppressEvents <- false
+        
+        let lightBtn = Button()
+        lightBtn.Text <- resources.GetString("LightColor")
+        lightBtn.Font <- font
+        lightBtn.Click.Add <| fun _ ->
+            suppressEvents <- true
+            let currentAppearance = Services.program.tabAppearanceInfo
+            let defaultAppearance = Services.program.defaultTabAppearanceInfo
+            // Apply only color settings from default, keep size settings
+            let mergedAppearance = {
+                tabHeight = currentAppearance.tabHeight
+                tabMaxWidth = currentAppearance.tabMaxWidth
+                tabOverlap = currentAppearance.tabOverlap
+                tabHeightOffset = currentAppearance.tabHeightOffset
+                tabIndentFlipped = currentAppearance.tabIndentFlipped
+                tabIndentNormal = currentAppearance.tabIndentNormal
+                tabTextColor = defaultAppearance.tabTextColor
+                tabNormalBgColor = defaultAppearance.tabNormalBgColor
+                tabHighlightBgColor = defaultAppearance.tabHighlightBgColor
+                tabActiveBgColor = defaultAppearance.tabActiveBgColor
+                tabFlashBgColor = defaultAppearance.tabFlashBgColor
+                tabBorderColor = defaultAppearance.tabBorderColor
+            }
+            Services.settings.setValue("tabAppearance", box(mergedAppearance))
+            setEditorValues mergedAppearance
             suppressEvents <- false
         
         let darkBtn = Button()
-        darkBtn.Text <- resources.GetString("DarkMode")
+        darkBtn.Text <- resources.GetString("DarkColor")
         darkBtn.Font <- font
         darkBtn.Click.Add <| fun _ ->
             suppressEvents <- true
@@ -145,9 +185,7 @@ type AppearanceView() as this =
             suppressEvents <- false
 
         let darkBlueBtn = Button()
-        darkBlueBtn.AutoSize <- true
-        
-        darkBlueBtn.Text <- resources.GetString("DarkModeBlue")
+        darkBlueBtn.Text <- resources.GetString("DarkBlueColor")
         darkBlueBtn.Font <- font
         darkBlueBtn.Click.Add <| fun _ ->
             suppressEvents <- true
@@ -176,6 +214,7 @@ type AppearanceView() as this =
         
         container.Controls.Add(darkBtn)
         container.Controls.Add(darkBlueBtn)
+        container.Controls.Add(lightBtn)
         container.Controls.Add(resetBtn)
         container
 
