@@ -74,13 +74,12 @@ type Settings(isStandAlone) as this =
             tabHeightOffset = 1
             tabIndentFlipped = 150
             tabIndentNormal = 4
-
             tabTextColor = Color.FromRGB(0x000000)
             tabNormalBgColor = Color.FromRGB(0x9FC4F0)
             tabHighlightBgColor = Color.FromRGB(0xBDD5F4)
             tabActiveBgColor = Color.FromRGB(0xFAFCFE)
-            tabBorderColor = Color.FromRGB(0x3A70B1)
             tabFlashBgColor = Color.FromRGB(0xFFBBBB)
+            tabBorderColor = Color.FromRGB(0x3A70B1)
         }
  
     member this.darkModeTabAppearance =
@@ -91,14 +90,12 @@ type Settings(isStandAlone) as this =
             tabHeightOffset = -1
             tabIndentFlipped = -1
             tabIndentNormal = -1
-
             tabTextColor = Color.FromRGB(0xFFFFFF)         
             tabNormalBgColor = Color.FromRGB(0x0D0D0D)     
             tabHighlightBgColor = Color.FromRGB(0x1E1E1E)  
             tabActiveBgColor = Color.FromRGB(0x2D2D2D)     
-            tabBorderColor = Color.FromRGB(0x333333)       
             tabFlashBgColor = Color.FromRGB(0x772222)      
-
+            tabBorderColor = Color.FromRGB(0x333333)       
         }
 
     member this.darkModeBlueTabAppearance =
@@ -109,13 +106,12 @@ type Settings(isStandAlone) as this =
             tabHeightOffset = -1
             tabIndentFlipped = -1
             tabIndentNormal = -1
-
             tabTextColor = Color.FromRGB(0xE0E0E0)         
             tabNormalBgColor = Color.FromRGB(0x111827)    
             tabHighlightBgColor = Color.FromRGB(0x4B5970)  
             tabActiveBgColor = Color.FromRGB(0x273548)     
-            tabBorderColor = Color.FromRGB(0x374151)       
             tabFlashBgColor = Color.FromRGB(0x991B1B)      
+            tabBorderColor = Color.FromRGB(0x374151)       
         }
 
     member this.update f = this.settings <- f(this.settings)

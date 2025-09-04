@@ -47,13 +47,13 @@ and TabAppearanceInfo = {
     tabHeight: int
     tabMaxWidth: int
     tabOverlap: int
+    tabHeightOffset : int
+    tabIndentFlipped : int
+    tabIndentNormal : int
     tabTextColor : Color
     tabNormalBgColor: Color
     tabHighlightBgColor: Color
     tabActiveBgColor: Color
     tabFlashBgColor: Color
     tabBorderColor: Color
-    tabHeightOffset : int
-    tabIndentFlipped : int
-    tabIndentNormal : int
     }
