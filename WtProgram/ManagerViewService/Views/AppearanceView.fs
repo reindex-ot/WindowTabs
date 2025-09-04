@@ -144,10 +144,30 @@ type AppearanceView() as this =
             editor.changed.Add <| fun() -> this.applyAppearance()
         
     member this.applyAppearance() =
-        let appearance = properties.fold appearance <| fun appearance property ->
-            let value = (editors.find property.key).value
-            (Serialize.writeField appearance property.key value) :?> TabAppearanceInfo
-        Services.settings.setValue("tabAppearance", box(appearance))
+        // Get all current values from UI editors
+        let getValue key = (editors.find key).value
+        
+        // Get the current appearance for fields not in UI
+        let currentAppearance = Services.program.tabAppearanceInfo
+        
+        // Create new appearance with correct field order
+        let newAppearance = {
+            tabHeight = unbox(getValue "tabHeight")
+            tabMaxWidth = unbox(getValue "tabMaxWidth")
+            tabOverlap = unbox(getValue "tabOverlap")
+            tabHeightOffset = currentAppearance.tabHeightOffset  // Keep internal value
+            tabIndentFlipped = unbox(getValue "tabIndentFlipped")
+            tabIndentNormal = unbox(getValue "tabIndentNormal")
+
+            tabTextColor = unbox(getValue "tabTextColor")
+            tabNormalBgColor = unbox(getValue "tabNormalBgColor")
+            tabHighlightBgColor = unbox(getValue "tabHighlightBgColor")
+            tabActiveBgColor = unbox(getValue "tabActiveBgColor")
+            tabFlashBgColor = unbox(getValue "tabFlashBgColor")
+            tabBorderColor = unbox(getValue "tabBorderColor")
+        }
+        
+        Services.settings.setValue("tabAppearance", box(newAppearance))
         
     interface ISettingsView with
         member x.key = SettingsViewType.AppearanceSettings

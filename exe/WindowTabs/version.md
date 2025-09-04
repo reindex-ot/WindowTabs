@@ -7,6 +7,9 @@
 - Improve DPI handling for tab docking
   - Changed docking operation from MoveWindow API to SetWindowPos API
   - Implemented dynamic DPI change detection using GetDpiForWindow API
+- Fix appearance settings not applying correctly
+  - Fixed field order mismatch causing color settings to be offset
+  - Preserves internal fields like tabHeightOffset when updating appearance
 
 ## version ss_jp_2025.08.30
 - Add "Hide when double-clicking active tab" option
