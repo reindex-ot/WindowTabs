@@ -1,6 +1,6 @@
 # WindowTabs Standard-Software Version
 
-## version ss_jp_2025.08.30_next
+## version ss_jp_2025.09.04
 - Improve DPI handling for tab drag and drop
   - Changed drop operation from SetWindowPlacement to SetWindowPos API
   - Added window state restoration before positioning in both hide and drop operations
