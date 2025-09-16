@@ -91,6 +91,11 @@ type TabStripDecorator(group:WindowGroup) as this =
         group.bounds.changed.Add <| fun() ->
             this.updateTsPlacement()
 
+        // Update placement when tab appearance changes (for height and indent values)
+        Services.settings.notifyValue "tabAppearance" <| fun(_) ->
+            this.invokeAsync <| fun() ->
+                this.updateTsPlacement()
+
         group.exited.Add <| fun() ->
             Services.dragDrop.unregisterTarget(this.ts.hwnd)
     

@@ -6,6 +6,10 @@
     - Tab width (narrow/wide) setting
     - Tab position (left/center/right) setting
     - Hide tabs when positioned at bottom setting
+- Fix appearance settings to apply immediately
+  - Height (pixels)
+  - Distance from edge when tabs up
+  - Distance from edge when tabs down
 
 ## version ss_jp_2025.09.04
 - Improve DPI handling for tab drag and drop
