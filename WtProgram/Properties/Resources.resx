@@ -274,10 +274,10 @@
     <value>Make tabs narrower</value>
   </data>
   <data name="makeTabsNarrowerByDefault" xml:space="preserve">
-    <value>Default: Make tabs narrower</value>
+    <value>Make tabs narrower</value>
   </data>
   <data name="tabPositionByDefault" xml:space="preserve">
-    <value>Default: Tab position</value>
+    <value>Tab position</value>
   </data>
   <data name="TabPosition" xml:space="preserve">
     <value>Tab position</value>
@@ -301,7 +301,7 @@
     <value>Right</value>
   </data>
   <data name="hideTabsWhenDownByDefault" xml:space="preserve">
-    <value>Default: Hide tabs when positioned at bottom</value>
+    <value>Hide tabs when positioned at bottom</value>
   </data>
   <data name="HideTabsWhenDown" xml:space="preserve">
     <value>Hide tabs when positioned at bottom</value>

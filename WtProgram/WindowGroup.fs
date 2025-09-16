@@ -94,6 +94,37 @@ type WindowGroup(enableSuperBar:bool, plugins:List2<IPlugin>) as this =
             this.invokeAsync <| fun() ->
                 this.ts.setTabAppearance(this.tabAppearance)
 
+        // Listen for makeTabsNarrowerByDefault changes
+        Services.settings.notifyValue "makeTabsNarrowerByDefault" <| fun value ->
+            this.invokeAsync <| fun() ->
+                this.isIconOnly <- unbox<bool>(value)
+
+        // Listen for tabPositionByDefault changes
+        Services.settings.notifyValue "tabPositionByDefault" <| fun value ->
+            this.invokeAsync <| fun() ->
+                let position = unbox<string>(value)
+                let alignment =
+                    match position with
+                    | "left" -> TabLeft
+                    | "center" -> TabCenter
+                    | _ -> TabRight
+                ts.setAlignment(ts.direction, alignment)
+
+        // Listen for hideTabsWhenDownByDefault changes
+        Services.settings.notifyValue "hideTabsWhenDownByDefault" <| fun value ->
+            this.invokeAsync <| fun() ->
+                let hideMode = unbox<string>(value)
+                // Clear all hide settings first
+                _bb.write("autoHide", false)
+                _bb.write("autoHideMaximized", false)
+                _bb.write("autoHideDoubleClick", false)
+                // Set new mode
+                match hideMode with
+                | "down" -> _bb.write("autoHide", true)
+                | "maximized" -> _bb.write("autoHideMaximized", true)
+                | "doubleclick" -> _bb.write("autoHideDoubleClick", true)
+                | _ -> () // "never" - do nothing
+
         Cell.listen <| fun() ->
             this.ts.zorder <- zorderCell.value.map(Tab)
             

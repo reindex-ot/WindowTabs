@@ -1,5 +1,12 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.09.04_next
+- Improve default settings management
+  - Made these 3 settings instantly apply from settings dialog instead of tab group:
+    - Tab width (narrow/wide) setting
+    - Tab position (left/center/right) setting
+    - Hide tabs when positioned at bottom setting
+
 ## version ss_jp_2025.09.04
 - Improve DPI handling for tab drag and drop
   - Changed drop operation from SetWindowPlacement to SetWindowPos API

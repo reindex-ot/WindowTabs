@@ -65,8 +65,9 @@ type HotKeyView() =
                 | 1 -> "center"
                 | _ -> "right"
             combo.SelectedIndex <- positionToIndex(Services.settings.getValue("tabPositionByDefault") :?> string)
-            combo.SelectedIndexChanged.Add(fun _ -> 
-                Services.settings.setValue("tabPositionByDefault", indexToPosition(combo.SelectedIndex))
+            combo.SelectedIndexChanged.Add(fun _ ->
+                let newPosition = indexToPosition(combo.SelectedIndex)
+                Services.settings.setValue("tabPositionByDefault", newPosition)
             )
             combo
             
@@ -91,8 +92,9 @@ type HotKeyView() =
                 | 2 -> "down"
                 | _ -> "doubleclick"
             combo.SelectedIndex <- modeToIndex(Services.settings.getValue("hideTabsWhenDownByDefault") :?> string)
-            combo.SelectedIndexChanged.Add(fun _ -> 
-                Services.settings.setValue("hideTabsWhenDownByDefault", indexToMode(combo.SelectedIndex))
+            combo.SelectedIndexChanged.Add(fun _ ->
+                let newMode = indexToMode(combo.SelectedIndex)
+                Services.settings.setValue("hideTabsWhenDownByDefault", newMode)
             )
             combo
             

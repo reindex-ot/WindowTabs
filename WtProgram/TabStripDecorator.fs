@@ -208,77 +208,10 @@ type TabStripDecorator(group:WindowGroup) as this =
     member private  this.contextMenu(hwnd) =
         let checked(isChecked) = if isChecked then List2([MenuFlags.MF_CHECKED]) else List2()
         let grayed(isGrayed) = if isGrayed then List2([MenuFlags.MF_GRAYED]) else List2()
-        let iconOnlyItem = CmiRegular({
-            text = (if group.isIconOnly then resources.GetString("MakeTabsWider") else resources.GetString("MakeTabsNarrower"))
-            image = None
-            click = fun() -> group.isIconOnly <- group.isIconOnly.not
-            flags = List2()
-        })
         let window = os.windowFromHwnd(hwnd)
         let pid = window.pid
         let exeName = pid.exeName
         let processPath = pid.processPath
-
-        let alignmentItem =
-            let currentAlignment = this.ts.getAlignment(this.ts.direction)
-            let setAlignment newAlignment = fun() -> 
-                this.ts.setAlignment(this.ts.direction, newAlignment)
-
-            let alignmentMenuItem(text,alignment) = CmiRegular({
-                text = text
-                image = None
-                flags = checked(currentAlignment = alignment)
-                click = setAlignment alignment
-            })
-            CmiPopUp({
-                text = resources.GetString("TabPosition")
-                image = None
-                items = List2([
-                    (resources.GetString("AlignLeft"), TabLeft)
-                    (resources.GetString("AlignCenter"), TabCenter)
-                    (resources.GetString("AlignRight"), TabRight)
-                ]).map(alignmentMenuItem)
-            })
-
-        let hideTabsItem =
-            // Get current hide mode from group blackboard or from default settings
-            let currentMode = 
-                let autoHide = group.bb.read("autoHide", false)
-                let autoHideMaximized = group.bb.read("autoHideMaximized", false)
-                let autoHideDoubleClick = group.bb.read("autoHideDoubleClick", false)
-                if autoHideDoubleClick then "doubleclick"
-                elif autoHide then "down"
-                elif autoHideMaximized then "maximized"
-                else "never"
-            
-            let hideModeMenuItem(text, mode) = 
-                CmiRegular({
-                    text = text
-                    image = None
-                    flags = checked(currentMode = mode)
-                    click = fun() ->
-                        // Clear all hide settings first
-                        group.bb.write("autoHide", false)
-                        group.bb.write("autoHideMaximized", false)
-                        group.bb.write("autoHideDoubleClick", false)
-                        // Set new mode
-                        match mode with
-                        | "down" -> group.bb.write("autoHide", true)
-                        | "maximized" -> group.bb.write("autoHideMaximized", true)
-                        | "doubleclick" -> group.bb.write("autoHideDoubleClick", true)
-                        | _ -> () // "never" - leave all false
-                })
-            
-            CmiPopUp({
-                text = resources.GetString("HideTabsWhenDown")
-                image = None
-                items = List2([
-                    (resources.GetString("HideNever"), "never")
-                    (resources.GetString("HideWhenMaximized"), "maximized")
-                    (resources.GetString("HideWhenDown"), "down")
-                    (resources.GetString("HideOnDoubleClick"), "doubleclick")
-                ]).map(hideModeMenuItem)
-            })
 
         let newWindowItem = 
             CmiRegular({
@@ -404,10 +337,6 @@ type TabStripDecorator(group:WindowGroup) as this =
             Some(closeLeftTabsItem)
             Some(closeOtherTabsItem)
             Some(closeAllTabsItem)
-            Some(CmiSeparator)
-            Some(iconOnlyItem)
-            Some(alignmentItem)
-            Some(hideTabsItem)
             Some(CmiSeparator)
             Some(renameTabItem)
             (if group.isRenamed(hwnd) then Some(restoreTabNameItem) else None)

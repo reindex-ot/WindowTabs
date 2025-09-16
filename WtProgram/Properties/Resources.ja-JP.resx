@@ -274,10 +274,10 @@
     <value>タブ幅をせばめる</value>
   </data>
   <data name="makeTabsNarrowerByDefault" xml:space="preserve">
-    <value>デフォルト値：タブ幅をせばめる</value>
+    <value>タブ幅をせばめる</value>
   </data>
   <data name="tabPositionByDefault" xml:space="preserve">
-    <value>デフォルト値：タブ位置</value>
+    <value>タブ位置</value>
   </data>
   <data name="TabPosition" xml:space="preserve">
     <value>タブ位置</value>
@@ -301,7 +301,7 @@
     <value>右</value>
   </data>
   <data name="hideTabsWhenDownByDefault" xml:space="preserve">
-    <value>デフォルト値：タブが下方向の時に隠す機能</value>
+    <value>タブが下方向の時に隠す機能</value>
   </data>
   <data name="HideTabsWhenDown" xml:space="preserve">
     <value>タブが下方向の時に隠す機能</value>
