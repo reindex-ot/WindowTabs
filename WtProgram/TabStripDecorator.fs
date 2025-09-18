@@ -211,6 +211,9 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
         group.windows.items.iter this.onCloseWindow
 
     member private this.detachTab(hwnd: IntPtr) =
+        this.detachTabToPosition(hwnd, None)
+
+    member private this.detachTabToPosition(hwnd: IntPtr, position: Option<string>) =
         // Only detach if there's more than one tab
         if group.windows.items.count > 1 then
             let tab = Tab(hwnd)
@@ -231,7 +234,46 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 // Restore window to its original position
                 if window.isMinimized || window.isMaximized then
                     window.showWindow(ShowWindowCommands.SW_RESTORE)
+
+                // Set position based on the option
+                // First restore to original position to determine correct screen
                 window.setPositionOnly bounds.location.x bounds.location.y
+
+                // Calculate window center point to determine which screen it belongs to
+                let centerX = bounds.location.x + bounds.size.width / 2
+                let centerY = bounds.location.y + bounds.size.height / 2
+                let centerPoint = System.Drawing.Point(centerX, centerY)
+                let screen = Screen.FromPoint(centerPoint)
+
+                match position with
+                | Some "right" ->
+                    let width = bounds.size.width
+                    let x = screen.WorkingArea.Right - width
+                    let y = bounds.location.y
+                    // Keep Y within screen bounds
+                    let y = max screen.WorkingArea.Top (min y (screen.WorkingArea.Bottom - bounds.size.height))
+                    window.setPositionOnly x y
+                | Some "left" ->
+                    let x = screen.WorkingArea.Left
+                    let y = bounds.location.y
+                    // Keep Y within screen bounds
+                    let y = max screen.WorkingArea.Top (min y (screen.WorkingArea.Bottom - bounds.size.height))
+                    window.setPositionOnly x y
+                | Some "top" ->
+                    let x = bounds.location.x
+                    let y = screen.WorkingArea.Top
+                    // Keep X within screen bounds
+                    let x = max screen.WorkingArea.Left (min x (screen.WorkingArea.Right - bounds.size.width))
+                    window.setPositionOnly x y
+                | Some "bottom" ->
+                    let height = bounds.size.height
+                    let x = bounds.location.x
+                    let y = screen.WorkingArea.Bottom - height
+                    // Keep X within screen bounds
+                    let x = max screen.WorkingArea.Left (min x (screen.WorkingArea.Right - bounds.size.width))
+                    window.setPositionOnly x y
+                | _ ->
+                    () // Already positioned at original location
 
                 // Notify that this window was detached so it gets a new group
                 // This will trigger dragDrop and dragEnd which creates a new group
@@ -375,6 +417,30 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                         text = resources.GetString("DetachTabSamePosition")
                         image = None
                         click = fun() -> this.detachTab(hwnd)
+                        flags = List2()
+                    })
+                    CmiRegular({
+                        text = resources.GetString("DetachTabMoveRight")
+                        image = None
+                        click = fun() -> this.detachTabToPosition(hwnd, Some "right")
+                        flags = List2()
+                    })
+                    CmiRegular({
+                        text = resources.GetString("DetachTabMoveLeft")
+                        image = None
+                        click = fun() -> this.detachTabToPosition(hwnd, Some "left")
+                        flags = List2()
+                    })
+                    CmiRegular({
+                        text = resources.GetString("DetachTabMoveTop")
+                        image = None
+                        click = fun() -> this.detachTabToPosition(hwnd, Some "top")
+                        flags = List2()
+                    })
+                    CmiRegular({
+                        text = resources.GetString("DetachTabMoveBottom")
+                        image = None
+                        click = fun() -> this.detachTabToPosition(hwnd, Some "bottom")
                         flags = List2()
                     })
                 ])

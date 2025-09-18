@@ -337,6 +337,18 @@
     <value>タブの分離</value>
   </data>
   <data name="DetachTabSamePosition" xml:space="preserve">
-    <value>同じ位置とサイズで分離</value>
+    <value>同じ位置とサイズ</value>
+  </data>
+  <data name="DetachTabMoveRight" xml:space="preserve">
+    <value>ディスプレイの右端</value>
+  </data>
+  <data name="DetachTabMoveLeft" xml:space="preserve">
+    <value>ディスプレイの左端</value>
+  </data>
+  <data name="DetachTabMoveTop" xml:space="preserve">
+    <value>ディスプレイの上端</value>
+  </data>
+  <data name="DetachTabMoveBottom" xml:space="preserve">
+    <value>ディスプレイの下端</value>
   </data>
 </root>

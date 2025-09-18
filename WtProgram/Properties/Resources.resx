@@ -295,7 +295,19 @@
     <value>Detach tab</value>
   </data>
   <data name="DetachTabSamePosition" xml:space="preserve">
-    <value>Detach at same position and size</value>
+    <value>Same position and size</value>
+  </data>
+  <data name="DetachTabMoveRight" xml:space="preserve">
+    <value>Display right edge</value>
+  </data>
+  <data name="DetachTabMoveLeft" xml:space="preserve">
+    <value>Display left edge</value>
+  </data>
+  <data name="DetachTabMoveTop" xml:space="preserve">
+    <value>Display top edge</value>
+  </data>
+  <data name="DetachTabMoveBottom" xml:space="preserve">
+    <value>Display bottom edge</value>
   </data>
   <data name="AlignLeft" xml:space="preserve">
     <value>Left</value>
@@ -340,6 +352,18 @@
     <value>Detach tab</value>
   </data>
   <data name="DetachTabSamePosition" xml:space="preserve">
-    <value>Detach at same position and size</value>
+    <value>Same position and size</value>
+  </data>
+  <data name="DetachTabMoveRight" xml:space="preserve">
+    <value>Display right edge</value>
+  </data>
+  <data name="DetachTabMoveLeft" xml:space="preserve">
+    <value>Display left edge</value>
+  </data>
+  <data name="DetachTabMoveTop" xml:space="preserve">
+    <value>Display top edge</value>
+  </data>
+  <data name="DetachTabMoveBottom" xml:space="preserve">
+    <value>Display bottom edge</value>
   </data>
 </root>
