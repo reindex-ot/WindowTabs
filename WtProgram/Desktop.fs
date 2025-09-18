@@ -151,9 +151,22 @@ type Desktop(notify:IDesktopNotification) as this =
             // First restore the window if it's minimized or maximized
             if window.isMinimized || window.isMaximized then
                 window.showWindow(ShowWindowCommands.SW_RESTORE)
-            
+
+            // Get window size for boundary checking
+            let windowSize = window.bounds.size
+
+            // Calculate window center point to determine which screen it belongs to
+            let centerX = windowPt.x + windowSize.width / 2
+            let centerY = windowPt.y + windowSize.height / 2
+            let centerPoint = System.Drawing.Point(centerX, centerY)
+            let screen = Screen.FromPoint(centerPoint)
+
+            // Adjust position to keep window within screen boundaries
+            let adjustedX = max screen.WorkingArea.Left (min windowPt.x (screen.WorkingArea.Right - windowSize.width))
+            let adjustedY = max screen.WorkingArea.Top (min windowPt.y (screen.WorkingArea.Bottom - windowSize.height))
+
             // Move window position only
-            window.setPositionOnly windowPt.x windowPt.y
+            window.setPositionOnly adjustedX adjustedY
                 
             notify.dragDrop(hwnd)
             

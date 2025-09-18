@@ -15,6 +15,8 @@
   - Can detach tab at same position and size
 - Enhance tab detach menu with positioning options
   - Added options to move to display edges (right/left/top/bottom)
+- Improve tab drag and drop behavior
+  - Keep dropped windows within display boundaries
 
 ## version ss_jp_2025.09.04
 - Improve DPI handling for tab drag and drop
