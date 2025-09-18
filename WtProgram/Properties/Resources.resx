@@ -291,6 +291,12 @@
   <data name="SettingsMenu" xml:space="preserve">
     <value>Settings...</value>
   </data>
+  <data name="DetachTab" xml:space="preserve">
+    <value>Detach tab</value>
+  </data>
+  <data name="DetachTabSamePosition" xml:space="preserve">
+    <value>Detach at same position and size</value>
+  </data>
   <data name="AlignLeft" xml:space="preserve">
     <value>Left</value>
   </data>
@@ -329,5 +335,11 @@
   </data>
   <data name="Font" xml:space="preserve">
     <value>Segoe UI</value>
+  </data>
+  <data name="DetachTab" xml:space="preserve">
+    <value>Detach tab</value>
+  </data>
+  <data name="DetachTabSamePosition" xml:space="preserve">
+    <value>Detach at same position and size</value>
   </data>
 </root>

@@ -7,7 +7,7 @@ open Bemo.Win32.Forms
 open System.Reflection
 open System.Resources
 
-type TabStripDecorator(group:WindowGroup) as this =
+type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as this =
     let os = OS()
     let Cell = CellScope(false, true)
     let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly())
@@ -210,6 +210,37 @@ type TabStripDecorator(group:WindowGroup) as this =
     member private this.onCloseAllWindows() =
         group.windows.items.iter this.onCloseWindow
 
+    member private this.detachTab(hwnd: IntPtr) =
+        // Only detach if there's more than one tab
+        if group.windows.items.count > 1 then
+            let tab = Tab(hwnd)
+            let window = os.windowFromHwnd(hwnd)
+            let bounds = window.bounds
+
+            // Suspend tab monitoring to prevent auto-grouping
+            Services.program.suspendTabMonitoring()
+
+            try
+                // Remove tab from current group first
+                this.ts.removeTab(tab)
+                group.removeWindow(hwnd)
+
+                // Hide window temporarily
+                window.hideOffScreen(None)
+
+                // Restore window to its original position
+                if window.isMinimized || window.isMaximized then
+                    window.showWindow(ShowWindowCommands.SW_RESTORE)
+                window.setPositionOnly bounds.location.x bounds.location.y
+
+                // Notify that this window was detached so it gets a new group
+                // This will trigger dragDrop and dragEnd which creates a new group
+                notifyDetached(hwnd)
+            finally
+                // Resume tab monitoring after a delay
+                (ThreadHelper.cancelablePostBack 200 <| fun() ->
+                    Services.program.resumeTabMonitoring()) |> ignore
+
     member private  this.contextMenu(hwnd) =
         let checked(isChecked) = if isChecked then List2([MenuFlags.MF_CHECKED]) else List2()
         let grayed(isGrayed) = if isGrayed then List2([MenuFlags.MF_GRAYED]) else List2()
@@ -334,6 +365,23 @@ type TabStripDecorator(group:WindowGroup) as this =
                 flags = List2()
             })
 
+        let detachTabSubMenu =
+            if group.windows.items.count > 1 then
+                Some(CmiPopUp({
+                    text = resources.GetString("DetachTab")
+                    image = None
+                    items = List2([
+                        CmiRegular({
+                            text = resources.GetString("DetachTabSamePosition")
+                            image = None
+                            click = fun() -> this.detachTab(hwnd)
+                            flags = List2()
+                        })
+                    ])
+                }))
+            else
+                None
+
         List2([
             Some(newWindowItem)
             Some(CmiSeparator)
@@ -345,6 +393,8 @@ type TabStripDecorator(group:WindowGroup) as this =
             Some(CmiSeparator)
             Some(renameTabItem)
             (if group.isRenamed(hwnd) then Some(restoreTabNameItem) else None)
+            Some(CmiSeparator)
+            detachTabSubMenu
             Some(CmiSeparator)
             Some(managerItem)
         ]).choose(id)

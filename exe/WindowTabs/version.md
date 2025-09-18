@@ -10,6 +10,9 @@
   - Height (pixels)
   - Distance from edge when tabs up
   - Distance from edge when tabs down
+- Add tab detach functionality
+  - Added "Detach tab" submenu to context menu
+  - Can detach tab at same position and size
 
 ## version ss_jp_2025.09.04
 - Improve DPI handling for tab drag and drop

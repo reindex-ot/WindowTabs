@@ -291,6 +291,12 @@
   <data name="SettingsMenu" xml:space="preserve">
     <value>設定...</value>
   </data>
+  <data name="DetachTab" xml:space="preserve">
+    <value>タブの分離</value>
+  </data>
+  <data name="DetachTabSamePosition" xml:space="preserve">
+    <value>同じ位置とサイズで分離</value>
+  </data>
   <data name="AlignLeft" xml:space="preserve">
     <value>左</value>
   </data>
@@ -326,5 +332,11 @@
   </data>
   <data name="Workspace" xml:space="preserve">
     <value>ワークスペース</value>
+  </data>
+  <data name="DetachTab" xml:space="preserve">
+    <value>タブの分離</value>
+  </data>
+  <data name="DetachTabSamePosition" xml:space="preserve">
+    <value>同じ位置とサイズで分離</value>
   </data>
 </root>

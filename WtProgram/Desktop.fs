@@ -92,7 +92,11 @@ type Desktop(notify:IDesktopNotification) as this =
             let ig = group.cast<IGroup>()
             group.exited.Add <| fun _ -> exitedEvent.Trigger ig
             group.removed.Add <| fun _ -> removedEvent.Trigger ig
-            TabStripDecorator(group.group).ignore
+            TabStripDecorator(group.group, fun hwnd ->
+                invoker.asyncInvoke <| fun() ->
+                    notify.dragDrop(hwnd)
+                    notify.dragEnd()
+            ).ignore
         group.cast<IGroup>() 
 
     member private this.windowOffset = 
