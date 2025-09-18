@@ -366,21 +366,20 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
             })
 
         let detachTabSubMenu =
-            if group.windows.items.count > 1 then
-                Some(CmiPopUp({
-                    text = resources.GetString("DetachTab")
-                    image = None
-                    items = List2([
-                        CmiRegular({
-                            text = resources.GetString("DetachTabSamePosition")
-                            image = None
-                            click = fun() -> this.detachTab(hwnd)
-                            flags = List2()
-                        })
-                    ])
-                }))
-            else
-                None
+            let isEnabled = group.windows.items.count > 1
+            Some(CmiPopUp({
+                text = resources.GetString("DetachTab")
+                image = None
+                items = List2([
+                    CmiRegular({
+                        text = resources.GetString("DetachTabSamePosition")
+                        image = None
+                        click = fun() -> this.detachTab(hwnd)
+                        flags = List2()
+                    })
+                ])
+                flags = if isEnabled then List2() else List2([MenuFlags.MF_GRAYED])
+            }))
 
         List2([
             Some(newWindowItem)

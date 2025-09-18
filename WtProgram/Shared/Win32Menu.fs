@@ -18,6 +18,7 @@ and CmiPopUp = {
     text: string
     image: Option<Img>
     items: List2<ContextMenuItem>
+    flags: List2<int>
     }
 
 module Win32Menu =        
@@ -53,7 +54,8 @@ module Win32Menu =
                     WinUserApi.AppendMenu(hMenu, MenuFlags.MF_SEPARATOR, id, "").ignore
                 | CmiPopUp(item) ->
                     let hSubMenu = createMenu item.items
-                    WinUserApi.AppendMenu(hMenu, MenuFlags.MF_POPUP, hSubMenu, item.text).ignore
+                    let flags = item.flags.append(MenuFlags.MF_POPUP).reduce((|||))
+                    WinUserApi.AppendMenu(hMenu, flags, hSubMenu, item.text).ignore
                     addImage hSubMenu item.image
             int(hMenu)
 
