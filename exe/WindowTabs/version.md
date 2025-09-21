@@ -1,6 +1,6 @@
 # WindowTabs Standard-Software Version
 
-## version ss_jp_2025.09.04_next
+## version ss_jp_2025.09.22
 - Improve default settings management
   - Made these 3 settings instantly apply from settings dialog instead of tab group:
     - Tab width (narrow/wide) setting
