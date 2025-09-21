@@ -17,6 +17,9 @@
   - Added options to move to display edges (right/left/top/bottom)
 - Improve tab drag and drop behavior
   - Keep dropped windows within display boundaries
+- Add "Move tab" menu to transfer tabs between groups
+  - Shows other groups with tab names (adaptive truncation: 1-22, 2-9, 3+-5 chars)
+  - Multi-language support with proper thread safety and error handling
 
 ## version ss_jp_2025.09.04
 - Improve DPI handling for tab drag and drop

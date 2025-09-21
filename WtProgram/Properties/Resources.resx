@@ -309,6 +309,12 @@
   <data name="DetachTabMoveBottom" xml:space="preserve">
     <value>Display bottom edge</value>
   </data>
+  <data name="MoveTab" xml:space="preserve">
+    <value>Move tab</value>
+  </data>
+  <data name="MoveTabGroupFormat" xml:space="preserve">
+    <value>{0} {1}: {2}</value>
+  </data>
   <data name="AlignLeft" xml:space="preserve">
     <value>Left</value>
   </data>

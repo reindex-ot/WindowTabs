@@ -7,7 +7,18 @@ open Bemo.Win32.Forms
 open System.Reflection
 open System.Resources
 
+// Tab group info for cross-thread access
+type TabGroupInfo = {
+    hwnd: IntPtr
+    tabNames: string list
+    tabCount: int
+}
+
 type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as this =
+    // Static registry for all TabStripDecorator instances
+    static let mutable decorators = System.Collections.Generic.Dictionary<IntPtr, TabStripDecorator>()
+    static let mutable groupInfos = System.Collections.Generic.Dictionary<IntPtr, TabGroupInfo>()
+
     let os = OS()
     let Cell = CellScope(false, true)
     let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly())
@@ -17,7 +28,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
     let dropTarget = Cell.create(None)
     let mouseEvent = Event<_>()
     let _ts = TabStrip(this :> ITabStripMonitor)
-    // Variables for double-click detection  
+    // Variables for double-click detection
     let lastClickTime = ref System.DateTime.MinValue
     let lastClickTab = ref None
     let doubleClickTimeoutMs = 500.0  // Windows default double-click time
@@ -28,10 +39,39 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
     do this.init()
 
     member this.ts = _ts
+    member this.group = group
     member private this.mouse = mouseEvent.Publish
+
+    member private this.updateGroupInfo() =
+        try
+            // Create a snapshot of current tab information
+            let tabs = this.ts.lorder
+            let tabNames =
+                tabs.list |> List.map (fun tab ->
+                    let info = this.ts.tabInfo(tab)
+                    info.text
+                )
+            let info = {
+                hwnd = group.hwnd
+                tabNames = tabNames
+                tabCount = tabs.count
+            }
+            lock groupInfos (fun () -> groupInfos.[group.hwnd] <- info)
+        with _ -> ()
+
     member private this.init() =
         Services.registerLocal(_ts)
         group.init(this.ts)
+        // Register this decorator in the global registry
+        lock decorators (fun () -> decorators.[group.hwnd] <- this)
+        // Delay initial update to ensure tabs are loaded
+        group.invokeAsync(fun () ->
+            System.Threading.Thread.Sleep(100)
+            this.updateGroupInfo()
+            // Another update after more delay to catch late-loading tabs
+            System.Threading.Thread.Sleep(900)
+            this.updateGroupInfo()
+        )
 
         Services.dragDrop.registerTarget(this.ts.hwnd, this:>IDragDropTarget)
     
@@ -212,6 +252,99 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
 
     member private this.detachTab(hwnd: IntPtr) =
         this.detachTabToPosition(hwnd, None)
+
+    member private this.moveTabToGroup(hwnd: IntPtr, targetGroup: WindowGroup) =
+        // Move tab to another group if it's a different group
+        if targetGroup.hwnd <> group.hwnd then
+            let tab = Tab(hwnd)
+            let window = os.windowFromHwnd(hwnd)
+
+            try
+                // Suspend tab monitoring to prevent auto-grouping during the move
+                Services.program.suspendTabMonitoring()
+
+                try
+                    // First ensure the window is not in the target group already
+                    if targetGroup.windows.contains hwnd then
+                        System.Diagnostics.Debug.WriteLine(sprintf "Window %A is already in target group %A, skipping move" hwnd targetGroup.hwnd)
+                        ()
+                    else
+                        // Store original window state
+                        let wasMinimized = window.isMinimized
+                        let wasMaximized = window.isMaximized
+
+                        // Remove tab from current group first (ensure it's actually removed)
+                        if this.ts.tabs.contains(tab) then
+                            this.ts.removeTab(tab)
+                        if group.windows.contains hwnd then
+                            group.removeWindow(hwnd)
+
+                        // Wait for removal to complete
+                        System.Threading.Thread.Sleep(50)
+
+                        // Hide window temporarily to prevent flashing
+                        window.hideOffScreen(None)
+
+                        // Restore window state if necessary
+                        if wasMinimized || wasMaximized then
+                            window.showWindow(ShowWindowCommands.SW_RESTORE)
+
+                        // Use synchronous invoke to ensure completion
+                        let moveCompleted = ref false
+                        let moveException = ref None
+
+                        targetGroup.invokeSync(fun() ->
+                            try
+                                // Double-check window is not already in target group
+                                if not (targetGroup.windows.contains hwnd) then
+                                    targetGroup.addWindow(hwnd, false)
+                                    // Show window again (target group will handle positioning)
+                                    window.showWindow(ShowWindowCommands.SW_SHOW)
+                                    moveCompleted := true
+                                else
+                                    System.Diagnostics.Debug.WriteLine(sprintf "Window %A already in target during sync, skipping" hwnd)
+                            with ex ->
+                                moveException := Some ex
+                        )
+
+                        // Check if move failed
+                        match !moveException with
+                        | Some ex ->
+                            // Restore to original group on failure
+                            System.Diagnostics.Debug.WriteLine(sprintf "Move failed, restoring to original group: %s" ex.Message)
+                            group.addWindow(hwnd, false)
+                            window.showWindow(ShowWindowCommands.SW_SHOW)
+                            raise ex
+                        | None when not !moveCompleted ->
+                            // Move didn't complete, restore
+                            System.Diagnostics.Debug.WriteLine("Move didn't complete, restoring to original group")
+                            group.addWindow(hwnd, false)
+                            window.showWindow(ShowWindowCommands.SW_SHOW)
+                        | None ->
+                            // Move successful
+                            System.Diagnostics.Debug.WriteLine(sprintf "Successfully moved tab %A from group %A to group %A" hwnd group.hwnd targetGroup.hwnd)
+
+                            // Wait a bit for UI to update
+                            System.Threading.Thread.Sleep(100)
+
+                            // Update group info for both groups after the move
+                            this.updateGroupInfo()  // Update source group info
+
+                            // Find and update target group's decorator
+                            let targetDecorator = lock decorators (fun () ->
+                                decorators.Values |> Seq.tryFind (fun d -> d.group.hwnd = targetGroup.hwnd)
+                            )
+                            targetDecorator |> Option.iter (fun d ->
+                                targetGroup.invokeSync(fun () -> d.updateGroupInfo())
+                            )
+
+                finally
+                    // Resume tab monitoring
+                    Services.program.resumeTabMonitoring()
+            with ex ->
+                System.Diagnostics.Debug.WriteLine(sprintf "Error moving tab: %s" ex.Message)
+                // Resume monitoring even on error
+                try Services.program.resumeTabMonitoring() with _ -> ()
 
     member private this.detachTabToPosition(hwnd: IntPtr, position: Option<string>) =
         // Only detach if there's more than one tab
@@ -460,6 +593,132 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
             (if group.isRenamed(hwnd) then Some(restoreTabNameItem) else None)
             Some(CmiSeparator)
             detachTabSubMenu
+            // Add "Move tab" menu - use static group infos for thread-safe access
+            (
+                // Update all group infos before building menu
+                let allDecorators = lock decorators (fun () -> decorators.Values |> List.ofSeq)
+
+                // Update group info for all decorators
+                allDecorators |> List.iter (fun d ->
+                    try
+                        if d.ts.hwnd <> IntPtr.Zero then
+                            d.updateGroupInfo()
+                    with _ -> ()
+                )
+
+                let allGroupInfos = lock groupInfos (fun () ->
+                    groupInfos.Values
+                    |> List.ofSeq
+                    |> List.filter (fun info ->
+                        info.hwnd <> group.hwnd && // Not current group
+                        info.tabCount > 0 // Has at least one tab
+                    )
+                )
+                System.Diagnostics.Debug.WriteLine(sprintf "Total visible groups found: %d" allGroupInfos.Length)
+                System.Diagnostics.Debug.WriteLine(sprintf "Current group hwnd: %A" group.hwnd)
+
+                if not (List.isEmpty allGroupInfos) then
+                    // Build menu items for each other group
+                    // Use distinctBy to prevent duplicates
+                    let uniqueGroupInfos = allGroupInfos |> List.distinctBy (fun info -> info.hwnd)
+                    let menuItems = uniqueGroupInfos |> List.mapi (fun index info ->
+                        try
+                            System.Diagnostics.Debug.WriteLine(sprintf "Group %d: hwnd=%A, tabs count=%d" index info.hwnd info.tabCount)
+
+                            // Build menu text with tab names
+                            let menuText =
+                                if info.tabCount = 0 then
+                                    // Empty group - should not occur due to filtering, but return empty string just in case
+                                    ""
+                                else
+                                    // Adjust truncation based on tab count
+                                    let fullNameString =
+                                        if info.tabCount = 1 then
+                                            // Single tab: show first 22 chars
+                                            let tabName = info.tabNames |> List.head
+                                            if tabName.Length > 22 then
+                                                tabName.Substring(0, 22) + "..."
+                                            else
+                                                tabName
+                                        elif info.tabCount = 2 then
+                                            // 2 tabs: show 9 chars each
+                                            let tabNames = info.tabNames |> List.take 2
+                                            let truncatedNames = tabNames |> List.map (fun name ->
+                                                if name.Length > 9 then
+                                                    name.Substring(0, 9) + "..."
+                                                else
+                                                    name
+                                            )
+                                            String.Join(" ", truncatedNames)
+                                        else
+                                            // 3+ tabs: show first 3 tabs with 5 chars each
+                                            let tabNames = info.tabNames |> List.take (min 3 info.tabCount)
+                                            let truncatedNames = tabNames |> List.map (fun name ->
+                                                if name.Length > 5 then
+                                                    name.Substring(0, 5) + "..."
+                                                else
+                                                    name
+                                            )
+                                            let nameString = String.Join(" ", truncatedNames)
+                                            // For 4+ tabs, still show only 3 tab names
+                                            if info.tabCount > 3 then
+                                                nameString + "..."
+                                            else
+                                                nameString
+
+                                    // Use same pattern as CloseTabsToTheRight
+                                    let formatString = resources.GetString("MoveTabGroupFormat")
+                                    let tabWord =
+                                        if info.tabCount = 1 then
+                                            resources.GetString("TabSingular")
+                                        else
+                                            resources.GetString("TabPlural")
+                                    String.Format(formatString, info.tabCount, tabWord, fullNameString)
+
+                            System.Diagnostics.Debug.WriteLine(sprintf "Menu text: %s" menuText)
+
+                            // Get the decorator for this group to handle the click
+                            let targetDecorator = lock decorators (fun () ->
+                                decorators.Values |> Seq.tryFind (fun d -> d.group.hwnd = info.hwnd)
+                            )
+
+                            match targetDecorator with
+                            | Some decorator ->
+                                CmiRegular({
+                                    text = menuText
+                                    image = None
+                                    click = fun() ->
+                                        // Move the tab to the target group
+                                        this.moveTabToGroup(hwnd, decorator.group)
+                                    flags = List2()
+                                })
+                            | None ->
+                                CmiRegular({
+                                    text = menuText
+                                    image = None
+                                    click = fun() -> ()
+                                    flags = List2([MenuFlags.MF_GRAYED])
+                                })
+                        with ex ->
+                            System.Diagnostics.Debug.WriteLine(sprintf "Exception in menu item creation: %s" ex.Message)
+                            CmiRegular({
+                                text = sprintf "グループ %d (エラー)" (index+1)
+                                image = None
+                                click = fun() -> ()
+                                flags = List2([MenuFlags.MF_GRAYED])
+                            })
+                    )
+
+                    Some(CmiPopUp({
+                        text = resources.GetString("MoveTab")
+                        image = None
+                        items = List2(menuItems)
+                        flags = List2()
+                    }))
+                else
+                    // No other groups available
+                    None
+            )
             Some(CmiSeparator)
             Some(managerItem)
         ]).choose(id)
@@ -575,11 +834,13 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                     group.tabActivate(tab, false)
             | _ -> ()
     
-        member x.tabActivate((tab)) = 
+        member x.tabActivate((tab)) =
             group.tabActivate(tab, false)
-            
+            this.updateGroupInfo()
+
         member x.tabMoved(Tab(hwnd), index) =
             group.onTabMoved(hwnd, index)
+            this.updateGroupInfo()
 
         member x.tabClose(Tab(hwnd)) =
             // Get all tabs and current tab index before closing
@@ -608,8 +869,9 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
             
             // Close the window
             os.windowFromHwnd(hwnd).close()
+            this.updateGroupInfo()
 
-        member x.windowMsg(msg) = 
+        member x.windowMsg(msg) =
             ()
             
     interface IDragDropTarget with
@@ -634,6 +896,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                         this.ts.addTabSlide dragInfo.tab this.tabSlide
                         this.ts.setTabInfo(dragInfo.tab, dragInfo.tabInfo)
                         group.addWindow(hwnd, false)
+                        this.updateGroupInfo()
                         true
                 this.updateTsSlide()
                 result
@@ -668,3 +931,9 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 | None -> ()
                 dragInfoCell.set(None)
                 this.updateTsSlide()
+
+    interface IDisposable with
+        member this.Dispose() =
+            // Unregister from the global registry
+            lock decorators (fun () -> decorators.Remove(group.hwnd) |> ignore)
+            lock groupInfos (fun () -> groupInfos.Remove(group.hwnd) |> ignore)

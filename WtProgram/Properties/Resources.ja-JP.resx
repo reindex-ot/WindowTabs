@@ -351,4 +351,10 @@
   <data name="DetachTabMoveBottom" xml:space="preserve">
     <value>ディスプレイの下端</value>
   </data>
+  <data name="MoveTab" xml:space="preserve">
+    <value>タブの移動</value>
+  </data>
+  <data name="MoveTabGroupFormat" xml:space="preserve">
+    <value>{0}{1}: {2}</value>
+  </data>
 </root>
