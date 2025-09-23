@@ -1,5 +1,9 @@
 # WindowTabs Standard-Software Version
 
+- Fix "Move tab" menu not updating properly
+  - Remove group info when last tab closes
+  - Update group info after detach/drag/drop operations
+
 ## version ss_jp_2025.09.22
 - Improve default settings management
   - Made these 3 settings instantly apply from settings dialog instead of tab group:

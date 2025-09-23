@@ -46,17 +46,22 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
         try
             // Create a snapshot of current tab information
             let tabs = this.ts.lorder
-            let tabNames =
-                tabs.list |> List.map (fun tab ->
-                    let info = this.ts.tabInfo(tab)
-                    info.text
-                )
-            let info = {
-                hwnd = group.hwnd
-                tabNames = tabNames
-                tabCount = tabs.count
-            }
-            lock groupInfos (fun () -> groupInfos.[group.hwnd] <- info)
+
+            // If no tabs remain, remove from groupInfos
+            if tabs.count = 0 then
+                lock groupInfos (fun () -> groupInfos.Remove(group.hwnd) |> ignore)
+            else
+                let tabNames =
+                    tabs.list |> List.map (fun tab ->
+                        let info = this.ts.tabInfo(tab)
+                        info.text
+                    )
+                let info = {
+                    hwnd = group.hwnd
+                    tabNames = tabNames
+                    tabCount = tabs.count
+                }
+                lock groupInfos (fun () -> groupInfos.[group.hwnd] <- info)
         with _ -> ()
 
     member private this.init() =
@@ -411,6 +416,9 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 // Notify that this window was detached so it gets a new group
                 // This will trigger dragDrop and dragEnd which creates a new group
                 notifyDetached(hwnd)
+
+                // Update group info after detaching
+                this.updateGroupInfo()
             finally
                 // Resume tab monitoring after a delay
                 (ThreadHelper.cancelablePostBack 200 <| fun() ->
@@ -918,6 +926,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                         let window = os.windowFromHwnd(hwnd)
                         group.removeWindow(hwnd)
                         window.hideOffScreen(None)
+                        this.updateGroupInfo()
                 | None -> ()
                 this.updateTsSlide()
 
@@ -928,6 +937,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 match this.ts.movedTab with
                 | Some(tab, index) ->
                     this.ts.moveTab(tab, index)
+                    this.updateGroupInfo()
                 | None -> ()
                 dragInfoCell.set(None)
                 this.updateTsSlide()
