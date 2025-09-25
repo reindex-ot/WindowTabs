@@ -12,6 +12,7 @@ type TabGroupInfo = {
     hwnd: IntPtr
     tabNames: string list
     tabCount: int
+    firstTabIcon: Img option
 }
 
 type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as this =
@@ -56,10 +57,21 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                         let info = this.ts.tabInfo(tab)
                         info.text
                     )
+                let firstTabIcon =
+                    if tabs.count > 0 then
+                        let firstTab = tabs.at(0)
+                        let info = this.ts.tabInfo(firstTab)
+                        try
+                            Some(info.iconSmall.ToBitmap().img.resize(Sz(16,16)))
+                        with _ ->
+                            None
+                    else
+                        None
                 let info = {
                     hwnd = group.hwnd
                     tabNames = tabNames
                     tabCount = tabs.count
+                    firstTabIcon = firstTabIcon
                 }
                 lock groupInfos (fun () -> groupInfos.[group.hwnd] <- info)
         with _ -> ()
@@ -706,7 +718,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
 
                                     Some(CmiRegular({
                                         text = menuText
-                                        image = None
+                                        image = info.firstTabIcon
                                         click = fun() ->
                                             // Move the tab to the target group
                                             this.moveTabToGroup(hwnd, decorator.group)
