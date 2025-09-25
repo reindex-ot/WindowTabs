@@ -1,5 +1,12 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.09.23_next
+- Improve "Move tab" menu to always show latest state
+  - Update all group infos synchronously when menu is opened
+  - Validate window handles with IsWindow API to prevent showing non-existent groups
+  - Exclude single-tab groups that only contain the tab being moved
+  - Remove all unnecessary update calls from individual operations
+
 ## version ss_jp_2025.09.23
 - Fix "Move tab" menu not updating properly
   - Remove group info when last tab closes
