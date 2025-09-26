@@ -1,6 +1,6 @@
 # WindowTabs Standard-Software Version
 
-## version ss_jp_2025.09.25_next
+## version ss_jp_2025.09.26
 - Add icons to "Move tab" menu items
   - Display exe icon from first tab of each group
 - Improve "Move tab" menu filtering logic
