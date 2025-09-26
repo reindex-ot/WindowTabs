@@ -13,6 +13,7 @@ type TabGroupInfo = {
     tabNames: string list
     tabCount: int
     firstTabIcon: Img option
+    tabHwnds: IntPtr list
 }
 
 type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as this =
@@ -57,6 +58,8 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                         let info = this.ts.tabInfo(tab)
                         info.text
                     )
+                let tabHwnds =
+                    tabs.list |> List.map (fun (Tab(hwnd)) -> hwnd)
                 let firstTabIcon =
                     if tabs.count > 0 then
                         let firstTab = tabs.at(0)
@@ -72,6 +75,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                     tabNames = tabNames
                     tabCount = tabs.count
                     firstTabIcon = firstTabIcon
+                    tabHwnds = tabHwnds
                 }
                 lock groupInfos (fun () -> groupInfos.[group.hwnd] <- info)
         with _ -> ()
@@ -639,10 +643,8 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                     |> List.filter (fun info ->
                         info.hwnd <> group.hwnd && // Not current group
                         info.tabCount > 0 && // Has at least one tab
-                        // Don't show groups that only contain the tab we're moving
-                        not (info.tabCount = 1 && info.tabNames |> List.exists (fun name ->
-                            name = (this.ts.tabInfo(Tab(hwnd)).text)
-                        ))
+                        // Don't show groups that contain the tab we're moving
+                        not (info.tabHwnds |> List.contains hwnd)
                     )
                 )
                 System.Diagnostics.Debug.WriteLine(sprintf "Total visible groups found: %d" allGroupInfos.Length)

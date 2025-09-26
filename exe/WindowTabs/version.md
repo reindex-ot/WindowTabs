@@ -3,7 +3,9 @@
 ## version ss_jp_2025.09.25_next
 - Add icons to "Move tab" menu items
   - Display exe icon from first tab of each group
-  - Convert Icon to Img for menu display
+- Improve "Move tab" menu filtering logic
+  - Check if moving tab actually belongs to a group using hwnd list
+  - Fix issue where groups with same-named tabs were incorrectly excluded
 
 ## version ss_jp_2025.09.25
 - Improve "Move tab" menu to always show latest state
