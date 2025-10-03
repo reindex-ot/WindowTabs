@@ -15,6 +15,7 @@ and TabInfo = {
 and TabDragInfo = {
     tab: Tab
     tabOffset: Pt
+    imageOffset: Pt
     tabInfo: TabInfo
     }
 

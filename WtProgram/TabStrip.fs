@@ -412,13 +412,50 @@ type TabStrip(monitor:ITabStripMonitor) as this =
         tabInfoCell.map(fun m -> m.add tab tabInfo)
             
     member this.tabLocation = this.ts.tabLocation
-    
-    member this.dragImage (tab:Tab) : Img= 
-        let bmpTab = this.tsBase(TabUp).renderTab(tab)
+
+    member this.dragTabLocation (tab:Tab) : Pt=
+        // Calculate tab location for the drag preview
         let bmpHwnd : Img = this.tabInfo(tab).preview()
-        let bmpOverlay = Img(Sz(bmpHwnd.width, bmpHwnd.height + bmpTab.height - this.contentOffset))
+        let previewWidth = bmpHwnd.width
+
+        // Create a TabStrip with scaled size and single tab
+        let baseTabStrip = this.tsBase(TabUp)
+        let scaledTabStrip = {
+            baseTabStrip with
+                size = Sz(previewWidth, baseTabStrip.size.height)
+                alignment = alignment.value  // Use actual alignment setting
+                lorder = List2([tab])  // Only the dragged tab
+                zorder = List2([tab])
+        }
+
+        // Return the tab location in the scaled strip
+        scaledTabStrip.tabLocation(tab)
+
+    member this.dragImage (tab:Tab) : Img=
+        // Get the window preview to determine the target size
+        let bmpHwnd : Img = this.tabInfo(tab).preview()
+        let previewWidth = bmpHwnd.width
+
+        // Calculate the scale ratio
+        let scaleRatio = float(previewWidth) / float(this.size.width)
+
+        // Create a TabStrip with scaled size and single tab
+        let baseTabStrip = this.tsBase(TabUp)
+        let scaledTabStrip = {
+            baseTabStrip with
+                size = Sz(previewWidth, baseTabStrip.size.height)
+                alignment = alignment.value  // Use actual alignment setting
+                lorder = List2([tab])  // Only the dragged tab
+                zorder = List2([tab])
+        }
+
+        // Render the scaled tab strip
+        let fullStripImg = scaledTabStrip.render
+
+        // Combine the tab strip with the window preview
+        let bmpOverlay = Img(Sz(previewWidth, bmpHwnd.height + fullStripImg.height - this.contentOffset))
         let gCapture = bmpOverlay.graphics
-        gCapture.DrawImage(bmpTab.bitmap, Point.Empty)
+        gCapture.DrawImage(fullStripImg.bitmap, Point.Empty)
         gCapture.DrawImage(bmpHwnd.bitmap, new Point(0, this.size.height - this.contentOffset))
         gCapture.Dispose()
         bmpOverlay

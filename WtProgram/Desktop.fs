@@ -143,7 +143,11 @@ type Desktop(notify:IDesktopNotification) as this =
             let dragInfo = unbox<TabDragInfo>(data)
             let (Tab(hwnd)) = dragInfo.tab
             let window = os.windowFromHwnd(hwnd)
-            let windowPt = pt.sub(dragInfo.tabOffset).add(this.windowOffset)
+            // Calculate window position from drop point
+            // In preview image: click position is at imageOffset, window top-left is at (0, tabHeight - tabHeightOffset - 1)
+            let tabAppearance = Services.program.tabAppearanceInfo
+            let previewWindowOffset = Pt(0, tabAppearance.tabHeight - (tabAppearance.tabHeightOffset + 1))
+            let windowPt = pt.sub(dragInfo.imageOffset).add(previewWindowOffset)
             let monitor = Mon.fromPoint windowPt
             let workspaceOffset = monitor.map(fun mon -> mon.workRect.location.sub(mon.displayRect.location)).def(Pt())
             let windowPt = windowPt.sub(workspaceOffset)

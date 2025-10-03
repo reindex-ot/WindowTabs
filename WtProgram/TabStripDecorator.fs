@@ -852,10 +852,24 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 | MouseLeft ->
                     group.tabActivate(tab, false)
                     if part <> TabClose then
-                        let dragOffset = pt.sub(this.ts.tabLocation tab)
+                        let tabInfo = this.ts.tabInfo(tab)
+                        let originalTabLocation = this.ts.tabLocation tab
+                        let clickOffsetInTab = pt.sub(originalTabLocation)
+
+                        // Calculate scaled offset for preview image (always needed when dragging to different location)
+                        let dragTabLoc = this.ts.dragTabLocation tab
+                        let previewWidth = tabInfo.preview().width
+                        let originalWidth = this.ts.bounds.width
+                        let scaleRatio = float(previewWidth) / float(originalWidth)
+                        let scaledClickOffset = Pt(int(float(clickOffsetInTab.x) * scaleRatio), clickOffsetInTab.y)
+                        let imageOffset = dragTabLoc.add(scaledClickOffset)
+
+                        // For tab reordering within same group, use unscaled click offset
+                        let tabOffset = clickOffsetInTab
+
                         let dragImage = fun() -> this.ts.dragImage(tab)
-                        let dragInfo = box({ tab = tab; tabOffset = dragOffset; tabInfo = this.ts.tabInfo(tab)})
-                        Services.dragDrop.beginDrag(this.ts.hwnd, dragImage, dragOffset, ptScreen, dragInfo)
+                        let dragInfo = box({ tab = tab; tabOffset = tabOffset; imageOffset = imageOffset; tabInfo = tabInfo})
+                        Services.dragDrop.beginDrag(this.ts.hwnd, dragImage, imageOffset, ptScreen, dragInfo)
                 | MouseMiddle ->
                     group.tabActivate(tab, false)
             | _ -> ()

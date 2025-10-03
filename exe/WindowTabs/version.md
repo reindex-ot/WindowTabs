@@ -1,5 +1,11 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.09.26_next
+- Fix tab drag and drop for all alignment settings (left/center/right)
+  - Tab reordering within same group: cursor position follows tab correctly
+  - Tab separation with preview: cursor grabs scaled preview at correct position
+  - Window drop position: respects tab alignment when placing window from preview
+
 ## version ss_jp_2025.09.26
 - Add icons to "Move tab" menu items
   - Display exe icon from first tab of each group
