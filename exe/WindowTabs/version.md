@@ -5,6 +5,9 @@
   - Tab reordering within same group: cursor position follows tab correctly
   - Tab separation with preview: cursor grabs scaled preview at correct position
   - Window drop position: respects tab alignment when placing window from preview
+- Change UI controls in Behavior tab from ComboBox to RadioButton
+  - Tab position setting
+  - Hide tabs when positioned at bottom setting
 
 ## version ss_jp_2025.09.26
 - Add icons to "Move tab" menu items

@@ -48,77 +48,130 @@ type HotKeyView() =
 
         let settingsCheckbox key = checkBox(settingsProperty(key))
         
-        let defaultTabPositionCombo = 
-            let combo = new ComboBox()
-            combo.DropDownStyle <- ComboBoxStyle.DropDownList
-            combo.Items.AddRange([|
-                resources.GetString("AlignLeft")
-                resources.GetString("AlignCenter") 
-                resources.GetString("AlignRight")
-            |])
-            let positionToIndex = function
-                | "left" -> 0
-                | "center" -> 1
-                | _ -> 2  // default to right
-            let indexToPosition = function
-                | 0 -> "left"
-                | 1 -> "center"
-                | _ -> "right"
-            combo.SelectedIndex <- positionToIndex(Services.settings.getValue("tabPositionByDefault") :?> string)
-            combo.SelectedIndexChanged.Add(fun _ ->
-                let newPosition = indexToPosition(combo.SelectedIndex)
-                Services.settings.setValue("tabPositionByDefault", newPosition)
+        let defaultTabPositionRadio =
+            let panel = new FlowLayoutPanel()
+            panel.FlowDirection <- FlowDirection.TopDown
+            panel.AutoSize <- true
+            panel.AutoSizeMode <- AutoSizeMode.GrowAndShrink
+            panel.Margin <- Padding(0)
+            panel.Padding <- Padding(0, 0, 0, 10)  // Add bottom padding
+
+            let currentPosition = Services.settings.getValue("tabPositionByDefault") :?> string
+
+            let radioLeft = new RadioButton()
+            radioLeft.Text <- resources.GetString("AlignLeft")
+            radioLeft.AutoSize <- true
+            radioLeft.Checked <- (currentPosition = "left")
+            radioLeft.CheckedChanged.Add(fun _ ->
+                if radioLeft.Checked then
+                    Services.settings.setValue("tabPositionByDefault", "left")
             )
-            combo
-            
-        let hideTabsCombo = 
-            let combo = new ComboBox()
-            combo.DropDownStyle <- ComboBoxStyle.DropDownList
-            combo.Items.AddRange([|
-                resources.GetString("HideNever")
-                resources.GetString("HideWhenMaximized") 
-                resources.GetString("HideWhenDown")
-                resources.GetString("HideOnDoubleClick")
-            |])
-            let modeToIndex = function
-                | "never" -> 0
-                | "maximized" -> 1
-                | "down" -> 2
-                | "doubleclick" -> 3
-                | _ -> 0  // default to "never"
-            let indexToMode = function
-                | 0 -> "never"
-                | 1 -> "maximized"
-                | 2 -> "down"
-                | _ -> "doubleclick"
-            combo.SelectedIndex <- modeToIndex(Services.settings.getValue("hideTabsWhenDownByDefault") :?> string)
-            combo.SelectedIndexChanged.Add(fun _ ->
-                let newMode = indexToMode(combo.SelectedIndex)
-                Services.settings.setValue("hideTabsWhenDownByDefault", newMode)
+
+            let radioCenter = new RadioButton()
+            radioCenter.Text <- resources.GetString("AlignCenter")
+            radioCenter.AutoSize <- true
+            radioCenter.Checked <- (currentPosition = "center")
+            radioCenter.CheckedChanged.Add(fun _ ->
+                if radioCenter.Checked then
+                    Services.settings.setValue("tabPositionByDefault", "center")
             )
-            combo
-            
-        let hideTabsDelay = 
+
+            let radioRight = new RadioButton()
+            radioRight.Text <- resources.GetString("AlignRight")
+            radioRight.AutoSize <- true
+            radioRight.Checked <- (currentPosition = "right" || (currentPosition <> "left" && currentPosition <> "center"))
+            radioRight.CheckedChanged.Add(fun _ ->
+                if radioRight.Checked then
+                    Services.settings.setValue("tabPositionByDefault", "right")
+            )
+
+            panel.Controls.Add(radioLeft)
+            panel.Controls.Add(radioCenter)
+            panel.Controls.Add(radioRight)
+            panel
+
+        let hideTabsDelay =
             let textBox = new TextBox()
-            let defaultValue = 
+            let defaultValue =
                 try
                     Services.settings.getValue("hideTabsDelayMilliseconds") :?> int
                 with
                 | _ -> 3000
             textBox.Text <- defaultValue.ToString()
+
+            // Set initial enabled state based on current mode
+            let currentMode = Services.settings.getValue("hideTabsWhenDownByDefault") :?> string
+            textBox.Enabled <- (currentMode = "maximized" || currentMode = "down")
+
             textBox.LostFocus.Add(fun _ ->
                 match System.Int32.TryParse(textBox.Text) with
                 | true, value when value >= 0 && value <= 10000 ->
                     Services.settings.setValue("hideTabsDelayMilliseconds", value)
                 | false, _ | _, _ ->
                     // Reset to previous value if invalid
-                    textBox.Text <- 
+                    textBox.Text <-
                         try
                             (Services.settings.getValue("hideTabsDelayMilliseconds") :?> int).ToString()
                         with
                         | _ -> "3000"
             )
             textBox
+
+        let hideTabsRadio =
+            let panel = new FlowLayoutPanel()
+            panel.FlowDirection <- FlowDirection.TopDown
+            panel.AutoSize <- true
+            panel.AutoSizeMode <- AutoSizeMode.GrowAndShrink
+            panel.Margin <- Padding(0)
+            panel.Padding <- Padding(0, 0, 0, 10)  // Add bottom padding
+
+            let currentMode = Services.settings.getValue("hideTabsWhenDownByDefault") :?> string
+
+            let radioNever = new RadioButton()
+            radioNever.Text <- resources.GetString("HideNever")
+            radioNever.AutoSize <- true
+            radioNever.Checked <- (currentMode = "never")
+            radioNever.CheckedChanged.Add(fun _ ->
+                if radioNever.Checked then
+                    Services.settings.setValue("hideTabsWhenDownByDefault", "never")
+                    hideTabsDelay.Enabled <- false
+            )
+
+            let radioMaximized = new RadioButton()
+            radioMaximized.Text <- resources.GetString("HideWhenMaximized")
+            radioMaximized.AutoSize <- true
+            radioMaximized.Checked <- (currentMode = "maximized")
+            radioMaximized.CheckedChanged.Add(fun _ ->
+                if radioMaximized.Checked then
+                    Services.settings.setValue("hideTabsWhenDownByDefault", "maximized")
+                    hideTabsDelay.Enabled <- true
+            )
+
+            let radioDown = new RadioButton()
+            radioDown.Text <- resources.GetString("HideWhenDown")
+            radioDown.AutoSize <- true
+            radioDown.Checked <- (currentMode = "down")
+            radioDown.CheckedChanged.Add(fun _ ->
+                if radioDown.Checked then
+                    Services.settings.setValue("hideTabsWhenDownByDefault", "down")
+                    hideTabsDelay.Enabled <- true
+            )
+
+            let radioDoubleClick = new RadioButton()
+            radioDoubleClick.Text <- resources.GetString("HideOnDoubleClick")
+            radioDoubleClick.AutoSize <- true
+            radioDoubleClick.Checked <- (currentMode = "doubleclick")
+            radioDoubleClick.CheckedChanged.Add(fun _ ->
+                if radioDoubleClick.Checked then
+                    Services.settings.setValue("hideTabsWhenDownByDefault", "doubleclick")
+                    hideTabsDelay.Enabled <- false
+            )
+
+            panel.Controls.Add(radioNever)
+            panel.Controls.Add(radioMaximized)
+            panel.Controls.Add(radioDown)
+            panel.Controls.Add(radioDoubleClick)
+            panel
 
         let fields = hotKeys.map <| fun(key,text) ->
             let editor = editors.find key
@@ -131,12 +184,27 @@ type HotKeyView() =
             ("enableCtrlNumberHotKey", settingsCheckbox "enableCtrlNumberHotKey")
             ("enableHoverActivate", settingsCheckbox "enableHoverActivate")
             ("makeTabsNarrowerByDefault", settingsCheckbox "makeTabsNarrowerByDefault")
-            ("tabPositionByDefault", defaultTabPositionCombo :> Control)
-            ("hideTabsWhenDownByDefault", hideTabsCombo :> Control)
+            ("tabPositionByDefault", defaultTabPositionRadio :> Control)
+            ("hideTabsWhenDownByDefault", hideTabsRadio :> Control)
             ("hideTabsDelayMilliseconds", hideTabsDelay :> Control)
         ]))
 
-        "Switch Tabs", UIHelper.form fields
+        let formPanel = UIHelper.form fields
+
+        // Adjust row heights for radio button groups
+        // Row index: 0=runAtStartup, 1=hideInactiveTabs, 2=isTabbingEnabled, 3=enableCtrlNumber,
+        //            4=enableHover, 5=makeTabsNarrower, 6=tabPosition, 7=hideTabsWhenDown, 8=hideTabsDelay,
+        //            9+=hotkeys
+        let tabPositionRowIndex = 6
+        let hideTabsRowIndex = 7
+
+        if formPanel :? TableLayoutPanel then
+            let table = formPanel :?> TableLayoutPanel
+            // Let rows auto-size based on content
+            table.RowStyles.[tabPositionRowIndex].SizeType <- SizeType.AutoSize
+            table.RowStyles.[hideTabsRowIndex].SizeType <- SizeType.AutoSize
+
+        "Switch Tabs", formPanel
 
     let sections = List2([
         switchTabs
