@@ -165,12 +165,29 @@ type Desktop(notify:IDesktopNotification) as this =
             let centerPoint = System.Drawing.Point(centerX, centerY)
             let screen = Screen.FromPoint(centerPoint)
 
-            // Adjust position to keep window within screen boundaries
-            let adjustedX = max screen.WorkingArea.Left (min windowPt.x (screen.WorkingArea.Right - windowSize.width))
-            let adjustedY = max screen.WorkingArea.Top (min windowPt.y (screen.WorkingArea.Bottom - windowSize.height))
+            // Limit window size to screen size if it exceeds
+            let maxWidth = screen.WorkingArea.Width
+            let maxHeight = screen.WorkingArea.Height
+            let finalWidth = min windowSize.width maxWidth
+            let finalHeight = min windowSize.height maxHeight
 
-            // Move window position only
-            window.setPositionOnly adjustedX adjustedY
+            // Adjust position to keep window within screen boundaries
+            let adjustedX = max screen.WorkingArea.Left (min windowPt.x (screen.WorkingArea.Right - finalWidth))
+            let adjustedY = max screen.WorkingArea.Top (min windowPt.y (screen.WorkingArea.Bottom - finalHeight))
+
+            // Resize window if it exceeds screen size, then move to position
+            if windowSize.width > maxWidth || windowSize.height > maxHeight then
+                WinUserApi.SetWindowPos(
+                    hwnd,
+                    WindowHandleTypes.HWND_TOP,
+                    adjustedX,
+                    adjustedY,
+                    finalWidth,
+                    finalHeight,
+                    SetWindowPosFlags.SWP_NOACTIVATE ||| SetWindowPosFlags.SWP_NOZORDER) |> ignore
+            else
+                // Move window position only
+                window.setPositionOnly adjustedX adjustedY
                 
             notify.dragDrop(hwnd)
             

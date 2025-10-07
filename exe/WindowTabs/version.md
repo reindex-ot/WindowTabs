@@ -8,6 +8,8 @@
 - Change UI controls in Behavior tab from ComboBox to RadioButton
   - Tab position setting
   - Hide tabs when positioned at bottom setting
+- Improve tab drag and drop to limit window size to display size
+  - Automatically resize window if it exceeds monitor dimensions when dropped
 
 ## version ss_jp_2025.09.26
 - Add icons to "Move tab" menu items
