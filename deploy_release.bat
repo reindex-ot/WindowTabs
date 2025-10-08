@@ -51,6 +51,12 @@ if not exist "%TARGET_DIR%\WindowTabs.exe.config" (
     )
 )
 
+:: Copy version.md
+if exist "version.md" (
+    echo Copying version.md...
+    copy /Y "version.md" "%TARGET_DIR%\" 2>nul
+)
+
 :: Check if WindowTabs.exe exists
 if exist "%TARGET_DIR%\WindowTabs.exe" (
     echo.
