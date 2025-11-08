@@ -40,7 +40,20 @@ type NotifyIconPlugin() as this =
         notifyIcon.Visible <- true
         notifyIcon.Text <- "WindowTabs (version " + Services.program.version + ")"
         notifyIcon.Icon <- Services.openIcon("Bemo.ico")
-        notifyIcon.ContextMenu <- new ContextMenu()
+        let contextMenu = new ContextMenu()
+
+        // Apply dark mode setting when menu is about to be shown
+        contextMenu.Popup.Add <| fun _ ->
+            let darkModeEnabled =
+                try
+                    let json = Services.settings.root
+                    match json.getBool("enableMenuDarkMode") with
+                    | Some(value) -> value
+                    | None -> false
+                with | _ -> false
+            DarkMode.setDarkModeForMenus(darkModeEnabled)
+
+        notifyIcon.ContextMenu <- contextMenu
         notifyIcon.DoubleClick.Add <| fun _ -> Services.managerView.show()
         notifyIcon
 

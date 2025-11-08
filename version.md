@@ -1,5 +1,10 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.10.09_next
+- Add menu dark mode support
+  - Added "Menu Dark Mode" checkbox in Appearance settings
+  - Enables dark mode for popup menus (tab context menu, drag-and-drop menu)
+
 ## version ss_jp_2025.10.09
 - Fix tab drag and drop for all alignment settings (left/center/right)
   - Tab reordering within same group: cursor position follows tab correctly

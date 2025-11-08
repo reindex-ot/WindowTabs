@@ -99,6 +99,7 @@
     <Compile Include="Shared\ProgramTypes.fs" />
     <Compile Include="Shared/DragDrop.fs" />
     <Compile Include="Shared/Serialize.fs" />
+    <Compile Include="Shared/DarkMode.fs" />
     <Compile Include="Shared/Win32Menu.fs" />
     <Compile Include="Shared/Services.fs" />
     <Compile Include="Shared/AnimationWindow.fs" />

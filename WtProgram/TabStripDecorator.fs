@@ -123,7 +123,14 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
             | MouseUp, MouseRight ->
                 let ptScreen = os.windowFromHwnd(group.hwnd).ptToScreen(pt)
                 group.bb.write("contextMenuVisible", true)
-                Win32Menu.show group.hwnd ptScreen (this.contextMenu(hwnd))
+                let darkModeEnabled =
+                    try
+                        let json = Services.settings.root
+                        match json.getBool("enableMenuDarkMode") with
+                        | Some(value) -> value
+                        | None -> false
+                    with | _ -> false
+                Win32Menu.show group.hwnd ptScreen (this.contextMenu(hwnd)) darkModeEnabled
                 group.bb.write("contextMenuVisible", false)
             | MouseDown, MouseLeft ->
                 capturedHwnd := Some(hwnd)

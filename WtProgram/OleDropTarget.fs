@@ -77,6 +77,13 @@ type OleDropTarget(ts:TabStrip) as this=
                     let copy = shellOp <| fun file -> shellFolder.CopyHere(file, null)
                     let move = shellOp <| fun file -> shellFolder.MoveHere(file, null)
                     if rButtonDown.value then
+                        let darkModeEnabled =
+                            try
+                                let json = Services.settings.root
+                                match json.getBool("enableMenuDarkMode") with
+                                | Some(value) -> value
+                                | None -> false
+                            with | _ -> false
                         Win32Menu.show window.hwnd ptScreen (List2([
                             CmiRegular({
                                 text = "Copy"
@@ -97,7 +104,7 @@ type OleDropTarget(ts:TabStrip) as this=
                                 flags = List2()
                                 click = fun() -> ()
                             })
-                        ]))
+                        ])) darkModeEnabled
                     elif grfKeyState.hasFlag(MouseMessageKeyStateMask.MK_CONTROL) then
                         copy()
                     else

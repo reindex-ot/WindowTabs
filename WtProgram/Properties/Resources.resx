@@ -372,4 +372,7 @@
   <data name="DetachTabMoveBottom" xml:space="preserve">
     <value>Display bottom edge</value>
   </data>
+  <data name="MenuDarkMode" xml:space="preserve">
+    <value>Menu Dark Mode</value>
+  </data>
 </root>

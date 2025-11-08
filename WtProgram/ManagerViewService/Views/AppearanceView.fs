@@ -21,17 +21,42 @@ and AppearancePropertyType =
     | ColorProperty
 
 type AppearanceView() as this =
-    let colorConfig key displayText = 
+    let settingsPropertyBool name (defaultValue:bool) =
+        {
+            new IProperty<bool> with
+                member x.value
+                    with get() =
+                        try
+                            let json = Services.settings.root
+                            match json.getBool(name) with
+                            | Some(value) -> value
+                            | None -> defaultValue
+                        with | _ -> defaultValue
+                    and set(value) =
+                        let json = Services.settings.root
+                        json.setBool(name, value)
+                        Services.settings.root <- json
+        }
+
+    let colorConfig key displayText =
         { displayText=displayText; key=key; propertyType=ColorProperty }
 
-    let intConfig key displayText = 
+    let intConfig key displayText =
         { displayText=displayText; key=key; propertyType=IntProperty }
-    
-    let hkConfig key displayText = 
+
+    let hkConfig key displayText =
         { displayText=displayText; key=key; propertyType=HotKeyProperty }
         
     let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly());
     let mutable suppressEvents = false
+
+    let checkBox (prop:IProperty<bool>) =
+        let checkbox = BoolEditor() :> IPropEditor
+        checkbox.value <- box(prop.value)
+        checkbox.changed.Add <| fun() -> prop.value <- unbox<bool>(checkbox.value)
+        checkbox.control
+
+    let settingsCheckboxBool key defaultValue = checkBox(settingsPropertyBool key defaultValue)
 
     let properties = List2([
         intConfig "tabHeight" "Height"
@@ -47,14 +72,14 @@ type AppearanceView() as this =
         colorConfig "tabBorderColor" "Border"
         ])
 
-    let panel = 
+    let panel =
         let panel = TableLayoutPanel()
         panel.AutoScroll <- true
         panel.Dock <- DockStyle.Fill
         panel.GrowStyle <- TableLayoutPanelGrowStyle.FixedSize
         panel.Padding <- Padding(10)
-        panel.RowCount <- properties.length + 1
-        List2([0..properties.length]).iter <| fun row ->
+        panel.RowCount <- properties.length + 2  // +1 for checkbox, +1 for buttons
+        List2([0..properties.length + 1]).iter <| fun row ->
             panel.RowStyles.Add(RowStyle(SizeType.Absolute, 35.0f)).ignore
         panel.ColumnCount <- 2
         panel.ColumnStyles.Add(ColumnStyle(SizeType.Absolute, 250.0f)).ignore
@@ -218,14 +243,33 @@ type AppearanceView() as this =
         container.Controls.Add(resetBtn)
         container
 
-    do  
+    do
+        // Add dark mode checkbox after border color (last property)
+        let darkModeLabel = Label()
+        darkModeLabel.AutoSize <- true
+        darkModeLabel.Text <- resources.GetString("MenuDarkMode")
+        darkModeLabel.TextAlign <- ContentAlignment.MiddleLeft
+        darkModeLabel.Margin <- Padding(0,5,0,5)
+
+        let darkModeCheckbox = settingsCheckboxBool "enableMenuDarkMode" false
+        darkModeCheckbox.Margin <- Padding(0,5,0,5)
+
+        let checkboxRow = properties.length
+        panel.Controls.Add(darkModeLabel)
+        panel.Controls.Add(darkModeCheckbox)
+        panel.SetRow(darkModeLabel, checkboxRow)
+        panel.SetColumn(darkModeLabel, 0)
+        panel.SetRow(darkModeCheckbox, checkboxRow)
+        panel.SetColumn(darkModeCheckbox, 1)
+
+        // Add button panel
         panel.Controls.Add(buttonPanel)
-        let btnRow = properties.length
+        let btnRow = properties.length + 1
         panel.SetRow(buttonPanel, btnRow)
         panel.SetColumn(buttonPanel, 1)
         setEditorValues appearance
         editors.items.map(snd).iter <| fun editor ->
-            editor.changed.Add <| fun() -> 
+            editor.changed.Add <| fun() ->
                 if not suppressEvents then
                     this.applyAppearance()
         

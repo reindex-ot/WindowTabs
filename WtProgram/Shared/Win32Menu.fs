@@ -21,8 +21,11 @@ and CmiPopUp = {
     flags: List2<int>
     }
 
-module Win32Menu =        
-    let show (hwnd:IntPtr) (pt:Pt) (items:List2<_>) =
+module Win32Menu =
+    let show (hwnd:IntPtr) (pt:Pt) (items:List2<_>) (enableDarkMode:bool) =
+        // Set dark mode or light mode for this menu
+        DarkMode.setDarkModeForMenus(enableDarkMode)
+
         let id = ref 0
         
         let nextId() = 

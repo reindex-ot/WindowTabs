@@ -357,4 +357,7 @@
   <data name="MoveTabGroupFormat" xml:space="preserve">
     <value>{0}{1}: {2}</value>
   </data>
+  <data name="MenuDarkMode" xml:space="preserve">
+    <value>メニューをダークモードにする</value>
+  </data>
 </root>
