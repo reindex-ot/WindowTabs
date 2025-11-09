@@ -267,8 +267,131 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
     member private this.onCloseAllWindows() =
         group.windows.items.iter this.onCloseWindow
 
-    member private this.detachTab(hwnd: IntPtr) =
-        this.detachTabToPosition(hwnd, None)
+    // Helper methods for multi-display detach support
+    member private this.getAllScreensSorted() =
+        Screen.AllScreens
+        |> Array.sortBy (fun screen -> (screen.Bounds.X, screen.Bounds.Y))
+
+    member private this.getScreenName(screen: Screen) =
+        let centerX = screen.Bounds.Left + screen.Bounds.Width / 2
+        let centerY = screen.Bounds.Top + screen.Bounds.Height / 2
+
+        let directions =
+            [
+                if centerX < 0 then Localization.getString("Left")
+                if centerX > screen.Bounds.Width then Localization.getString("Right")
+                if centerY < 0 then Localization.getString("Up")
+                if centerY > screen.Bounds.Height then Localization.getString("Down")
+            ]
+
+        let display = Localization.getString("Display")
+
+        if screen.Bounds.Top = 0 && screen.Bounds.Left = 0 || directions.IsEmpty then
+            let main = Localization.getString("Main")
+            match Localization.getCurrentLanguage() with
+            | Localization.English -> display + " " + main
+            | Localization.Japanese -> main + display
+        else
+            let directionStr =
+                match Localization.getCurrentLanguage() with
+                | Localization.English -> String.concat " " directions
+                | Localization.Japanese -> String.concat "" directions
+            match Localization.getCurrentLanguage() with
+            | Localization.English -> display + " " + directionStr
+            | Localization.Japanese -> directionStr + display
+
+    member private this.getCurrentScreenForWindow(hwnd: IntPtr) =
+        let window = os.windowFromHwnd(hwnd)
+        let bounds = window.bounds
+        let centerX = bounds.location.x + bounds.size.width / 2
+        let centerY = bounds.location.y + bounds.size.height / 2
+        let centerPoint = System.Drawing.Point(centerX, centerY)
+        Screen.FromPoint(centerPoint)
+
+    member private this.detachTabToScreen(hwnd: IntPtr, targetScreen: Screen, position: Option<string>) =
+        // Only detach if there's more than one tab
+        if group.windows.items.count > 1 then
+            let tab = Tab(hwnd)
+            let window = os.windowFromHwnd(hwnd)
+            let bounds = window.bounds
+
+            // Calculate current window's relative size and position
+            let sourceScreen = this.getCurrentScreenForWindow(hwnd)
+            let sourceWorkArea = sourceScreen.WorkingArea
+            let widthPercent = float(bounds.size.width) / float(sourceWorkArea.Width)
+            let heightPercent = float(bounds.size.height) / float(sourceWorkArea.Height)
+            let topPercent = float(bounds.location.y - sourceWorkArea.Top) / float(sourceWorkArea.Height)
+
+            Services.program.suspendTabMonitoring()
+
+            try
+                // Remove tab from current group
+                this.ts.removeTab(tab)
+                group.removeWindow(hwnd)
+
+                window.hideOffScreen(None)
+
+                if window.isMinimized || window.isMaximized then
+                    window.showWindow(ShowWindowCommands.SW_RESTORE)
+
+                // Calculate new size based on target screen
+                let targetWorkArea = targetScreen.WorkingArea
+                let newWidth = int(float(targetWorkArea.Width) * widthPercent)
+                let newHeight = int(float(targetWorkArea.Height) * heightPercent)
+
+                // Calculate new position based on position option
+                let newLeft, newTop =
+                    match position with
+                    | Some "right" ->
+                        let left = targetWorkArea.Right - newWidth
+                        let top = targetWorkArea.Top + int(float(targetWorkArea.Height) * topPercent)
+                        (left, top)
+                    | Some "left" ->
+                        let left = targetWorkArea.Left
+                        let top = targetWorkArea.Top + int(float(targetWorkArea.Height) * topPercent)
+                        (left, top)
+                    | Some "top" ->
+                        let leftPercent = float(bounds.location.x - sourceWorkArea.Left) / float(sourceWorkArea.Width)
+                        let left = targetWorkArea.Left + int(float(targetWorkArea.Width) * leftPercent)
+                        let top = targetWorkArea.Top
+                        (left, top)
+                    | Some "bottom" ->
+                        let leftPercent = float(bounds.location.x - sourceWorkArea.Left) / float(sourceWorkArea.Width)
+                        let left = targetWorkArea.Left + int(float(targetWorkArea.Width) * leftPercent)
+                        let top = targetWorkArea.Bottom - newHeight
+                        (left, top)
+                    | _ ->
+                        // Same position - use both percentages
+                        let leftPercent = float(bounds.location.x - sourceWorkArea.Left) / float(sourceWorkArea.Width)
+                        let left = targetWorkArea.Left + int(float(targetWorkArea.Width) * leftPercent)
+                        let top = targetWorkArea.Top + int(float(targetWorkArea.Height) * topPercent)
+                        (left, top)
+
+                // Ensure position is within bounds
+                let finalX = max targetWorkArea.Left (min newLeft (targetWorkArea.Right - newWidth))
+                let finalY = max targetWorkArea.Top (min newTop (targetWorkArea.Bottom - newHeight))
+
+                // DPI-aware window placement: move position first, wait for DPI change, then set size
+                let initialDpi = WinUserApi.GetDpiForWindow(hwnd)
+                window.setPositionOnly finalX finalY
+
+                // Wait for DPI change (max 200ms)
+                let mutable currentDpi = initialDpi
+                let mutable elapsed = 0
+                while elapsed < 200 && currentDpi = initialDpi do
+                    System.Threading.Thread.Sleep(10)
+                    elapsed <- elapsed + 10
+                    currentDpi <- WinUserApi.GetDpiForWindow(hwnd)
+
+                if currentDpi <> initialDpi then
+                    System.Threading.Thread.Sleep(20)
+
+                window.move (Rect(Pt(finalX, finalY), Sz(newWidth, newHeight)))
+                notifyDetached(hwnd)
+
+            finally
+                (ThreadHelper.cancelablePostBack 200 <| fun() ->
+                    Services.program.resumeTabMonitoring()) |> ignore
 
     member private this.moveTabToGroup(hwnd: IntPtr, targetGroup: WindowGroup) =
         // Move tab to another group if it's a different group
@@ -356,74 +479,48 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 try Services.program.resumeTabMonitoring() with _ -> ()
 
     member private this.detachTabToPosition(hwnd: IntPtr, position: Option<string>) =
-        // Only detach if there's more than one tab
         if group.windows.items.count > 1 then
             let tab = Tab(hwnd)
             let window = os.windowFromHwnd(hwnd)
             let bounds = window.bounds
 
-            // Suspend tab monitoring to prevent auto-grouping
             Services.program.suspendTabMonitoring()
 
             try
-                // Remove tab from current group first
                 this.ts.removeTab(tab)
                 group.removeWindow(hwnd)
 
-                // Hide window temporarily
                 window.hideOffScreen(None)
 
-                // Restore window to its original position
                 if window.isMinimized || window.isMaximized then
                     window.showWindow(ShowWindowCommands.SW_RESTORE)
 
-                // Set position based on the option
-                // First restore to original position to determine correct screen
                 window.setPositionOnly bounds.location.x bounds.location.y
-
-                // Calculate window center point to determine which screen it belongs to
-                let centerX = bounds.location.x + bounds.size.width / 2
-                let centerY = bounds.location.y + bounds.size.height / 2
-                let centerPoint = System.Drawing.Point(centerX, centerY)
-                let screen = Screen.FromPoint(centerPoint)
+                let screen = this.getCurrentScreenForWindow(hwnd)
 
                 match position with
                 | Some "right" ->
-                    let width = bounds.size.width
-                    let x = screen.WorkingArea.Right - width
-                    let y = bounds.location.y
-                    // Keep Y within screen bounds
-                    let y = max screen.WorkingArea.Top (min y (screen.WorkingArea.Bottom - bounds.size.height))
+                    let x = screen.WorkingArea.Right - bounds.size.width
+                    let y = max screen.WorkingArea.Top (min bounds.location.y (screen.WorkingArea.Bottom - bounds.size.height))
                     window.setPositionOnly x y
                 | Some "left" ->
                     let x = screen.WorkingArea.Left
-                    let y = bounds.location.y
-                    // Keep Y within screen bounds
-                    let y = max screen.WorkingArea.Top (min y (screen.WorkingArea.Bottom - bounds.size.height))
+                    let y = max screen.WorkingArea.Top (min bounds.location.y (screen.WorkingArea.Bottom - bounds.size.height))
                     window.setPositionOnly x y
                 | Some "top" ->
-                    let x = bounds.location.x
+                    let x = max screen.WorkingArea.Left (min bounds.location.x (screen.WorkingArea.Right - bounds.size.width))
                     let y = screen.WorkingArea.Top
-                    // Keep X within screen bounds
-                    let x = max screen.WorkingArea.Left (min x (screen.WorkingArea.Right - bounds.size.width))
                     window.setPositionOnly x y
                 | Some "bottom" ->
-                    let height = bounds.size.height
-                    let x = bounds.location.x
-                    let y = screen.WorkingArea.Bottom - height
-                    // Keep X within screen bounds
-                    let x = max screen.WorkingArea.Left (min x (screen.WorkingArea.Right - bounds.size.width))
+                    let x = max screen.WorkingArea.Left (min bounds.location.x (screen.WorkingArea.Right - bounds.size.width))
+                    let y = screen.WorkingArea.Bottom - bounds.size.height
                     window.setPositionOnly x y
                 | _ ->
-                    () // Already positioned at original location
+                    ()
 
-                // Notify that this window was detached so it gets a new group
-                // This will trigger dragDrop and dragEnd which creates a new group
                 notifyDetached(hwnd)
 
-                // Detach successful
             finally
-                // Resume tab monitoring after a delay
                 (ThreadHelper.cancelablePostBack 200 <| fun() ->
                     Services.program.resumeTabMonitoring()) |> ignore
 
@@ -553,41 +650,100 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
 
         let detachTabSubMenu =
             let isEnabled = group.windows.items.count > 1
+            let allScreens = this.getAllScreensSorted()
+            let currentScreen = this.getCurrentScreenForWindow(hwnd)
+
+            let baseMenuItems = [
+                CmiRegular({
+                    text = Localization.getString("DetachTabSamePosition")
+                    image = None
+                    click = fun() -> this.detachTabToPosition(hwnd, None)
+                    flags = List2()
+                })
+                CmiRegular({
+                    text = Localization.getString("DetachTabMoveRight")
+                    image = None
+                    click = fun() -> this.detachTabToPosition(hwnd, Some "right")
+                    flags = List2()
+                })
+                CmiRegular({
+                    text = Localization.getString("DetachTabMoveLeft")
+                    image = None
+                    click = fun() -> this.detachTabToPosition(hwnd, Some "left")
+                    flags = List2()
+                })
+                CmiRegular({
+                    text = Localization.getString("DetachTabMoveTop")
+                    image = None
+                    click = fun() -> this.detachTabToPosition(hwnd, Some "top")
+                    flags = List2()
+                })
+                CmiRegular({
+                    text = Localization.getString("DetachTabMoveBottom")
+                    image = None
+                    click = fun() -> this.detachTabToPosition(hwnd, Some "bottom")
+                    flags = List2()
+                })
+            ]
+
+            let menuItems =
+                if allScreens.Length > 1 then
+                    let screenSubMenus =
+                        allScreens
+                        |> Array.map (fun screen ->
+                            let screenName = this.getScreenName(screen)
+                            let isCurrentScreen = screen.Equals(currentScreen)
+
+                            let screenItems = [
+                                CmiRegular({
+                                    text = Localization.getString("DetachTabSamePosition")
+                                    image = None
+                                    click = fun() -> this.detachTabToScreen(hwnd, screen, None)
+                                    flags = List2()
+                                })
+                                CmiRegular({
+                                    text = Localization.getString("DetachTabMoveRight")
+                                    image = None
+                                    click = fun() -> this.detachTabToScreen(hwnd, screen, Some "right")
+                                    flags = List2()
+                                })
+                                CmiRegular({
+                                    text = Localization.getString("DetachTabMoveLeft")
+                                    image = None
+                                    click = fun() -> this.detachTabToScreen(hwnd, screen, Some "left")
+                                    flags = List2()
+                                })
+                                CmiRegular({
+                                    text = Localization.getString("DetachTabMoveTop")
+                                    image = None
+                                    click = fun() -> this.detachTabToScreen(hwnd, screen, Some "top")
+                                    flags = List2()
+                                })
+                                CmiRegular({
+                                    text = Localization.getString("DetachTabMoveBottom")
+                                    image = None
+                                    click = fun() -> this.detachTabToScreen(hwnd, screen, Some "bottom")
+                                    flags = List2()
+                                })
+                            ]
+
+                            CmiPopUp({
+                                text = screenName
+                                image = None
+                                items = List2(screenItems)
+                                flags = if isCurrentScreen then List2([MenuFlags.MF_GRAYED]) else List2()
+                            })
+                        )
+                        |> Array.toList
+
+                    baseMenuItems @ [CmiSeparator] @ screenSubMenus
+                else
+                    baseMenuItems
+
             Some(CmiPopUp({
                 text = Localization.getString("DetachTab")
                 image = None
-                items = List2([
-                    CmiRegular({
-                        text = Localization.getString("DetachTabSamePosition")
-                        image = None
-                        click = fun() -> this.detachTab(hwnd)
-                        flags = List2()
-                    })
-                    CmiRegular({
-                        text = Localization.getString("DetachTabMoveRight")
-                        image = None
-                        click = fun() -> this.detachTabToPosition(hwnd, Some "right")
-                        flags = List2()
-                    })
-                    CmiRegular({
-                        text = Localization.getString("DetachTabMoveLeft")
-                        image = None
-                        click = fun() -> this.detachTabToPosition(hwnd, Some "left")
-                        flags = List2()
-                    })
-                    CmiRegular({
-                        text = Localization.getString("DetachTabMoveTop")
-                        image = None
-                        click = fun() -> this.detachTabToPosition(hwnd, Some "top")
-                        flags = List2()
-                    })
-                    CmiRegular({
-                        text = Localization.getString("DetachTabMoveBottom")
-                        image = None
-                        click = fun() -> this.detachTabToPosition(hwnd, Some "bottom")
-                        flags = List2()
-                    })
-                ])
+                items = List2(menuItems)
                 flags = if isEnabled then List2() else List2([MenuFlags.MF_GRAYED])
             }))
 

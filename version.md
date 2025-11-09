@@ -7,6 +7,9 @@
 - Implement runtime language switching without restart
   - Replaced .NET resource system with code-based localization (Localization.fs, Localization_en.fs, Localization_ja-JP.fs)
   - Language changes take effect immediately, removed dependency on resx files and WindowTabs.resources.dll
+- Enhance tab detach functionality with multi-display support
+  - Display-specific submenus with DPI-aware percentage-based positioning
+  - Current display menu is disabled, and "Same position and size" changed to "Same position"
 
 ## version ss_jp_2025.10.09
 - Fix tab drag and drop for all alignment settings (left/center/right)
