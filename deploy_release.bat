@@ -25,19 +25,7 @@ copy /Y "%SOURCE_DIR%\Newtonsoft.Json.dll" "%TARGET_DIR%\" 2>nul
 copy /Y "%SOURCE_DIR%\Interop.SHDocVw.dll" "%TARGET_DIR%\" 2>nul
 copy /Y "%SOURCE_DIR%\Interop.Shell32.dll" "%TARGET_DIR%\" 2>nul
 
-:: Copy Japanese resources
-if not exist "%TARGET_DIR%\ja-JP" mkdir "%TARGET_DIR%\ja-JP"
-copy /Y "%SOURCE_DIR%\ja-JP\WindowTabs.resources.dll" "%TARGET_DIR%\ja-JP\" 2>nul
-
-:: Copy English resources as fallback
-if not exist "%TARGET_DIR%\en" mkdir "%TARGET_DIR%\en"
-copy /Y "%SOURCE_DIR%\en\*.dll" "%TARGET_DIR%\en\" 2>nul
-
-:: Also try ja folder (without -JP)
-if exist "%SOURCE_DIR%\ja\*.dll" (
-    if not exist "%TARGET_DIR%\ja" mkdir "%TARGET_DIR%\ja"
-    copy /Y "%SOURCE_DIR%\ja\*.dll" "%TARGET_DIR%\ja\" 2>nul
-)
+:: Language resources are no longer needed (using code-based localization)
 
 :: Copy config file if exists
 if exist "%SOURCE_DIR%\WindowTabs.exe.config" (
@@ -66,9 +54,6 @@ if exist "%TARGET_DIR%\WindowTabs.exe" (
     echo ==============================
     dir /B "%TARGET_DIR%\*.exe" | findstr /V "ILMerge ILRepack"
     dir /B "%TARGET_DIR%\*.dll" | findstr /V "ILMerge ILRepack"
-    echo.
-    echo Language resources:
-    dir /B "%TARGET_DIR%\ja-JP\*.dll" 2>nul
 ) else (
     echo.
     echo ERROR: WindowTabs.exe not found in %SOURCE_DIR%

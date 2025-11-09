@@ -1,6 +1,6 @@
 # WindowTabs Standard-Software Version
 
-## version ss_jp_2025.10.09_next
+## version ss_jp_2025.11.10
 - Add menu dark mode support
   - Added "Menu Dark Mode" checkbox in Appearance settings
   - Enables dark mode for popup menus (tab context menu, drag-and-drop menu)
