@@ -6,11 +6,8 @@ open System.Windows.Forms
 open Bemo.Win32.Forms
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
-open System.Resources
-open System.Reflection
 
 type DiagnosticsView() as this =
-    let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly());
 
     let textBox =
         let tb = TextBox()
@@ -96,7 +93,7 @@ type DiagnosticsView() as this =
 
     interface ISettingsView with
         member x.key = SettingsViewType.DiagnosticsSettings
-        member x.title = resources.GetString "Diagnostics"
+        member x.title = Localization.getString "Diagnostics"
         member x.control = panel :> Control
 
 

@@ -4,6 +4,9 @@
 - Add menu dark mode support
   - Added "Menu Dark Mode" checkbox in Appearance settings
   - Enables dark mode for popup menus (tab context menu, drag-and-drop menu)
+- Implement runtime language switching without restart
+  - Replaced .NET resource system with code-based localization (Localization.fs, Localization_en.fs, Localization_ja-JP.fs)
+  - Language changes take effect immediately, removed dependency on resx files and WindowTabs.resources.dll
 
 ## version ss_jp_2025.10.09
 - Fix tab drag and drop for all alignment settings (left/center/right)

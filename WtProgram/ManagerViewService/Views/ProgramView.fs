@@ -6,8 +6,6 @@ open System.Windows.Forms
 open Bemo.Win32.Forms
 open Aga.Controls
 open Aga.Controls.Tree
-open System.Resources
-open System.Reflection
 
 module ImgHelper =
     let imgFromIcon (icon:Icon) =
@@ -49,14 +47,13 @@ type WindowNode(window:Window) =
         member x.showSettings = false
 
 type ProgramView() as this=
-    let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly());
 
     let invoker = InvokerService.invoker
     let toolBar = 
         let ts = ToolStrip()
         ts.GripStyle  <- ToolStripGripStyle.Hidden
         let refreshBtn = 
-            let btn = ToolStripButton(resources.GetString("Refresh"))
+            let btn = ToolStripButton(Localization.getString("Refresh"))
             btn.Click.Add <| fun _ -> this.populateNodes()
             btn
         ts.Items.Add(refreshBtn).ignore
@@ -68,12 +65,12 @@ type ProgramView() as this=
     let tree,model = 
         let tree = TreeViewAdv()
         let model = TreeModel()
-        let nameColumn = TreeColumn(resources.GetString("Name"), 200)
+        let nameColumn = TreeColumn(Localization.getString("Name"), 200)
         tree.UseColumns <- true
         tree.Columns.Add(nameColumn)
         tree.RowHeight <- 24
         let addCheckBoxColumn colText propName =
-            let content = resources.GetString(propName)
+            let content = Localization.getString(propName)
             let parentColumn =
                 let col = TreeColumn(content, 100)
                 col.TextAlign <- HorizontalAlignment.Center
@@ -146,5 +143,5 @@ type ProgramView() as this=
 
     interface ISettingsView with
         member x.key = SettingsViewType.ProgramSettings
-        member x.title = resources.GetString "Programs"
+        member x.title = Localization.getString "Programs"
         member x.control = panel :> Control

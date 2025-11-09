@@ -6,8 +6,6 @@ open System.Windows.Forms
 open Bemo.Win32
 open Bemo.Win32.Forms
 open Microsoft.FSharp.Reflection
-open System.Resources
-open System.Reflection
 
 type AppearanceProperty = {
     displayText : string
@@ -47,7 +45,6 @@ type AppearanceView() as this =
     let hkConfig key displayText =
         { displayText=displayText; key=key; propertyType=HotKeyProperty }
         
-    let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly());
     let mutable suppressEvents = false
 
     let checkBox (prop:IProperty<bool>) =
@@ -91,7 +88,7 @@ type AppearanceView() as this =
         let label =
             let label = Label()
             label.AutoSize <- true
-            label.Text <- resources.GetString(prop.displayText)
+            label.Text <- Localization.getString(prop.displayText)
             label.TextAlign <- ContentAlignment.MiddleLeft
             label
         let editor = 
@@ -120,7 +117,7 @@ type AppearanceView() as this =
 
     let appearance = Services.program.tabAppearanceInfo
 
-    let font = Font(resources.GetString("Font"), 9f)
+    let font = Font(Localization.getString("Font"), 9f)
 
     let buttonPanel =
         let container = new FlowLayoutPanel()
@@ -130,7 +127,7 @@ type AppearanceView() as this =
         container.Anchor <- AnchorStyles.Right
 
         let resetBtn = Button()
-        resetBtn.Text <- resources.GetString("Reset")
+        resetBtn.Text <- Localization.getString("Reset")
         resetBtn.Font <- font
         resetBtn.Click.Add <| fun _ ->
             suppressEvents <- true
@@ -156,7 +153,7 @@ type AppearanceView() as this =
             suppressEvents <- false
         
         let lightBtn = Button()
-        lightBtn.Text <- resources.GetString("LightColor")
+        lightBtn.Text <- Localization.getString("LightColor")
         lightBtn.Font <- font
         lightBtn.Click.Add <| fun _ ->
             suppressEvents <- true
@@ -182,7 +179,7 @@ type AppearanceView() as this =
             suppressEvents <- false
         
         let darkBtn = Button()
-        darkBtn.Text <- resources.GetString("DarkColor")
+        darkBtn.Text <- Localization.getString("DarkColor")
         darkBtn.Font <- font
         darkBtn.Click.Add <| fun _ ->
             suppressEvents <- true
@@ -210,7 +207,7 @@ type AppearanceView() as this =
             suppressEvents <- false
 
         let darkBlueBtn = Button()
-        darkBlueBtn.Text <- resources.GetString("DarkBlueColor")
+        darkBlueBtn.Text <- Localization.getString("DarkBlueColor")
         darkBlueBtn.Font <- font
         darkBlueBtn.Click.Add <| fun _ ->
             suppressEvents <- true
@@ -247,7 +244,7 @@ type AppearanceView() as this =
         // Add dark mode checkbox after border color (last property)
         let darkModeLabel = Label()
         darkModeLabel.AutoSize <- true
-        darkModeLabel.Text <- resources.GetString("MenuDarkMode")
+        darkModeLabel.Text <- Localization.getString("MenuDarkMode")
         darkModeLabel.TextAlign <- ContentAlignment.MiddleLeft
         darkModeLabel.Margin <- Padding(0,5,0,5)
 
@@ -300,6 +297,6 @@ type AppearanceView() as this =
         
     interface ISettingsView with
         member x.key = SettingsViewType.AppearanceSettings
-        member x.title = resources.GetString("Appearance")
+        member x.title = Localization.getString("Appearance")
         member x.control = panel :> Control
 

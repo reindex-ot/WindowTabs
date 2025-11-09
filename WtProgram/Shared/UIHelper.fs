@@ -234,7 +234,6 @@ module UIHelper =
         label.TextAlign <- ContentAlignment.MiddleLeft
         label
         
-    let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly());
     
 
     let form (fields:List2<_>) =
@@ -255,7 +254,7 @@ module UIHelper =
             t
 
         fields.enumerate.iter <| fun (i,(text, control:Control)) ->
-            let caption = resources.GetString text
+            let caption = Localization.getString text
             let label = label caption
             control.Dock <- DockStyle.Fill
             label.Margin <- Padding(0,5,0,5)

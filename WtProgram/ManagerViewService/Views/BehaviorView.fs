@@ -5,8 +5,6 @@ open System.IO
 open System.Windows.Forms
 open Bemo.Win32
 open Bemo.Win32.Forms
-open System.Resources
-open System.Reflection
 
 
 type HotKeyView() =
@@ -18,7 +16,6 @@ type HotKeyView() =
                     and set(value) = Services.settings.setValue(name, box(value))
         }
         
-    let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly());
 
     let switchTabs =
         let hotKeys = List2([
@@ -27,7 +24,7 @@ type HotKeyView() =
         ])
 
         let editors = hotKeys.enumerate.fold (Map2()) <| fun editors (i,(key, text)) ->
-            let caption = resources.GetString text
+            let caption = Localization.getString text
             let label = UIHelper.label caption
             let editor = HotKeyEditor() :> IPropEditor
             editor.control.Margin <- Padding(0,5,0,5)
@@ -59,7 +56,7 @@ type HotKeyView() =
             let currentPosition = Services.settings.getValue("tabPositionByDefault") :?> string
 
             let radioLeft = new RadioButton()
-            radioLeft.Text <- resources.GetString("AlignLeft")
+            radioLeft.Text <- Localization.getString("AlignLeft")
             radioLeft.AutoSize <- true
             radioLeft.Checked <- (currentPosition = "left")
             radioLeft.CheckedChanged.Add(fun _ ->
@@ -68,7 +65,7 @@ type HotKeyView() =
             )
 
             let radioCenter = new RadioButton()
-            radioCenter.Text <- resources.GetString("AlignCenter")
+            radioCenter.Text <- Localization.getString("AlignCenter")
             radioCenter.AutoSize <- true
             radioCenter.Checked <- (currentPosition = "center")
             radioCenter.CheckedChanged.Add(fun _ ->
@@ -77,7 +74,7 @@ type HotKeyView() =
             )
 
             let radioRight = new RadioButton()
-            radioRight.Text <- resources.GetString("AlignRight")
+            radioRight.Text <- Localization.getString("AlignRight")
             radioRight.AutoSize <- true
             radioRight.Checked <- (currentPosition = "right" || (currentPosition <> "left" && currentPosition <> "center"))
             radioRight.CheckedChanged.Add(fun _ ->
@@ -128,7 +125,7 @@ type HotKeyView() =
             let currentMode = Services.settings.getValue("hideTabsWhenDownByDefault") :?> string
 
             let radioNever = new RadioButton()
-            radioNever.Text <- resources.GetString("HideNever")
+            radioNever.Text <- Localization.getString("HideNever")
             radioNever.AutoSize <- true
             radioNever.Checked <- (currentMode = "never")
             radioNever.CheckedChanged.Add(fun _ ->
@@ -138,7 +135,7 @@ type HotKeyView() =
             )
 
             let radioMaximized = new RadioButton()
-            radioMaximized.Text <- resources.GetString("HideWhenMaximized")
+            radioMaximized.Text <- Localization.getString("HideWhenMaximized")
             radioMaximized.AutoSize <- true
             radioMaximized.Checked <- (currentMode = "maximized")
             radioMaximized.CheckedChanged.Add(fun _ ->
@@ -148,7 +145,7 @@ type HotKeyView() =
             )
 
             let radioDown = new RadioButton()
-            radioDown.Text <- resources.GetString("HideWhenDown")
+            radioDown.Text <- Localization.getString("HideWhenDown")
             radioDown.AutoSize <- true
             radioDown.Checked <- (currentMode = "down")
             radioDown.CheckedChanged.Add(fun _ ->
@@ -158,7 +155,7 @@ type HotKeyView() =
             )
 
             let radioDoubleClick = new RadioButton()
-            radioDoubleClick.Text <- resources.GetString("HideOnDoubleClick")
+            radioDoubleClick.Text <- Localization.getString("HideOnDoubleClick")
             radioDoubleClick.AutoSize <- true
             radioDoubleClick.Checked <- (currentMode = "doubleclick")
             radioDoubleClick.CheckedChanged.Add(fun _ ->
@@ -220,6 +217,6 @@ type HotKeyView() =
 
     interface ISettingsView with
         member x.key = SettingsViewType.HotKeySettings
-        member x.title = resources.GetString("Behavior")
+        member x.title = Localization.getString("Behavior")
         member x.control = table :> Control
 

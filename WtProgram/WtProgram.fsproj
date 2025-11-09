@@ -100,6 +100,9 @@
     <Compile Include="Shared/DragDrop.fs" />
     <Compile Include="Shared/Serialize.fs" />
     <Compile Include="Shared/DarkMode.fs" />
+    <Compile Include="Shared/Localization_en.fs" />
+    <Compile Include="Shared/Localization_ja-JP.fs" />
+    <Compile Include="Shared/Localization.fs" />
     <Compile Include="Shared/Win32Menu.fs" />
     <Compile Include="Shared/Services.fs" />
     <Compile Include="Shared/AnimationWindow.fs" />
@@ -150,8 +153,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="packages.config" />
-    <EmbeddedResource Include="Properties\Resources.resx" />
-    <EmbeddedResource Include="Properties\Resources.ja-JP.resx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Aga.Controls">

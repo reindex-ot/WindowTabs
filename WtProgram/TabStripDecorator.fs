@@ -4,8 +4,6 @@ open System.Drawing
 open System.Windows.Forms
 open System.Diagnostics
 open Bemo.Win32.Forms
-open System.Reflection
-open System.Resources
 
 // Tab group info for cross-thread access
 type TabGroupInfo = {
@@ -23,7 +21,6 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
 
     let os = OS()
     let Cell = CellScope(false, true)
-    let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly())
     let isDraggingCell = Cell.create(false)
     let dragInfoCell = Cell.create(None)
     let dragPtCell = Cell.create(Pt.empty)
@@ -440,7 +437,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
 
         let newWindowItem = 
             CmiRegular({
-                text = resources.GetString("NewWindow")
+                text = Localization.getString("NewWindow")
                 flags = List2()
                 image = None
                 click = fun() -> Process.Start(processPath) |> ignore
@@ -449,7 +446,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
         
         let renameTabItem =
             CmiRegular({
-                text = resources.GetString("RenameTab")
+                text = Localization.getString("RenameTab")
                 image = None
                 flags = List2()
                 click = fun() ->
@@ -457,7 +454,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
             })
         let restoreTabNameItem =
             CmiRegular({
-                text = resources.GetString("RestoreTabName")
+                text = Localization.getString("RestoreTabName")
                 image = None
                 click = fun() -> group.setTabName(hwnd, None)
                 flags = List2()
@@ -472,7 +469,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 else
                     tabText.Substring(0, 9) + "..."
             CmiRegular({
-                text = sprintf "%s(%s)" (resources.GetString("CloseTab")) displayText
+                text = sprintf "%s(%s)" (Localization.getString("CloseTab")) displayText
                 image = None
                 click = fun() -> this.onCloseWindow hwnd
                 flags = List2()
@@ -485,17 +482,17 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 tabIndex |> Option.map(fun index -> this.ts.lorder.count - index - 1) |> Option.defaultValue 0
             let displayText = 
                 if rightTabCount = 0 then
-                    resources.GetString("CloseTabsToTheRight")
+                    Localization.getString("CloseTabsToTheRight")
                 else
                     let formatKey = "CloseTabsToTheRightFormat"
-                    let formatString = resources.GetString(formatKey)
+                    let formatString = Localization.getString(formatKey)
                     if formatString = null then
                         failwithf "Resource string '%s' not found" formatKey
                     let tabWord = 
                         if rightTabCount = 1 then 
-                            resources.GetString("TabSingular")
+                            Localization.getString("TabSingular")
                         else 
-                            resources.GetString("TabPlural")
+                            Localization.getString("TabPlural")
                     String.Format(formatString, rightTabCount, tabWord)
             CmiRegular({
                 text = displayText
@@ -511,17 +508,17 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 tabIndex |> Option.defaultValue 0
             let displayText = 
                 if leftTabCount = 0 then
-                    resources.GetString("CloseTabsToTheLeft")
+                    Localization.getString("CloseTabsToTheLeft")
                 else
                     let formatKey = "CloseTabsToTheLeftFormat"
-                    let formatString = resources.GetString(formatKey)
+                    let formatString = Localization.getString(formatKey)
                     if formatString = null then
                         failwithf "Resource string '%s' not found" formatKey
                     let tabWord = 
                         if leftTabCount = 1 then 
-                            resources.GetString("TabSingular")
+                            Localization.getString("TabSingular")
                         else 
-                            resources.GetString("TabPlural")
+                            Localization.getString("TabPlural")
                     String.Format(formatString, leftTabCount, tabWord)
             CmiRegular({
                 text = displayText
@@ -532,7 +529,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
 
         let closeOtherTabsItem =
             CmiRegular({
-                text = resources.GetString("CloseOtherTabs")
+                text = Localization.getString("CloseOtherTabs")
                 image = None
                 click = fun() -> this.onCloseOtherWindows hwnd
                 flags = List2()
@@ -540,7 +537,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
 
         let closeAllTabsItem =
             CmiRegular({
-                text = resources.GetString("CloseAllTabs")
+                text = Localization.getString("CloseAllTabs")
                 image = None
                 click = fun() -> this.onCloseAllWindows()
                 flags = List2()
@@ -548,7 +545,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
 
         let managerItem =
             CmiRegular({
-                text = resources.GetString("SettingsMenu")
+                text = Localization.getString("SettingsMenu")
                 image = None
                 click = fun() -> Services.managerView.show()
                 flags = List2()
@@ -557,35 +554,35 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
         let detachTabSubMenu =
             let isEnabled = group.windows.items.count > 1
             Some(CmiPopUp({
-                text = resources.GetString("DetachTab")
+                text = Localization.getString("DetachTab")
                 image = None
                 items = List2([
                     CmiRegular({
-                        text = resources.GetString("DetachTabSamePosition")
+                        text = Localization.getString("DetachTabSamePosition")
                         image = None
                         click = fun() -> this.detachTab(hwnd)
                         flags = List2()
                     })
                     CmiRegular({
-                        text = resources.GetString("DetachTabMoveRight")
+                        text = Localization.getString("DetachTabMoveRight")
                         image = None
                         click = fun() -> this.detachTabToPosition(hwnd, Some "right")
                         flags = List2()
                     })
                     CmiRegular({
-                        text = resources.GetString("DetachTabMoveLeft")
+                        text = Localization.getString("DetachTabMoveLeft")
                         image = None
                         click = fun() -> this.detachTabToPosition(hwnd, Some "left")
                         flags = List2()
                     })
                     CmiRegular({
-                        text = resources.GetString("DetachTabMoveTop")
+                        text = Localization.getString("DetachTabMoveTop")
                         image = None
                         click = fun() -> this.detachTabToPosition(hwnd, Some "top")
                         flags = List2()
                     })
                     CmiRegular({
-                        text = resources.GetString("DetachTabMoveBottom")
+                        text = Localization.getString("DetachTabMoveBottom")
                         image = None
                         click = fun() -> this.detachTabToPosition(hwnd, Some "bottom")
                         flags = List2()
@@ -715,12 +712,12 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                                                 nameString
 
                                     // Use same pattern as CloseTabsToTheRight
-                                    let formatString = resources.GetString("MoveTabGroupFormat")
+                                    let formatString = Localization.getString("MoveTabGroupFormat")
                                     let tabWord =
                                         if info.tabCount = 1 then
-                                            resources.GetString("TabSingular")
+                                            Localization.getString("TabSingular")
                                         else
-                                            resources.GetString("TabPlural")
+                                            Localization.getString("TabPlural")
                                     let menuText = String.Format(formatString, info.tabCount, tabWord, fullNameString)
 
                                     System.Diagnostics.Debug.WriteLine(sprintf "Menu text: %s" menuText)
@@ -743,7 +740,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                         )
 
                     Some(CmiPopUp({
-                        text = resources.GetString("MoveTab")
+                        text = Localization.getString("MoveTab")
                         image = None
                         items = List2(menuItems)
                         flags = List2()

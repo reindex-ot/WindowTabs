@@ -2,7 +2,6 @@
 open System
 open System.Windows.Forms
 open System.Reflection
-open System.Resources
 open Newtonsoft.Json.Linq
 open System.Diagnostics
 open System.IO
@@ -10,7 +9,7 @@ open System.Threading
 
 type NotifyIconPlugin() as this =
     let Cell = CellScope()
-    
+
     let closeSettingsDialog() =
         // Try to close any existing settings dialog using mutex check
         let mutable tempMutex : Mutex option = None
@@ -23,17 +22,15 @@ type NotifyIconPlugin() as this =
                 ()
             // Always release the mutex immediately
             match tempMutex with
-            | Some m -> 
+            | Some m ->
                 try m.ReleaseMutex(); m.Dispose() with _ -> ()
             | None -> ()
         with _ -> ()
         // Close local form reference if exists
         match DesktopManagerFormState.currentForm with
-        | Some form -> 
+        | Some form ->
             try form.Close() with _ -> ()
         | None -> ()
-    
-    let resources = new ResourceManager("Properties.Resources", Assembly.GetExecutingAssembly());
 
     member this.icon = Cell.cacheProp this <| fun() ->
         let notifyIcon = new NotifyIcon()
@@ -42,7 +39,7 @@ type NotifyIconPlugin() as this =
         notifyIcon.Icon <- Services.openIcon("Bemo.ico")
         let contextMenu = new ContextMenu()
 
-        // Apply dark mode setting when menu is about to be shown
+        // Apply dark mode setting and update menu texts when menu is about to be shown
         contextMenu.Popup.Add <| fun _ ->
             let darkModeEnabled =
                 try
@@ -52,6 +49,37 @@ type NotifyIconPlugin() as this =
                     | None -> false
                 with | _ -> false
             DarkMode.setDarkModeForMenus(darkModeEnabled)
+
+            // Update all menu item texts by checking their Tags
+            for i in 0 .. contextMenu.MenuItems.Count - 1 do
+                let menuItem = contextMenu.MenuItems.[i]
+                match menuItem.Tag with
+                | :? string as tag ->
+                    match tag with
+                    | "Settings" -> menuItem.Text <- Localization.getString("Settings")
+                    | "Language" ->
+                        menuItem.Text <- Localization.getString("Language")
+                        // Update language menu checkmarks
+                        let currentLanguage =
+                            try
+                                let settingsJson = Services.settings.root
+                                let value = settingsJson.["language"]
+                                if value = null then "en" else value.ToString()
+                            with
+                            | _ -> "en"
+
+                        for j in 0 .. menuItem.MenuItems.Count - 1 do
+                            let langItem = menuItem.MenuItems.[j]
+                            if langItem.Text = "English" then
+                                langItem.Checked <- (currentLanguage = "en")
+                                langItem.Enabled <- not (currentLanguage = "en")
+                            elif langItem.Text = "Japanese" then
+                                langItem.Checked <- (currentLanguage = "ja")
+                                langItem.Enabled <- not (currentLanguage = "ja")
+                    | "RestartWindowTabs" -> menuItem.Text <- Localization.getString("RestartWindowTabs")
+                    | "CloseWindowTabs" -> menuItem.Text <- Localization.getString("CloseWindowTabs")
+                    | _ -> ()
+                | _ -> ()
 
         notifyIcon.ContextMenu <- contextMenu
         notifyIcon.DoubleClick.Add <| fun _ -> Services.managerView.show()
@@ -85,8 +113,8 @@ type NotifyIconPlugin() as this =
         | ex -> MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
 
     member this.createLanguageMenu() =
-        let languageMenu = new MenuItem(resources.GetString("Language"))
-        let currentLanguage = 
+        let languageMenu = new MenuItem(Localization.getString("Language"))
+        let currentLanguage =
             try
                 let settingsJson = Services.settings.root
                 let value = settingsJson.["language"]
@@ -96,29 +124,29 @@ type NotifyIconPlugin() as this =
         
         let englishItem = new MenuItem("English")
         englishItem.Checked <- (currentLanguage = "en")
+        englishItem.Enabled <- not (currentLanguage = "en")
         englishItem.Click.Add <| fun _ ->
             try
                 let json = Services.settings.root
                 json.["language"] <- JToken.FromObject("en")
                 Services.settings.root <- json
+                Localization.setLanguageByString("en")
                 closeSettingsDialog()
-                let result = MessageBox.Show("Language will be changed to English.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
-                if result = DialogResult.OK then
-                    this.restartApplication()
+                MessageBox.Show("Language has been changed to English.", "Language Change", MessageBoxButtons.OK, MessageBoxIcon.Information) |> ignore
             with
             | ex -> MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
-            
+
         let japaneseItem = new MenuItem("Japanese")
         japaneseItem.Checked <- (currentLanguage = "ja")
+        japaneseItem.Enabled <- not (currentLanguage = "ja")
         japaneseItem.Click.Add <| fun _ ->
             try
                 let json = Services.settings.root
                 json.["language"] <- JToken.FromObject("ja")
                 Services.settings.root <- json
+                Localization.setLanguageByString("ja")
                 closeSettingsDialog()
-                let result = MessageBox.Show("Language will be changed to Japanese.\nThe application will restart now.", "Language Change", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
-                if result = DialogResult.OK then
-                    this.restartApplication()
+                MessageBox.Show("Language has been changed to Japanese.", "Language Change", MessageBoxButtons.OK, MessageBoxIcon.Information) |> ignore
             with
             | ex -> MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
             
@@ -128,12 +156,32 @@ type NotifyIconPlugin() as this =
 
     interface IPlugin with
         member this.init() =
-            this.addItem(resources.GetString("Settings"), fun() -> Services.managerView.show())
-            this.contextMenuItems.Add(this.createLanguageMenu()) |> ignore
-            //this.addItem(resources.GetString("Feedback"), Forms.openFeedback) // 404 Not Found.
-            this.contextMenuItems.Add("-").ignore
-            this.addItem(resources.GetString("RestartWindowTabs"), fun() -> this.restartApplication())
-            this.addItem(resources.GetString("CloseWindowTabs"), fun() -> Services.program.shutdown())
+            let notifyIcon = this.icon
+            let contextMenu = notifyIcon.ContextMenu
+
+            // Create menu items
+            let settingsMenuItem = new MenuItem(Localization.getString("Settings"))
+            settingsMenuItem.Click.Add <| fun _ -> Services.managerView.show()
+            settingsMenuItem.Tag <- box("Settings")
+            this.contextMenuItems.Add(settingsMenuItem) |> ignore
+
+            let languageMenu = this.createLanguageMenu()
+            languageMenu.Tag <- box("Language")
+            this.contextMenuItems.Add(languageMenu) |> ignore
+
+            //this.addItem(Localization.getString("Feedback"), Forms.openFeedback) // 404 Not Found.
+            this.contextMenuItems.Add("-") |> ignore
+
+            let restartMenuItem = new MenuItem(Localization.getString("RestartWindowTabs"))
+            restartMenuItem.Click.Add <| fun _ -> this.restartApplication()
+            restartMenuItem.Tag <- box("RestartWindowTabs")
+            this.contextMenuItems.Add(restartMenuItem) |> ignore
+
+            let closeMenuItem = new MenuItem(Localization.getString("CloseWindowTabs"))
+            closeMenuItem.Click.Add <| fun _ -> Services.program.shutdown()
+            closeMenuItem.Tag <- box("CloseWindowTabs")
+            this.contextMenuItems.Add(closeMenuItem) |> ignore
+
             Services.program.newVersion.Add this.onNewVersion
 
     interface IDisposable with
