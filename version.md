@@ -1,5 +1,12 @@
 # WindowTabs Standard-Software Version
 
+## version ss_jp_2025.11.10_next
+- Create Windows Installer (MSI) with directory selection, auto-termination, launch option, and EULA skip
+- Identified unnecessary DLL files and UpgradeLog.htm in project root
+- Enhance tab detach menu to support single-tab window movement
+  - Single-tab behavior: Simple window movement without tab detachment
+  - Multi-tab behavior: Existing tab detachment functionality
+
 ## version ss_jp_2025.11.10
 - Add menu dark mode support
   - Added "Menu Dark Mode" checkbox in Appearance settings

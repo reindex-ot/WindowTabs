@@ -60,7 +60,7 @@ module Localization_ja =
         ("RenameTab", "タブ名の変更")
         ("RestoreTabName", "名前を戻す")
         ("SettingsMenu", "設定...")
-        ("DetachTab", "タブの分離")
+        ("DetachTab", "タブの分離 / ウィンドウ移動")
         ("DetachTabSamePosition", "同じ位置で分離")
         ("DetachTabMoveRight", "ディスプレイの右端")
         ("DetachTabMoveLeft", "ディスプレイの左端")

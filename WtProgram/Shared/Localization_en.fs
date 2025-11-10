@@ -60,7 +60,7 @@ module Localization_en =
         ("RenameTab", "Rename tab")
         ("RestoreTabName", "Restore tab name")
         ("SettingsMenu", "Settings...")
-        ("DetachTab", "Detach tab")
+        ("DetachTab", "Detach tab / Move window")
         ("DetachTabSamePosition", "Same position")
         ("DetachTabMoveRight", "Display right edge")
         ("DetachTabMoveLeft", "Display left edge")

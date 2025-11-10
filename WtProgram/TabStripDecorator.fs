@@ -309,19 +309,17 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
         Screen.FromPoint(centerPoint)
 
     member private this.detachTabToScreen(hwnd: IntPtr, targetScreen: Screen, position: Option<string>) =
-        // Only detach if there's more than one tab
+        let window = os.windowFromHwnd(hwnd)
+        let bounds = window.bounds
+        let sourceScreen = this.getCurrentScreenForWindow(hwnd)
+        let sourceWorkArea = sourceScreen.WorkingArea
+        let widthPercent = float(bounds.size.width) / float(sourceWorkArea.Width)
+        let heightPercent = float(bounds.size.height) / float(sourceWorkArea.Height)
+        let topPercent = float(bounds.location.y - sourceWorkArea.Top) / float(sourceWorkArea.Height)
+
         if group.windows.items.count > 1 then
+            // Multiple tabs: detach tab from group
             let tab = Tab(hwnd)
-            let window = os.windowFromHwnd(hwnd)
-            let bounds = window.bounds
-
-            // Calculate current window's relative size and position
-            let sourceScreen = this.getCurrentScreenForWindow(hwnd)
-            let sourceWorkArea = sourceScreen.WorkingArea
-            let widthPercent = float(bounds.size.width) / float(sourceWorkArea.Width)
-            let heightPercent = float(bounds.size.height) / float(sourceWorkArea.Height)
-            let topPercent = float(bounds.location.y - sourceWorkArea.Top) / float(sourceWorkArea.Height)
-
             Services.program.suspendTabMonitoring()
 
             try
@@ -392,6 +390,64 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
             finally
                 (ThreadHelper.cancelablePostBack 200 <| fun() ->
                     Services.program.resumeTabMonitoring()) |> ignore
+        else
+            // Single tab: just move window to target screen (no detachment needed)
+            if window.isMinimized || window.isMaximized then
+                window.showWindow(ShowWindowCommands.SW_RESTORE)
+
+            // Calculate new size based on target screen
+            let targetWorkArea = targetScreen.WorkingArea
+            let newWidth = int(float(targetWorkArea.Width) * widthPercent)
+            let newHeight = int(float(targetWorkArea.Height) * heightPercent)
+
+            // Calculate new position based on position option
+            let newLeft, newTop =
+                match position with
+                | Some "right" ->
+                    let left = targetWorkArea.Right - newWidth
+                    let top = targetWorkArea.Top + int(float(targetWorkArea.Height) * topPercent)
+                    (left, top)
+                | Some "left" ->
+                    let left = targetWorkArea.Left
+                    let top = targetWorkArea.Top + int(float(targetWorkArea.Height) * topPercent)
+                    (left, top)
+                | Some "top" ->
+                    let leftPercent = float(bounds.location.x - sourceWorkArea.Left) / float(sourceWorkArea.Width)
+                    let left = targetWorkArea.Left + int(float(targetWorkArea.Width) * leftPercent)
+                    let top = targetWorkArea.Top
+                    (left, top)
+                | Some "bottom" ->
+                    let leftPercent = float(bounds.location.x - sourceWorkArea.Left) / float(sourceWorkArea.Width)
+                    let left = targetWorkArea.Left + int(float(targetWorkArea.Width) * leftPercent)
+                    let top = targetWorkArea.Bottom - newHeight
+                    (left, top)
+                | _ ->
+                    // Same position - use both percentages
+                    let leftPercent = float(bounds.location.x - sourceWorkArea.Left) / float(sourceWorkArea.Width)
+                    let left = targetWorkArea.Left + int(float(targetWorkArea.Width) * leftPercent)
+                    let top = targetWorkArea.Top + int(float(targetWorkArea.Height) * topPercent)
+                    (left, top)
+
+            // Ensure position is within bounds
+            let finalX = max targetWorkArea.Left (min newLeft (targetWorkArea.Right - newWidth))
+            let finalY = max targetWorkArea.Top (min newTop (targetWorkArea.Bottom - newHeight))
+
+            // DPI-aware window placement: move position first, wait for DPI change, then set size
+            let initialDpi = WinUserApi.GetDpiForWindow(hwnd)
+            window.setPositionOnly finalX finalY
+
+            // Wait for DPI change (max 200ms)
+            let mutable currentDpi = initialDpi
+            let mutable elapsed = 0
+            while elapsed < 200 && currentDpi = initialDpi do
+                System.Threading.Thread.Sleep(10)
+                elapsed <- elapsed + 10
+                currentDpi <- WinUserApi.GetDpiForWindow(hwnd)
+
+            if currentDpi <> initialDpi then
+                System.Threading.Thread.Sleep(20)
+
+            window.move (Rect(Pt(finalX, finalY), Sz(newWidth, newHeight)))
 
     member private this.moveTabToGroup(hwnd: IntPtr, targetGroup: WindowGroup) =
         // Move tab to another group if it's a different group
@@ -479,11 +535,13 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                 try Services.program.resumeTabMonitoring() with _ -> ()
 
     member private this.detachTabToPosition(hwnd: IntPtr, position: Option<string>) =
-        if group.windows.items.count > 1 then
-            let tab = Tab(hwnd)
-            let window = os.windowFromHwnd(hwnd)
-            let bounds = window.bounds
+        let window = os.windowFromHwnd(hwnd)
+        let bounds = window.bounds
+        let screen = this.getCurrentScreenForWindow(hwnd)
 
+        if group.windows.items.count > 1 then
+            // Multiple tabs: detach tab from group
+            let tab = Tab(hwnd)
             Services.program.suspendTabMonitoring()
 
             try
@@ -496,7 +554,6 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
                     window.showWindow(ShowWindowCommands.SW_RESTORE)
 
                 window.setPositionOnly bounds.location.x bounds.location.y
-                let screen = this.getCurrentScreenForWindow(hwnd)
 
                 match position with
                 | Some "right" ->
@@ -523,6 +580,30 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
             finally
                 (ThreadHelper.cancelablePostBack 200 <| fun() ->
                     Services.program.resumeTabMonitoring()) |> ignore
+        else
+            // Single tab: just move window (no detachment needed)
+            if window.isMinimized || window.isMaximized then
+                window.showWindow(ShowWindowCommands.SW_RESTORE)
+
+            match position with
+            | Some "right" ->
+                let x = screen.WorkingArea.Right - bounds.size.width
+                let y = max screen.WorkingArea.Top (min bounds.location.y (screen.WorkingArea.Bottom - bounds.size.height))
+                window.setPositionOnly x y
+            | Some "left" ->
+                let x = screen.WorkingArea.Left
+                let y = max screen.WorkingArea.Top (min bounds.location.y (screen.WorkingArea.Bottom - bounds.size.height))
+                window.setPositionOnly x y
+            | Some "top" ->
+                let x = max screen.WorkingArea.Left (min bounds.location.x (screen.WorkingArea.Right - bounds.size.width))
+                let y = screen.WorkingArea.Top
+                window.setPositionOnly x y
+            | Some "bottom" ->
+                let x = max screen.WorkingArea.Left (min bounds.location.x (screen.WorkingArea.Right - bounds.size.width))
+                let y = screen.WorkingArea.Bottom - bounds.size.height
+                window.setPositionOnly x y
+            | _ ->
+                ()  // Same position - no movement needed
 
     member private  this.contextMenu(hwnd) =
         let checked(isChecked) = if isChecked then List2([MenuFlags.MF_CHECKED]) else List2()
@@ -649,7 +730,7 @@ type TabStripDecorator(group:WindowGroup, notifyDetached: IntPtr -> unit) as thi
             })
 
         let detachTabSubMenu =
-            let isEnabled = group.windows.items.count > 1
+            let isEnabled = true  // Always enabled - supports both tab detachment and window movement
             let allScreens = this.getAllScreensSorted()
             let currentScreen = this.getCurrentScreenForWindow(hwnd)
 
