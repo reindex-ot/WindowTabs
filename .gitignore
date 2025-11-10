@@ -6,3 +6,4 @@ Backup/
 /UpgradeLog.htm
 .vs/WindowTabs/
 .claude
+*.wixpdb
