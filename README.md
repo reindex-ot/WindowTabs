@@ -21,8 +21,16 @@ And Mr./Ms. leafOfTree also forked the source code. See the repositories here:
 
 And I (Satoshi Yamamoto@standard-software) also forked the source code and compiled it with VS2022 Community Edition.
 
-# Index
-[Version](#Version)
+## Index
+- [Version](#Version)
+- [Download](#Download)
+- [Installation](#Installation)
+- [Usage](#Usage)
+- [Features](#Features)
+- [Settings](#Settings)
+- [Links](#Links)
+- [License](#License)
+- [Comments](#Comments)
 
 ## Version
 
