@@ -7,7 +7,7 @@ module Localization_ja =
         ("Background Flash", "点滅時の背景")
         ("Background Highlight", "強調時の背景")
         ("Background Normal", "通常時の背景")
-        ("Behavior", "振る舞い")
+        ("Behavior", "動作")
         ("Border", "枠線")
         ("RestartWindowTabs", "WindowTabs を再起動")
         ("CloseWindowTabs", "WindowTabs を閉じる")
@@ -91,3 +91,4 @@ module Localization_ja =
         ("Font", "Yu Gothic UI")
         ("MenuDarkMode", "ダークモードメニュー")
     ]
+
