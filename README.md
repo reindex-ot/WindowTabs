@@ -22,7 +22,7 @@ And Mr./Ms. leafOfTree also forked the source code. See the repositories here:
 And I (Satoshi Yamamoto@standard-software) also forked the source code and compiled it with VS2022 Community Edition.
 
 # Index
-[Version](##Version-)
+[Version](#Version)
 
 ## Version
 
