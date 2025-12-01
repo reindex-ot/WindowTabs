@@ -2,28 +2,32 @@
 
 # WindowTabs
 
-WindowTabs is a utility that enables tabbed UI for Windows applications that don't have a tab interface, as well as between different executables. You can manage Chrome and Edge with tabs, or manage multiple Excel windows or Excel and Word with tabs.
+WindowTabs はインターフェースを持たない Windows アプリケーションや、異なる実行ファイル間でタブ UI を有効にするユーティリティです。Chrome と Edge をタブで管理、複数の Excel や Word noウィンドウをタブで管理が可能になります。
 
 ![Tabs](README_Image/Tabs.png)
 
-It was originally developed by Maurice Flanagan in 2009 and was back then provided as a free and paid version. The author has now open-sourced the utility. The original repository here: https://github.com/mauricef/WindowTabs : 404 Not Found
+元々は Maurice Flanagan 氏によって開発され、当時は無料版と有料版が提供されていました。開発者は現在、このユーティリティをオープンソース化しています:
 
-And Mr./Ms. redgis forked and migrated to VS2017 / .NET 4.0. The forked repository here: https://github.com/redgis/WindowTabs : 404 Not Found
+- https://github.com/mauricef/WindowTabs **/ 404 Not Found**
 
-And Mr./Ms. payaneco forked the source code. See the repositories here:
+redgis 氏による VS2017 / .NET 4.0 に移行したフォーク、リポジトリはこちら:
+
+- https://github.com/redgis/WindowTabs **/ 404 Not Found**
+
+payaneco 氏のソースコードのフォーク、リポジトリはこちら:
 - https://github.com/payaneco/WindowTabs
 - https://github.com/payaneco/WindowTabs/network/members
 - https://ja.stackoverflow.com/a/53822
 
-And Mr./Ms. leafOfTree also forked the source code. See the repositories here:
+leafOfTree 氏もソースコードをフォークしています、リポジトリはこちら:
 - https://github.com/leafOfTree/WindowTabs
 - https://github.com/leafOfTree/WindowTabs/network/members
 
-And I (Satoshi Yamamoto@standard-software) also forked the source code and compiled it with VS2022 Community Edition.
+そして私 (Satoshi Yamamoto@standard-software) がソースコードをフォークし、VS 2022 Community Edition でコンパイルを行っています。
 
-## Index
-- [Version](#Version)
-- [Download](#Download)
+## 目次
+- [バージョン](#バージョン)
+- [ダウンロード](#ダウンロード)
 - [Installation](#Installation)
 - [Usage](#Usage)
 - [Features](#Features)
@@ -32,68 +36,68 @@ And I (Satoshi Yamamoto@standard-software) also forked the source code and compi
 - [License](#License)
 - [Comments](#Comments)
 
-## Version
+## バージョン
 
-Latest version **ss_jp_2025.11.24**
+最新のバージョン: **ss_jp_2025.11.24**
 
-For detailed version history and changelog, see [version.md](version.md).
+詳細な更新履歴と変更ログについては、[version.md](version.md) を参照してください。
 
 
-## Download
+## ダウンロード
 
-**Supported OS:** Windows 10, Windows 11
+**対応している OS:** Windows 10、 Windows 11
 
 <a href="https://github.com/standard-software/WindowTabs/releases">![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/standard-software/windowtabs/total)</a>
 
-You can download prebuilt files from the [releases](https://github.com/standard-software/WindowTabs/releases) page.
+[releases](https://github.com/standard-software/WindowTabs/releases) ページからビルド済みのファイルをダウンロードできます。
 
-Two download options are available:
+2 つのダウンロードオプションがあります:
 
-- **WtSetup.msi** - Windows Installer package with automatic installation and uninstallation support
-- **WindowTabs.zip** - Portable version that can be extracted and run from any location
+- **WtSetup.msi** - 自動インストールとアンインストールをサポートしている Windows インストーラーパッケージ
+- **WindowTabs.zip** - 任意の場所で展開して実行可能なポータブル版
 
-You can also build the installer and portable version yourself using the provided build scripts.
+提供しているビルドスクリプトを使用して、インストーラー版とポータブル版を自分でビルドすることもできます。
 
-## Installation
+## インストール
 
-### Using the MSI Installer (WtSetup.msi)
+### MSI インストーラー版の使用方法 (WtSetup.msi)
 
-1. Download `WtSetup.msi` from the [Releases](https://github.com/standard-software/WindowTabs/releases) page
-2. Run the installer and follow the installation wizard
-3. Choose the installation directory (default: Program Files\WindowTabs)
-4. Desktop shortcut and Start Menu shortcut will be created automatically
-5. Optionally launch WindowTabs at the end of installation
+1. [Releases](https://github.com/standard-software/WindowTabs/releases) ページから `WtSetup.msi` をダウンロード
+2. インストーラーを実行してインストールウィザードに従って操作します
+3. インストール先のディレクトリを選択 (既定: Program Files\WindowTabs)
+4. デスクトップとスタートメニューにショートカットが自動で作成されます
+5. オプションでインストール後に WindowTabs を起動
 
-### Using the Portable Version (WindowTabs.zip)
+### ポータブル版の使用方法 (WindowTabs.zip)
 
-1. Download `WindowTabs.zip` from the [Releases](https://github.com/standard-software/WindowTabs/releases) page
-2. Extract the archive to your preferred location
-3. Run `WindowTabs.exe`
-4. WindowTabs will run in the background and add a tray icon
+1. [Releases](https://github.com/standard-software/WindowTabs/releases) ページから `WtSetup.msi` をダウンロード
+2. アーカイブを任意の場所に展開します
+3. `WindowTabs.exe` を実行
+4. WindowTabs がバックグラウンドで実行され、トレイアイコンが表示されます
 
-To run WindowTabs at startup:
+WindowTabs をスタートアップ時に起動:
 - Enable "Run at startup" option in the Settings > Behavior tab
 
-## Usage
+## 使用方法
 
-1. Run `WindowTabs.exe`
-2. Windows will automatically get tabs when grouped together
-3. Right-click the tray icon to access settings
-4. Right-click on tabs to access tab-specific options
-5. Drag and drop tabs to organize your windows
+1. `WindowTabs.exe` を実行
+2. Window をグループ化すると自動でタブが表示されます
+3. トレイアイコンを右クリックで設定にアクセスできます
+4. タブを右クリックでタブ固有のオプションにアクセスできます
+5. タブをドラッグ&ドロップでウィンドウを整理できます
 
-## Features
+## 機能
 
-### Tab Drag and Drop
+### タブのドラッグ&ドロップ
 
-This feature remains unchanged from the original WindowTabs functionality.
+これは元の WindowTabs の機能から変更されていません。
 
 - Drag tabs to reorder within the same group
 - Drag tabs to separate into new windows with preview
 - Drop windows to create new tab groups
 - Respects tab alignment settings (left/center/right)
 
-### Tab Management
+### タブの管理
 
 - **Tab Context Menu**: Right-click on tabs to access various options
   - Close tabs (this tab, tabs to the right, tabs to the left, other tabs, all tabs)
@@ -110,7 +114,7 @@ This feature remains unchanged from the original WindowTabs functionality.
 
 ### Detach and reposition tab
 
-Detach a tab from group and reposition it with multi-display support:
+タブをグループから切り離しとマルチディスプレイのサポートで再配置します:
 - Detach at same position
 - Move to display edges (right/left/top/bottom)
 - DPI-aware percentage-based positioning for correct placement across different DPI displays
@@ -148,14 +152,14 @@ Transfer all tabs from current group to another existing group:
 ![Link tab group to another group](README_Image/MoveTabGroupToGroup.png)
 
 
-### Menu Dark Mode / Light Mode
+### ダークモード / ライトモードのメニューテーマ
 
 While light mode is the default, dark mode is also supported for context menus (popup menus) as shown in the screenshots.
 
 - Toggle via "Menu Dark Mode" checkbox in Appearance settings
 - Applies to tab context menu and drag-and-drop menus
 
-### Multi-Display and DPI Support
+### マルチディスプレイと高 DPI のサポート
 
 - Multi-display support with proper window positioning
 - DPI-aware window placement
@@ -163,14 +167,14 @@ While light mode is the default, dark mode is also supported for context menus (
 - Fixed tab rename floating textbox positioning on high-DPI displays
 
 
-### UWP Application Support
+### UWP アプリをサポート
 
 - Supports UWP (Universal Windows Platform) applications
 - Automatically handles UWP window Z-order for proper tab visibility
 - Maintains tab visibility when working with UWP apps
 
 
-### Multi-Language Support
+### 多言語をサポート
 
 - English and Japanese language support
 - Runtime language switching without restart
@@ -187,11 +191,11 @@ Temporarily disable WindowTabs functionality via tray menu:
   - Stops automatic tab grouping for new windows
   - Disables Settings menu to prevent configuration changes
 
-## Settings
+## 設定
 
 Access settings by right-clicking the tray icon and selecting "Settings" or by right-clicking on a tab and selecting "Settings...".
 
-### Programs Tab
+### プログラムタブ
 
 This feature remains unchanged from the original WindowTabs functionality.
 
@@ -199,7 +203,7 @@ Configure which programs should use tabs and auto-grouping behavior.
 
 ![Settings Programs](README_Image/SettingsPrograms.png)
 
-### Appearance Tab
+### タブの外観
 
 Customize the visual appearance of tabs:
 - Height, width, and overlap settings
@@ -224,7 +228,7 @@ Configure tab behavior:
 
 ![Settings Behavior](README_Image/SettingsBehavior.png)
 
-### Workspace Tab
+### ワークスペースタブ
 
 This feature remains unchanged from the original WindowTabs functionality.
 
@@ -236,25 +240,25 @@ This feature remains unchanged from the original WindowTabs functionality.
 
 ### Prerequisites
 
-- Visual Studio 2022 Community Edition (or higher)
-- WiX Toolset v3.11 or newer (for building the MSI installer)
+- Visual Studio 2022 Community Edition (またはそれ以上)
+- WiX Toolset v3.11 またはそれ以降 (MSI インストーラー版のビルド)
 
-### Build Scripts
+### ビルドスクリプト
 
-Two build scripts are provided in the project root:
+プロジェクトのルートに 2 種類のビルドスクリプトが用意されています:
 
-- **build_installer.bat** - Builds the MSI installer (WtSetup.msi)
-  - Output: `exe\installer\WtSetup.msi`
+- **build_installer.bat** - MSI インストーラー版をビルド (WtSetup.msi)
+  - 出力: `exe\installer\WtSetup.msi`
 
-- **build_release_zip.bat** - Builds the portable ZIP distribution
-  - Output: `exe\zip\WindowTabs.zip`
+- **build_release_zip.bat** - ポータブル ZIP 版の配布パッケージをビルド
+  - 出力: `exe\zip\WindowTabs.zip`
 
-Simply run the desired batch file to create the distribution packages.
+必要なバッチファイルを実行で配布パッケージを作成することができます。
 
 
-## Links
+## リンク
 
-### Japanese Resources
+### 日本語のリソース
 
 c# - WindowTabs というオープンソースを改良してみたいのですがビルドができません。何か必要なものがありますか？ - スタック・オーバーフロー  
 https://ja.stackoverflow.com/questions/53770/windowtabs-というオープンソースを改良してみたいのですがビルドができません-何か必要なものがありますか
@@ -262,17 +266,17 @@ https://ja.stackoverflow.com/questions/53770/windowtabs-というオープンソ
 全Windowタブ化。Setsで頓挫した夢の操作性をオープンソースのWindowTabsで再現する。 #Windows - Qiita  
 https://qiita.com/standard-software/items/dd25270fa3895365fced
 
-## License
+## ライセンス
 
 This project is open source. See the original repository for license information.
 
-## Credits
+## クレジット
 
-- Original author: Maurice Flanagan
-- Fork contributors: redgis, payaneco, leafOfTree
-- Current maintainer: Satoshi Yamamoto (standard-software)
+- オリジナルの開発者: Maurice Flanagan
+- フォークの貢献者: redgis、payaneco、leafOfTree
+- 現在のメンテナー: Satoshi Yamamoto (standard-software)
 
-## Comments
+## コメント
 
 If you have any issues, please contact us via GitHub Issues or email: standard.software.net@gmail.com
 
