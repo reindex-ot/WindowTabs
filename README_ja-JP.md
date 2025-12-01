@@ -2,7 +2,7 @@
 
 # WindowTabs
 
-WindowTabs はインターフェースを持たない Windows アプリケーションや、異なる実行ファイル間でタブ UI を有効にするユーティリティです。Chrome と Edge をタブで管理、複数の Excel や Word noウィンドウをタブで管理が可能になります。
+WindowTabs はインターフェースを持たない Windows アプリケーションや、異なる実行ファイル間でタブ UI を有効にするユーティリティです。Chrome と Edge をタブで管理、複数の Excel や Word のウィンドウをタブで管理が可能になります。
 
 ![Tabs](README_Image/Tabs.png)
 
