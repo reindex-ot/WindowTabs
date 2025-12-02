@@ -8,18 +8,20 @@ WindowTabs はインターフェースを持たない Windows アプリケーシ
 
 元々は Maurice Flanagan 氏によって開発され、当時は無料版と有料版が提供されていました。開発者は現在、このユーティリティをオープンソース化しています:
 
-- https://github.com/mauricef/WindowTabs **/ 404 Not Found**
+**⚠ 404 Not Found**
+- https://github.com/mauricef/WindowTabs
 
-redgis 氏による VS2017 / .NET 4.0 に移行したフォーク、リポジトリはこちら:
+redgis 氏による VS2017 / .NET 4.0 に移行したフォーク:
 
-- https://github.com/redgis/WindowTabs **/ 404 Not Found**
+**⚠ 404 Not Found**
+- https://github.com/redgis/WindowTabs
 
-payaneco 氏のソースコードのフォーク、リポジトリはこちら:
+payaneco 氏のソースコードをフォークしたリポジトリ:
 - https://github.com/payaneco/WindowTabs
 - https://github.com/payaneco/WindowTabs/network/members
 - https://ja.stackoverflow.com/a/53822
 
-leafOfTree 氏もソースコードをフォークしています、リポジトリはこちら:
+leafOfTree 氏のソースコードをフォークしたリポジトリ:
 - https://github.com/leafOfTree/WindowTabs
 - https://github.com/leafOfTree/WindowTabs/network/members
 
@@ -28,13 +30,13 @@ leafOfTree 氏もソースコードをフォークしています、リポジト
 ## 目次
 - [バージョン](#バージョン)
 - [ダウンロード](#ダウンロード)
-- [Installation](#Installation)
-- [Usage](#Usage)
-- [Features](#Features)
-- [Settings](#Settings)
-- [Links](#Links)
-- [License](#License)
-- [Comments](#Comments)
+- [インストール](#Installation)
+- [使用方法](#Usage)
+- [機能](#Features)
+- [設定](#Settings)
+- [リンク](#Links)
+- [ライセンス](#License)
+- [コメント](#Comments)
 
 ## バージョン
 
@@ -76,7 +78,7 @@ leafOfTree 氏もソースコードをフォークしています、リポジト
 4. WindowTabs がバックグラウンドで実行され、トレイアイコンが表示されます
 
 WindowTabs をスタートアップ時に起動:
-- Enable "Run at startup" option in the Settings > Behavior tab
+- オプションから`スタートアップ時に起動`を有効 > タブの動作
 
 ## 使用方法
 
@@ -99,16 +101,16 @@ WindowTabs をスタートアップ時に起動:
 
 ### タブの管理
 
-- **Tab Context Menu**: Right-click on tabs to access various options
-  - Close tabs (this tab, tabs to the right, tabs to the left, other tabs, all tabs)
-  - New window
+- **タブのコンテキストメニュー**: 右クリックでタブの様々な機能にアクセスできます
+  - タブを閉じる (このタブ、右側のタブ、左側のタブ、その他タブ、すべてのタブ)
+  - 新規ウィンドウ
   - Make tabs wider / Make tabs narrower
-  - Rename tab
+  - タブの名前を変更
   - Detach and reposition tab
   - Reposition tab group
   - Detach and link tab to another group
   - Link tab group to another group
-  - Settings
+  - 設定
 
 ![Popup Menu](README_Image/PopupMenu.png)
 
@@ -152,7 +154,7 @@ Transfer all tabs from current group to another existing group:
 ![Link tab group to another group](README_Image/MoveTabGroupToGroup.png)
 
 
-### ダークモード / ライトモードのメニューテーマ
+### ダークモード / ライトモードのメニュー
 
 While light mode is the default, dark mode is also supported for context menus (popup menus) as shown in the screenshots.
 
@@ -169,20 +171,20 @@ While light mode is the default, dark mode is also supported for context menus (
 
 ### UWP アプリをサポート
 
-- Supports UWP (Universal Windows Platform) applications
+- UWP (Universal Windows Platform) をサポート
 - Automatically handles UWP window Z-order for proper tab visibility
 - Maintains tab visibility when working with UWP apps
 
 
 ### 多言語をサポート
 
-- English and Japanese language support
+- 英語と日本語の言語をサポート
 - Runtime language switching without restart
-- Switch languages via tray menu
+- トレイメニューから言語を変更可能
 
 ![Task Tray Menu](README_Image/TaskTrayMenuImage.png)
 
-### Disable Feature
+### 無効にしている機能
 
 Temporarily disable WindowTabs functionality via tray menu:
 - **Disable** checkbox in tray icon context menu
@@ -205,26 +207,26 @@ Configure which programs should use tabs and auto-grouping behavior.
 
 ### タブの外観
 
-Customize the visual appearance of tabs:
+タブの視覚的な外観をカスタマイズできます:
 - Height, width, and overlap settings
 - Border and text color
-- Background colors (active, normal, highlight, flash)
-- Color theme presets (Light Color, Dark Color, Dark Blue Color)
+- 背景の色 (active, normal, highlight, flash)
+- カラーテーマのプリセット (ライト、ダーク、ダークブルー)
 - Distance from edge settings
 
 ![Settings Appearance](README_Image/SettingsAppearance.png)
 
-### Behavior Tab
+### タブの動作
 
-Configure tab behavior:
-- Tab position (left/center/right)
-- Tab width (narrow/wide) default
+タブの動作を構成することができます:
+- タブの位置 (左/中央/右)
+- タブの幅 (縮小/拡張)
 - Toggle tab width on active tab icon double-click
 - Hide tabs when positioned at bottom (never/always/double-click)
 - Delay before hiding tabs
-- Auto-grouping settings
-- Hotkey settings (Ctrl+1...+9 for tab activation)
-- Mouse hover activation
+- 自動グループ設定
+- ホットキー設定 (Ctrl+1...+9 でタブをアクティブ)
+- マウスホバーでアクティブ
 
 ![Settings Behavior](README_Image/SettingsBehavior.png)
 
@@ -232,15 +234,15 @@ Configure tab behavior:
 
 This feature remains unchanged from the original WindowTabs functionality.
 
-### Diagnostics Tab
+### タブの診断
 
 This feature remains unchanged from the original WindowTabs functionality.
 
-## Building from Source
+## ソースからビルド
 
 ### Prerequisites
 
-- Visual Studio 2022 Community Edition (またはそれ以上)
+- Visual Studio 2022 Community Edition (またはそれ以降)
 - WiX Toolset v3.11 またはそれ以降 (MSI インストーラー版のビルド)
 
 ### ビルドスクリプト
@@ -260,11 +262,9 @@ This feature remains unchanged from the original WindowTabs functionality.
 
 ### 日本語のリソース
 
-c# - WindowTabs というオープンソースを改良してみたいのですがビルドができません。何か必要なものがありますか？ - スタック・オーバーフロー  
-https://ja.stackoverflow.com/questions/53770/windowtabs-というオープンソースを改良してみたいのですがビルドができません-何か必要なものがありますか
+[C# - WindowTabs というオープンソースを改良してみたいのですがビルドができません。何か必要なものがありますか？ - スタック・オーバーフロー](https://ja.stackoverflow.com/questions/53770/windowtabs-%E3%81%A8%E3%81%84%E3%81%86%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E6%94%B9%E8%89%AF%E3%81%97%E3%81%A6%E3%81%BF%E3%81%9F%E3%81%84%E3%81%AE%E3%81%A7%E3%81%99%E3%81%8C%E3%83%93%E3%83%AB%E3%83%89%E3%81%8C%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%9B%E3%82%93-%E4%BD%95%E3%81%8B%E5%BF%85%E8%A6%81%E3%81%AA%E3%82%82%E3%81%AE%E3%81%8C%E3%81%82%E3%82%8A%E3%81%BE%E3%81%99%E3%81%8B)
 
-全Windowタブ化。Setsで頓挫した夢の操作性をオープンソースのWindowTabsで再現する。 #Windows - Qiita  
-https://qiita.com/standard-software/items/dd25270fa3895365fced
+[全Windowタブ化。Setsで頓挫した夢の操作性をオープンソースのWindowTabsで再現する。 #Windows - Qiita](https://qiita.com/standard-software/items/dd25270fa3895365fced)
 
 ## ライセンス
 
