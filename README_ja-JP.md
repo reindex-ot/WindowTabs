@@ -6,7 +6,9 @@ WindowTabs はインターフェースを持たない Windows アプリケーシ
 
 ![Tabs](README_Image/Tabs.png)
 
-元々は Maurice Flanagan 氏によって開発され、当時は無料版と有料版が提供されていました。開発者は現在、このユーティリティをオープンソース化しています:
+元々は Maurice Flanagan 氏によって開発され、当時は無料版と有料版が提供されていました。
+
+開発者は現在、このユーティリティをオープンソース化しています:
 
 **⚠ 404 Not Found**
 - https://github.com/mauricef/WindowTabs
