@@ -2,7 +2,7 @@
 
 # WindowTabs
 
-Language: [日本語](README_ja-JP.md)
+**Language:** [日本語](README_ja-JP.md)
 
 WindowTabs is a utility that enables tabbed UI for Windows applications that don't have a tab interface, as well as between different executables. You can manage Chrome and Edge with tabs, or manage multiple Excel windows or Excel and Word with tabs.
 
