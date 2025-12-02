@@ -6,9 +6,16 @@ WindowTabs is a utility that enables tabbed UI for Windows applications that don
 
 ![Tabs](README_Image/Tabs.png)
 
-It was originally developed by Maurice Flanagan in 2009 and was back then provided as a free and paid version. The author has now open-sourced the utility. The original repository here: https://github.com/mauricef/WindowTabs : 404 Not Found
+It was originally developed by Maurice Flanagan in 2009 and was back then provided as a free and paid version.
+The author has now open-sourced the utility.
 
-And Mr./Ms. redgis forked and migrated to VS2017 / .NET 4.0. The forked repository here: https://github.com/redgis/WindowTabs : 404 Not Found
+**⚠ 404 Not Found**
+- https://github.com/mauricef/WindowTabs
+
+And Mr./Ms. redgis forked and migrated to VS2017 / .NET 4.0. The forked repository.
+
+**⚠ 404 Not Found**
+- https://github.com/redgis/WindowTabs
 
 And Mr./Ms. payaneco forked the source code. See the repositories here:
 - https://github.com/payaneco/WindowTabs
@@ -34,7 +41,7 @@ And I (Satoshi Yamamoto@standard-software) also forked the source code and compi
 
 ## Version
 
-Latest version **ss_jp_2025.11.24**
+Latest version: **ss_jp_2025.11.24**
 
 For detailed version history and changelog, see [version.md](version.md).
 
@@ -256,15 +263,13 @@ Simply run the desired batch file to create the distribution packages.
 
 ### Japanese Resources
 
-c# - WindowTabs というオープンソースを改良してみたいのですがビルドができません。何か必要なものがありますか？ - スタック・オーバーフロー  
-https://ja.stackoverflow.com/questions/53770/windowtabs-というオープンソースを改良してみたいのですがビルドができません-何か必要なものがありますか
+[C# - WindowTabs というオープンソースを改良してみたいのですがビルドができません。何か必要なものがありますか？ - スタック・オーバーフロー](https://ja.stackoverflow.com/questions/53770/windowtabs-%E3%81%A8%E3%81%84%E3%81%86%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E6%94%B9%E8%89%AF%E3%81%97%E3%81%A6%E3%81%BF%E3%81%9F%E3%81%84%E3%81%AE%E3%81%A7%E3%81%99%E3%81%8C%E3%83%93%E3%83%AB%E3%83%89%E3%81%8C%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%9B%E3%82%93-%E4%BD%95%E3%81%8B%E5%BF%85%E8%A6%81%E3%81%AA%E3%82%82%E3%81%AE%E3%81%8C%E3%81%82%E3%82%8A%E3%81%BE%E3%81%99%E3%81%8B)
 
-全Windowタブ化。Setsで頓挫した夢の操作性をオープンソースのWindowTabsで再現する。 #Windows - Qiita  
-https://qiita.com/standard-software/items/dd25270fa3895365fced
+[全Windowタブ化。Setsで頓挫した夢の操作性をオープンソースのWindowTabsで再現する。 #Windows - Qiita](https://qiita.com/standard-software/items/dd25270fa3895365fced)
 
 ## License
 
-This project is open source. See the original repository for license information.
+This project is open source and licensed under the MIT License.
 
 ## Credits
 
@@ -274,6 +279,6 @@ This project is open source. See the original repository for license information
 
 ## Comments
 
-If you have any issues, please contact us via GitHub Issues or email: standard.software.net@gmail.com
+If you have any issues, please contact us via GitHub Issues or email: `standard.software.net@gmail.com`
 
 Thanks to Claude Code's hard work, development has progressed significantly. However, I've given up on making the Settings dialog dark mode-compatible as I couldn't get it to look right. I'm hoping someone might fork this project and improve it.
