@@ -96,22 +96,22 @@ WindowTabs をスタートアップ時に起動:
 
 これは元の WindowTabs の機能から変更されていません。
 
-- Drag tabs to reorder within the same group
-- Drag tabs to separate into new windows with preview
+- タブをドラッグして同じグループ内で順番を変更
+- タブをドラッグしてプレビュー付きの新規ウィンドウに分割
 - ウィンドウをドロップで新規タブグループを作成
-- Respects tab alignment settings (left/center/right)
+- タブの配置設定を尊重 (左/中央/右)
 
 ### タブの管理
 
 - **タブのコンテキストメニュー**: 右クリックでタブの様々な機能にアクセスできます
   - タブを閉じる (このタブ、右側のタブ、左側のタブ、その他タブ、すべてのタブ)
   - 新規ウィンドウ
-  - Make tabs wider / Make tabs narrower
+  - タブの幅を拡張 / 縮小
   - タブの名前を変更
-  - Detach and reposition tab
-  - Reposition tab group
-  - Detach and link tab to another group
-  - Link tab group to another group
+  - タブを切り離して位置を変更
+  - タブグループの位置を変更
+  - タブを切り離して別のグループにリンク
+  - タブグループを別グループにリンク
   - 設定
 
 ![Popup Menu](README_Image/PopupMenu.png)
@@ -121,61 +121,61 @@ WindowTabs をスタートアップ時に起動:
 タブをグループから切り離しとマルチディスプレイのサポートで再配置します:
 - 同じ位置での切り離し
 - 画面の端に移動 (右/左/上/下)
-- DPI-aware percentage-based positioning for correct placement across different DPI displays
+- 異なる DPI ディスプレイでも正確に配置するための、DPI を考慮したパーセンテージベースの位置指定
 
 ![Detach Tab](README_Image/DetachTab.png)
 
 ### タブグループの位置を変更
 
-Move entire tab group to different display positions:
-- Move to current display edges (右/左/上/下)
-- Move to other displays with edge positioning options
-- DPI-aware positioning for correct placement across different DPI displays
-- Maintains tab group integrity while repositioning
+タブグループ全体を別の表示位置に移動できます:
+- 現在の画面の端に移動 (右/左/上/下)
+- 画面端に配置のオプションを使用して他のディスプレイに移動
+- 異なる DPI ディスプレイ間での正確な配置を実現するための DPI 対応
+- 再配置時にタブグループの整合性を維持
 
 ![Reposition tab group](README_Image/MoveTabGroup.png)
 
 ### タブを切り離して別のグループにリンク
 
-Detach a single tab from current group and link it to another existing group:
-- Shows other groups with tab names and counts
-- Adaptive tab name truncation for easy identification
-- Display application icons for group recognition
-- Disabled when tab group has only one tab
+現在のグループから 1 つのタブを切り離して既存のグループにリンクできます:
+- タブの名前とタブの数とともに他のグループを表示
+- タブの名前を自動で切り捨てで認識しやすくする
+- グループを識別しやすくするためにアプリケーションアイコンを表示
+- タブグループにタブが 1 つしかない場合に無効
 
 ![Detach and link tab to another group](README_Image/MoveTab.png)
 
 ### タブグループを別のグループにリンク
 
-Transfer all tabs from current group to another existing group:
-- Shows other groups with tab names and counts
-- Transfers all tabs at once from current group to target group
-- Adaptive tab name truncation for easy identification
-- Display application icons for group recognition
+現在のグループから別の既存のグループにすべてのタブを転送できます:
+- タブの名前とタブの数とともに別のグループを表示
+- 現在のグループから対象のグループにすべてのタブを一括で転送
+- タブの名前を自動で切り捨てで認識しやすくする
+- グループを識別しやすいようにアプリケーションアイコンを表示
 
 ![Link tab group to another group](README_Image/MoveTabGroupToGroup.png)
 
 
 ### ダークモード / ライトモードのメニュー
 
-While light mode is the default, dark mode is also supported for context menus (popup menus) as shown in the screenshots.
+ライトモードが既定ですが、スクリーンショットのようにコンテキストメニュー (ポップアップメニュー) でのダークモードをサポートしています。
 
-- Toggle via "Menu Dark Mode" checkbox in Appearance settings
-- Applies to tab context menu and drag-and-drop menus
+- 外観設定の「ダークモードメニュー」のチェックボックスで切り替え
+- タブのコンテキストメニューとドラッグ&ドロップメニューに適用されます
 
 ### マルチディスプレイと高 DPI をサポート
 
-- Multi-display support with proper window positioning
-- DPI-aware window placement
-- Automatic window resizing when dropped to prevent exceeding monitor dimensions
-- Fixed tab rename floating textbox positioning on high-DPI displays
+- 適切なウィンドウの配置によるマルチディスプレイのサポート
+- DPI を考慮したウィンドウの配置
+- ドロップ時にウィンドウサイズを自動で変更してディスプレイのサイズが超えてしまう問題を防止
+- 高 DPI ディスプレイにおけるタブの名前変更時のフローティングテキストボックスの位置を修正
 
 
 ### UWP アプリをサポート
 
 - UWP (Universal Windows Platform) をサポート
-- Automatically handles UWP window Z-order for proper tab visibility
-- Maintains tab visibility when working with UWP apps
+- UWP ウィンドウの Z オーダーを自動で処理し、タブの表示を適切に維持
+- UWP アプリで作業する際もタブの表示を維持
 
 
 ### 多言語をサポート
@@ -186,35 +186,34 @@ While light mode is the default, dark mode is also supported for context menus (
 
 ![Task Tray Menu](README_Image/TaskTrayMenuImage.png)
 
-### 無効にしている機能
+### 無効にする機能
 
-Temporarily disable WindowTabs functionality via tray menu:
-- **Disable** checkbox in tray icon context menu
-- When enabled:
-  - Immediately hides all existing tab groups
-  - Stops automatic tab grouping for new windows
-  - Disables Settings menu to prevent configuration changes
+トレイメニューから WindowTabs の起動を一時的に無効にできます:
+- トレイアイコンのコンテキストメニューのチェックボックスで**無効**に設定可能
+- 無効に変更した場合:
+  - 既存のタブグループを即座に非表示
+  - 新規ウィンドウのタブの自動グループ化を停止
+  - 設定メニューを無効にして、設定の変更を防止
 
 ## 設定
 
-Access settings by right-clicking the tray icon and selecting "Settings" or by right-clicking on a tab and selecting "Settings...".
+トレイアイコンを右クリックで「設定」を選択するか、タブを右クリックで「設定...」を選択して設定にアクセスします。
 
 ### プログラムタブ
 
 これは元の WindowTabs の機能から変更されていません。
 
-Configure which programs should use tabs and auto-grouping behavior.
-
+タブと自動グループ化の動作を使用するプログラムを構成できます。
 ![Settings Programs](README_Image/SettingsPrograms.png)
 
 ### タブの外観
 
 タブの視覚的な外観をカスタマイズできます:
 - 高さ、幅、重なりの設定
-- Border and text color
+- 枠線と文字の色
 - 背景の色 (アクティブ、通常、強調、点滅)
 - カラーテーマのプリセット (ライト、ダーク、ダークブルー)
-- Distance from edge settings
+- 端からの距離設定
 
 ![Settings Appearance](README_Image/SettingsAppearance.png)
 
