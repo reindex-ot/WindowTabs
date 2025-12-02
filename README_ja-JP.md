@@ -55,7 +55,7 @@ leafOfTree 氏のソースコードをフォークしたリポジトリ:
 
 2 つのダウンロードオプションがあります:
 
-- **WtSetup.msi** - 自動インストールとアンインストールをサポートしている Windows インストーラーパッケージ
+- **WtSetup.msi** - 自動インストールとアンインストールをサポートしている Windows インストーラーパッケージ版
 - **WindowTabs.zip** - 任意の場所で展開して実行可能なポータブル版
 
 提供しているビルドスクリプトを使用して、インストーラー版とポータブル版を自分でビルドすることもできます。
@@ -96,7 +96,7 @@ WindowTabs をスタートアップ時に起動:
 
 - Drag tabs to reorder within the same group
 - Drag tabs to separate into new windows with preview
-- Drop windows to create new tab groups
+- ウィンドウをドロップで新規タブグループを作成
 - Respects tab alignment settings (left/center/right)
 
 ### タブの管理
@@ -118,7 +118,7 @@ WindowTabs をスタートアップ時に起動:
 
 タブをグループから切り離しとマルチディスプレイのサポートで再配置します:
 - Detach at same position
-- Move to display edges (right/left/top/bottom)
+- Move to display edges (右/左/上/下)
 - DPI-aware percentage-based positioning for correct placement across different DPI displays
 
 ![Detach Tab](README_Image/DetachTab.png)
@@ -126,7 +126,7 @@ WindowTabs をスタートアップ時に起動:
 ### Reposition tab group
 
 Move entire tab group to different display positions:
-- Move to current display edges (right/left/top/bottom)
+- Move to current display edges (右/左/上/下)
 - Move to other displays with edge positioning options
 - DPI-aware positioning for correct placement across different DPI displays
 - Maintains tab group integrity while repositioning
