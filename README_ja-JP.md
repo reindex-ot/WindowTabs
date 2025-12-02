@@ -161,7 +161,7 @@ While light mode is the default, dark mode is also supported for context menus (
 - Toggle via "Menu Dark Mode" checkbox in Appearance settings
 - Applies to tab context menu and drag-and-drop menus
 
-### マルチディスプレイと高 DPI のサポート
+### マルチディスプレイと高 DPI をサポート
 
 - Multi-display support with proper window positioning
 - DPI-aware window placement
