@@ -116,16 +116,16 @@ WindowTabs をスタートアップ時に起動:
 
 ![Popup Menu](README_Image/PopupMenu.png)
 
-### Detach and reposition tab
+### タブを切り離して位置を変更
 
 タブをグループから切り離しとマルチディスプレイのサポートで再配置します:
-- Detach at same position
-- Move to display edges (右/左/上/下)
+- 同じ位置での切り離し
+- 画面の端に移動 (右/左/上/下)
 - DPI-aware percentage-based positioning for correct placement across different DPI displays
 
 ![Detach Tab](README_Image/DetachTab.png)
 
-### Reposition tab group
+### タブグループの位置を変更
 
 Move entire tab group to different display positions:
 - Move to current display edges (右/左/上/下)
@@ -135,7 +135,7 @@ Move entire tab group to different display positions:
 
 ![Reposition tab group](README_Image/MoveTabGroup.png)
 
-### Detach and link tab to another group
+### タブを切り離して別のグループにリンク
 
 Detach a single tab from current group and link it to another existing group:
 - Shows other groups with tab names and counts
@@ -145,7 +145,7 @@ Detach a single tab from current group and link it to another existing group:
 
 ![Detach and link tab to another group](README_Image/MoveTab.png)
 
-### Link tab group to another group
+### タブグループを別のグループにリンク
 
 Transfer all tabs from current group to another existing group:
 - Shows other groups with tab names and counts
@@ -181,7 +181,7 @@ While light mode is the default, dark mode is also supported for context menus (
 ### 多言語をサポート
 
 - 英語と日本語の言語をサポート
-- Runtime language switching without restart
+- 再起動なしで言語を変更可能
 - トレイメニューから言語を変更可能
 
 ![Task Tray Menu](README_Image/TaskTrayMenuImage.png)
@@ -201,7 +201,7 @@ Access settings by right-clicking the tray icon and selecting "Settings" or by r
 
 ### プログラムタブ
 
-This feature remains unchanged from the original WindowTabs functionality.
+これは元の WindowTabs の機能から変更されていません。
 
 Configure which programs should use tabs and auto-grouping behavior.
 
@@ -210,9 +210,9 @@ Configure which programs should use tabs and auto-grouping behavior.
 ### タブの外観
 
 タブの視覚的な外観をカスタマイズできます:
-- Height, width, and overlap settings
+- 高さ、幅、重なりの設定
 - Border and text color
-- 背景の色 (active, normal, highlight, flash)
+- 背景の色 (アクティブ、通常、強調、点滅)
 - カラーテーマのプリセット (ライト、ダーク、ダークブルー)
 - Distance from edge settings
 
@@ -223,9 +223,9 @@ Configure which programs should use tabs and auto-grouping behavior.
 タブの動作を構成することができます:
 - タブの位置 (左/中央/右)
 - タブの幅 (縮小/拡張)
-- Toggle tab width on active tab icon double-click
-- Hide tabs when positioned at bottom (never/always/double-click)
-- Delay before hiding tabs
+- アクティブなタブアイコンをダブルクリックでタブの幅を変更
+- 下部に配置されたタブの非表示 (無効/常にする/ダブルクリック)
+- タブを非表示にするまでの遅延設定
 - 自動グループ設定
 - ホットキー設定 (Ctrl+1...+9 でタブをアクティブ)
 - マウスホバーでアクティブ
@@ -234,15 +234,15 @@ Configure which programs should use tabs and auto-grouping behavior.
 
 ### ワークスペースタブ
 
-This feature remains unchanged from the original WindowTabs functionality.
+これは元の WindowTabs の機能から変更されていません。
 
 ### タブの診断
 
-This feature remains unchanged from the original WindowTabs functionality.
+これは元の WindowTabs の機能から変更されていません。
 
 ## ソースからビルド
 
-### Prerequisites
+### 前提条件
 
 - Visual Studio 2022 Community Edition (またはそれ以降)
 - WiX Toolset v3.11 またはそれ以降 (MSI インストーラー版のビルド)
@@ -270,7 +270,7 @@ This feature remains unchanged from the original WindowTabs functionality.
 
 ## ライセンス
 
-This project is open source. See the original repository for license information.
+このプロジェクトはオープンソースであり、MIT ライセンスに基づいています。
 
 ## クレジット
 
@@ -280,6 +280,8 @@ This project is open source. See the original repository for license information
 
 ## コメント
 
-If you have any issues, please contact us via GitHub Issues or email: standard.software.net@gmail.com
+何か問題がありましたら、GitHub Issues またはメールでお問い合わせください: `standard.software.net@gmail.com`
 
-Thanks to Claude Code's hard work, development has progressed significantly. However, I've given up on making the Settings dialog dark mode-compatible as I couldn't get it to look right. I'm hoping someone might fork this project and improve it.
+Claude Code 氏の尽力により、開発は大きく進展しました。<br>
+しかし、設定ダイアログのダークモード対応は見た目が上手くいかなかったため、断念しました。<br>
+誰かがこのプロジェクトをフォークして改善してくれることを願っています。
