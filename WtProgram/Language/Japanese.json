@@ -20,7 +20,7 @@
   "hideInactiveTabs": "非アクティブなグループのタブを半透明にする",
   "Indent Flipped": "下方向タブの端からの距離 (ピクセル)",
   "Indent Normal": "上方向タブの端からの距離 (ピクセル)",
-  "isTabbingEnabledForAllProcessesByDefault": "全てのプログラムのタブを既定で有効にする",
+  "isTabbingEnabledForAllProcessesByDefault": "すべてのプログラムのタブを既定で有効にする",
   "MatchType": "マッチタイプ",
   "Max Width": "最大幅 (ピクセル)",
   "Text Color": "文字の色",
@@ -47,7 +47,7 @@
   "CloseTabsToTheLeft": "左側のタブを閉じる",
   "CloseTabsToTheLeftFormat": "左側の {0} 個のタブを閉じる",
   "CloseOtherTabs": "このグループの他のタブを閉じる",
-  "CloseAllTabs": "このグループの全てのタブを閉じる",
+  "CloseAllTabs": "このグループのすべてのタブを閉じる",
   "NewWindow": "新規ウィンドウ",
   "MakeTabsWider": "タブの幅を拡張する",
   "MakeTabsNarrower": "タブの幅を縮小する",
@@ -69,10 +69,10 @@
   "Up": "上",
   "Down": "下",
   "Main": "メイン",
-  "DetachAndDockingTabToGroup": "タブの分離と他のグループへの連結",
+  "DetachAndDockingTabToGroup": "タブの分離と他のグループにリンク",
   "MovePosTabGroup": "タブグループの位置移動",
   "MoveTabGroupFormat": "{0}{1}: {2}",
-  "DockingTabGroupToGroup": "タブグループの他のグループへの連結",
+  "DockingTabGroupToGroup": "タブグループの他のグループにリンク",
   "AlignLeft": "左",
   "AlignCenter": "中央",
   "AlignRight": "右",
@@ -87,3 +87,4 @@
   "Font": "Yu Gothic UI",
   "MenuDarkMode": "メニューをダークモードにする"
 }
+
